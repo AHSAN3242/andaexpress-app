@@ -34,11 +34,15 @@ jobs:
           mkdir -p ~/.gradle
           cat << 'EOF' > ~/.gradle/init.gradle
           allprojects {
+              ext.flutter = [
+                  compileSdkVersion: 35,
+                  minSdkVersion: 21,
+                  targetSdkVersion: 35
+              ]
               afterEvaluate { project ->
                   if (project.hasProperty('android')) {
                       project.android {
                           compileSdkVersion 35
-                          buildToolsVersion "35.0.0"
                       }
                   }
               }
