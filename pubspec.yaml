@@ -1,0 +1,47 @@
+name: anda_express
+description: "Farm-Fresh Eggs & Chicken Every Day - Flutter + Firebase Mobile App."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.2.0 <4.0.0"
+  flutter: ">=3.16.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.8
+
+  # Firebase Core, Auth, Cloud Firestore & Cloud Messaging
+  firebase_core: latest
+  firebase_auth: latest
+  cloud_firestore: latest
+  firebase_messaging: latest # (for FCM loud alerts)
+  firebase_storage: ^12.3.2
+
+  # Camera Capture & Live GPS Tagging
+  image_picker: latest # (for camera capture)
+  geolocator: latest # (for live GPS tagging)
+
+  # Drawing Watermark on Photo & Direct Cloudinary Upload
+  image: latest # (for drawing watermark on photo)
+  http: latest # (for Cloudinary direct upload)
+
+  # Date Formatting & Instant Alerts (1-tap WhatsApp & phone calls)
+  intl: latest # (for date formatting)
+  url_launcher: latest # (for 1-tap WhatsApp and call alerts)
+
+  # State Management & Utilities
+  flutter_riverpod: ^2.6.1
+  uuid: ^4.5.1
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/

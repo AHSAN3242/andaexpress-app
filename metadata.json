@@ -1,0 +1,8 @@
+{
+  "name": "Remix AndaExpress - Firebase Architecture \u0026 Flutter Studio",
+  "description": "Farm-Fresh Eggs \u0026 Chicken Every Day: Firestore Database Schema, Security Rules, Platform Fee Calculator \u0026 Modular Flutter Codebase.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

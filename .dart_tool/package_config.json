@@ -1,0 +1,20 @@
+{
+  "configVersion": 2,
+  "packages": [
+    {"name": "cloud_firestore", "rootUri": "package:cloud_firestore", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "firebase_auth", "rootUri": "package:firebase_auth", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "firebase_core", "rootUri": "package:firebase_core", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "firebase_messaging", "rootUri": "package:firebase_messaging", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "firebase_storage", "rootUri": "package:firebase_storage", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "geolocator", "rootUri": "package:geolocator", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "http", "rootUri": "package:http", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "image", "rootUri": "package:image", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "image_picker", "rootUri": "package:image_picker", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "intl", "rootUri": "package:intl", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "url_launcher", "rootUri": "package:url_launcher", "packageUri": "lib/", "languageVersion": "3.2"},
+    {"name": "anda_express", "rootUri": "../", "packageUri": "lib/", "languageVersion": "3.2"}
+  ],
+  "generated": "2026-10-11T21:12:00.000Z",
+  "generator": "pub",
+  "generatorVersion": "3.5.4"
+}

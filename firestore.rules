@@ -1,0 +1,296 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // 1. Global Default Deny All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Core Security Primitives ---
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    // Role check - trusted database doc or bootstrapped lead admin email
+    function isAdmin() {
+      return isSignedIn() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        (request.auth.token.email != null && (
+          request.auth.token.email == 'ahsankhan1484@gmail.com' ||
+          request.auth.token.email == 'ahsankhan220416@gmail.com'
+        ))
+      );
+    }
+
+    function isOwner(uid) {
+      return isSignedIn() && request.auth.uid == uid;
+    }
+
+    function isValidGeoPoint(geo) {
+      return geo is map &&
+        geo.keys().hasAll(['latitude', 'longitude']) &&
+        geo.latitude is number && geo.latitude >= -90.0 && geo.latitude <= 90.0 &&
+        geo.longitude is number && geo.longitude >= -180.0 && geo.longitude <= 180.0;
+    }
+
+    // --- Validation Helper: User Profile & KYC ---
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'phone', 'role', 'name', 'status']) &&
+        data.uid is string && isValidId(data.uid) &&
+        data.phone is string && data.phone.size() >= 10 && data.phone.size() <= 16 &&
+        data.role in ['buyer', 'seller', 'farmer', 'commuter', 'city_hub', 'admin'] &&
+        data.name is string && data.name.size() >= 2 && data.name.size() <= 120 &&
+        data.status in ['active', 'suspended', 'pending_verification'];
+    }
+
+    // --- Validation Helper: Product / Batch ---
+    function isValidProduct(data) {
+      return data.keys().hasAll(['product_id', 'seller_id', 'category', 'price', 'stock', 'unique_batch_code', 'photo_url']) &&
+        data.product_id is string && isValidId(data.product_id) &&
+        data.seller_id is string && isValidId(data.seller_id) &&
+        data.category in ['eggs', 'chicken', 'live_poultry', 'quail', 'combo', 'feed'] &&
+        data.price is number && data.price >= 0 &&
+        data.stock is int && data.stock >= 0 &&
+        data.photo_url is string && data.photo_url.size() <= 1024;
+    }
+
+    // --- Validation Helper: Order ---
+    function isValidOrder(data) {
+      return data.keys().hasAll(['order_id', 'buyer_id', 'seller_id', 'item_amount', 'status']) &&
+        data.order_id is string && isValidId(data.order_id) &&
+        data.buyer_id is string && isValidId(data.buyer_id) &&
+        data.seller_id is string && isValidId(data.seller_id) &&
+        data.item_amount is number && data.item_amount >= 0 &&
+        data.status in [
+          'pending', 'confirmed', 'packed', 'assigned_commuter',
+          'in_transit', 'arrived_stand', 'dropped_at_hub', 'delivered', 'cancelled', 'disputed'
+        ];
+    }
+
+    // --- Validation Helper: Dispute ---
+    function isValidDispute(data) {
+      return data.keys().hasAll(['dispute_id', 'order_id', 'buyer_id', 'seller_id', 'reason', 'status']) &&
+        data.dispute_id is string && isValidId(data.dispute_id) &&
+        data.order_id is string && isValidId(data.order_id) &&
+        data.buyer_id is string && isValidId(data.buyer_id) &&
+        data.seller_id is string && isValidId(data.seller_id) &&
+        data.reason is string && data.reason.size() >= 5 && data.reason.size() <= 1000 &&
+        data.status in ['opened', 'under_review', 'resolved_refund', 'rejected'];
+    }
+
+    // ==========================================
+    // 2. Collection Rules
+    // ==========================================
+
+    // --- Users Collection ---
+    match /users/{userId} {
+      allow get: if isSignedIn() && (request.auth.uid == userId || isAdmin());
+      allow list: if isAdmin();
+      
+      allow create: if isOwner(userId) &&
+        isValidUser(incoming()) &&
+        incoming().uid == request.auth.uid &&
+        incoming().role in ['buyer', 'seller', 'farmer', 'commuter', 'city_hub'] &&
+        incoming().status in ['active', 'pending_verification'];
+
+      allow update: if isSignedIn() && isValidUser(incoming()) && (
+        isAdmin() ||
+        (
+          isOwner(userId) &&
+          incoming().uid == existing().uid &&
+          incoming().role == existing().role &&
+          incoming().status == existing().status
+        )
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // --- Products & Batches Collection ---
+    match /products/{productId} {
+      allow get: if isSignedIn();
+      allow list: if isSignedIn();
+
+      allow create: if isSignedIn() &&
+        isValidProduct(incoming()) &&
+        incoming().product_id == productId &&
+        (incoming().seller_id == request.auth.uid || isAdmin());
+
+      allow update: if isSignedIn() && isValidProduct(incoming()) && (
+        isAdmin() ||
+        (
+          existing().seller_id == request.auth.uid &&
+          incoming().seller_id == existing().seller_id &&
+          incoming().product_id == existing().product_id
+        )
+      );
+
+      allow delete: if isAdmin() || (isSignedIn() && existing().seller_id == request.auth.uid);
+    }
+
+    // --- Orders Collection ---
+    // Read-only for involved parties (Farmer/Seller, Commuter, Buyer, City Hub)
+    match /orders/{orderId} {
+      function isInvolvedParty() {
+        return isSignedIn() && (
+          existing().buyer_id == request.auth.uid ||
+          existing().seller_id == request.auth.uid ||
+          (existing().commuter_id != null && existing().commuter_id == request.auth.uid) ||
+          (existing().hub_id != null && existing().hub_id == request.auth.uid) ||
+          isAdmin()
+        );
+      }
+
+      allow get: if isInvolvedParty();
+
+      allow list: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.buyer_id == request.auth.uid ||
+        resource.data.seller_id == request.auth.uid ||
+        (resource.data.commuter_id != null && resource.data.commuter_id == request.auth.uid) ||
+        (resource.data.hub_id != null && resource.data.hub_id == request.auth.uid)
+      );
+
+      // Buyer places order in 'pending' state
+      allow create: if isSignedIn() &&
+        isValidOrder(incoming()) &&
+        incoming().order_id == orderId &&
+        incoming().buyer_id == request.auth.uid &&
+        incoming().status == 'pending';
+
+      // Updates: Action-based state transitions by authorized involved party
+      allow update: if isSignedIn() && isValidOrder(incoming()) && (
+        isAdmin() ||
+        // Farmer confirms & dispatches
+        (
+          existing().seller_id == request.auth.uid &&
+          incoming().status in ['confirmed', 'packed', 'assigned_commuter'] &&
+          incoming().buyer_id == existing().buyer_id &&
+          incoming().seller_id == existing().seller_id &&
+          incoming().item_amount == existing().item_amount
+        ) ||
+        // Commuter picks up & transfers custody (in_transit -> arrived_stand -> dropped_at_hub)
+        (
+          (existing().commuter_id == request.auth.uid || incoming().commuter_id == request.auth.uid) &&
+          incoming().status in ['in_transit', 'arrived_stand', 'dropped_at_hub', 'delivered'] &&
+          incoming().buyer_id == existing().buyer_id &&
+          incoming().seller_id == existing().seller_id
+        ) ||
+        // City Hub shop confirms delivery handover
+        (
+          existing().hub_id == request.auth.uid &&
+          incoming().status in ['dropped_at_hub', 'delivered'] &&
+          incoming().buyer_id == existing().buyer_id
+        ) ||
+        // Buyer verifies OTP or disputes
+        (
+          existing().buyer_id == request.auth.uid &&
+          incoming().status in ['delivered', 'disputed', 'cancelled']
+        )
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // --- Pricing Config & App Settings Collection ---
+    // Writeable ONLY by Admin; readable by all authenticated users
+    match /pricing_config/{configId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    match /app_settings/{settingId} {
+      allow read: if isSignedIn();
+      allow write: if isAdmin();
+    }
+
+    // --- Wallets Collection ---
+    // Balance updates restricted to verified escrow/payment triggers or Admin
+    match /wallets/{walletId} {
+      allow get: if isSignedIn() && (walletId == request.auth.uid || isAdmin());
+      allow list: if isAdmin();
+
+      // Creation allowed during onboarding with verified zero or positive initial balance
+      allow create: if isOwner(walletId) &&
+        incoming().keys().hasAll(['wallet_id', 'balance', 'currency']) &&
+        incoming().wallet_id == request.auth.uid &&
+        incoming().balance is number && incoming().balance >= 0.0 &&
+        incoming().currency == 'INR';
+
+      // Updates strictly validated: client cannot arbitrarily inflate balance without payment reference
+      allow update: if isSignedIn() && (
+        isAdmin() ||
+        (
+          isOwner(walletId) &&
+          incoming().wallet_id == existing().wallet_id &&
+          incoming().currency == existing().currency &&
+          // Allowed deductions (platform fee or commuter escrow) or top-up accompanied by txn receipt
+          (
+            (incoming().balance < existing().balance) ||
+            (incoming().balance >= existing().balance && incoming().last_upi_txn_id != null)
+          )
+        )
+      );
+
+      allow delete: if isAdmin();
+    }
+
+    // --- Wallet Transactions Audit Subcollection ---
+    match /wallets/{walletId}/transactions/{txnId} {
+      allow read: if isSignedIn() && (walletId == request.auth.uid || isAdmin());
+      allow write: if isSignedIn() && (walletId == request.auth.uid || isAdmin());
+    }
+
+    // --- Disputes Collection ---
+    match /disputes/{disputeId} {
+      allow get: if isSignedIn() && (
+        existing().buyer_id == request.auth.uid ||
+        existing().seller_id == request.auth.uid ||
+        isAdmin()
+      );
+
+      allow list: if isSignedIn() && (
+        isAdmin() ||
+        resource.data.buyer_id == request.auth.uid ||
+        resource.data.seller_id == request.auth.uid
+      );
+
+      // Buyer submits dispute ticket with mandatory reason
+      allow create: if isSignedIn() &&
+        isValidDispute(incoming()) &&
+        incoming().dispute_id == disputeId &&
+        incoming().buyer_id == request.auth.uid &&
+        incoming().status == 'opened';
+
+      // Only admin can arbitrate disputes and update status/remarks
+      allow update: if isAdmin() && isValidDispute(incoming());
+      allow delete: if isAdmin();
+    }
+
+    // --- Shipments & Anti-Fraud Inspection Ledger ---
+    match /shipments/{shipmentId} {
+      allow read: if isSignedIn();
+      allow create: if isSignedIn() && (incoming().seller_id == request.auth.uid || isAdmin());
+      allow update: if isAdmin() || (isSignedIn() && existing().seller_id == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // --- Admin Roster Collection ---
+    match /admins/{adminId} {
+      allow read, write: if isAdmin();
+    }
+  }
+}

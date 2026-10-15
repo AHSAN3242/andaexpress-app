@@ -1,0 +1,67 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == 'ahsankhan1484@gmail.com' ||
+        request.auth.token.email == 'ahsankhan220416@gmail.com' ||
+        firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid))
+      );
+    }
+
+    function isFarmer() {
+      return isSignedIn() && (
+        firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.role in ['farmer', 'seller'] ||
+        isAdmin()
+      );
+    }
+
+    function isValidImage(maxSizeMb) {
+      return request.resource.size < maxSizeMb * 1024 * 1024
+        && request.resource.contentType.matches('image/(jpeg|png|webp)');
+    }
+
+    // Default deny
+    match /{allPaths=**} {
+      allow read, write: if false;
+    }
+
+    // Scale & Leg-Seal verification photos (Anti-Fraud Audit Ledger)
+    // Upload restricted strictly to verified farmers/sellers with max 5MB size and image MIME check
+    match /shipments/{shipmentId}/{photoType} {
+      allow read: if isSignedIn();
+      allow write: if isFarmer()
+        && isValidImage(5)
+        && photoType in ['leg_seal.jpg', 'scale.jpg', 'gps_watermark.jpg'];
+    }
+
+    // Product batch photos (egg crates, live birds)
+    match /products/{productId}/{filename} {
+      allow read: if isSignedIn();
+      allow write: if isFarmer()
+        && isValidImage(5);
+    }
+
+    // Float-test dispute evidence media (water bowl egg freshness test)
+    match /disputes/{disputeId}/{filename} {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn()
+        && (request.resource.size < 10 * 1024 * 1024)
+        && (request.resource.contentType.matches('image/(jpeg|png|webp)') || request.resource.contentType.matches('video/mp4'));
+    }
+
+    // User profile avatars
+    match /users/{userId}/avatar.jpg {
+      allow read: if isSignedIn();
+      allow write: if isSignedIn()
+        && (request.auth.uid == userId || isAdmin())
+        && isValidImage(2);
+    }
+  }
+}

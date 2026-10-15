@@ -1,0 +1,360 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile for AndaExpress buyers, sellers, and administrators.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "description": "Firebase Auth user unique identifier.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "phone": {
+          "type": "string",
+          "description": "User phone number with country code.",
+          "pattern": "^\\+?[0-9]{10,15}$"
+        },
+        "role": {
+          "type": "string",
+          "description": "Account role determining platform access and permissions.",
+          "enum": ["buyer", "seller", "admin"]
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name or farm business name.",
+          "minLength": 2,
+          "maxLength": 100
+        },
+        "address": {
+          "type": "string",
+          "description": "Delivery street address or farm dispatch location.",
+          "minLength": 5,
+          "maxLength": 250
+        },
+        "geo_point": {
+          "type": "object",
+          "description": "Geographical coordinates (latitude and longitude) of the farm or delivery address.",
+          "properties": {
+            "latitude": { "type": "number" },
+            "longitude": { "type": "number" }
+          },
+          "required": ["latitude", "longitude"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Account state in AndaExpress platform.",
+          "enum": ["active", "suspended", "pending_verification"]
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account creation timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Account last update timestamp."
+        }
+      },
+      "required": ["uid", "phone", "role", "name", "address", "geo_point", "status"]
+    },
+    "Product": {
+      "title": "Product",
+      "description": "Farm-fresh egg or poultry batch listed by a verified seller.",
+      "type": "object",
+      "properties": {
+        "product_id": {
+          "type": "string",
+          "description": "Unique product identification ID.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "seller_id": {
+          "type": "string",
+          "description": "UID of the seller who produced/listed the batch.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category of farm product.",
+          "enum": ["eggs", "chicken", "combo", "feed"]
+        },
+        "egg_type": {
+          "type": "string",
+          "description": "Specific egg breed/grading type.",
+          "enum": ["desi", "organic", "broiler_table", "free_range", "kadaknath", "quail", "duck", "none"]
+        },
+        "price": {
+          "type": "number",
+          "description": "Price per tray or per unit in INR.",
+          "minimum": 0
+        },
+        "stock": {
+          "type": "integer",
+          "description": "Available stock quantity in units or trays.",
+          "minimum": 0
+        },
+        "lay_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp or ISO date when eggs were collected from the farm."
+        },
+        "expiry_date": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Freshness best-before date calculated from lay date."
+        },
+        "unique_batch_code": {
+          "type": "string",
+          "description": "Traceability farm lot code, e.g. BATCH-2026-FARM04-DESI.",
+          "maxLength": 64
+        },
+        "photo_url": {
+          "type": "string",
+          "description": "Public Cloud Storage URL of the product batch photo.",
+          "maxLength": 1024
+        },
+        "network_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp when product was published."
+        },
+        "gps_lat_long": {
+          "type": "object",
+          "description": "Farm origin GPS coordinates for radius search and courier pickup.",
+          "properties": {
+            "latitude": { "type": "number" },
+            "longitude": { "type": "number" }
+          },
+          "required": ["latitude", "longitude"]
+        }
+      },
+      "required": [
+        "product_id",
+        "seller_id",
+        "category",
+        "egg_type",
+        "price",
+        "stock",
+        "lay_date",
+        "expiry_date",
+        "unique_batch_code",
+        "photo_url",
+        "network_timestamp",
+        "gps_lat_long"
+      ]
+    },
+    "Order": {
+      "title": "Order",
+      "description": "Customer purchase transaction connecting buyer and farm seller.",
+      "type": "object",
+      "properties": {
+        "order_id": {
+          "type": "string",
+          "description": "Unique order reference string.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "buyer_id": {
+          "type": "string",
+          "description": "UID of the purchasing buyer.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "seller_id": {
+          "type": "string",
+          "description": "UID of the farm seller fulfilling this order.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "items": {
+          "type": "array",
+          "description": "List of ordered items with quantities and snapshot prices.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "product_id": { "type": "string" },
+              "title": { "type": "string" },
+              "egg_type": { "type": "string" },
+              "unit_price": { "type": "number" },
+              "quantity": { "type": "integer" },
+              "subtotal": { "type": "number" }
+            },
+            "required": ["product_id", "title", "unit_price", "quantity", "subtotal"]
+          }
+        },
+        "item_amount": {
+          "type": "number",
+          "description": "Total cost of items before platform fee.",
+          "minimum": 0
+        },
+        "platform_fee": {
+          "type": "number",
+          "description": "Calculated fee according to app_settings platform_fee_slabs.",
+          "minimum": 0
+        },
+        "order_type": {
+          "type": "string",
+          "description": "Fulfillment mode.",
+          "enum": ["Pickup", "Courier"]
+        },
+        "payment_mode": {
+          "type": "string",
+          "description": "Payment method chosen by buyer.",
+          "enum": ["cod", "upi", "card", "wallet"]
+        },
+        "status": {
+          "type": "string",
+          "description": "Current lifecycle status of the order.",
+          "enum": ["pending", "confirmed", "packed", "out_for_delivery", "delivered", "cancelled", "disputed"]
+        },
+        "network_timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of order placement."
+        }
+      },
+      "required": [
+        "order_id",
+        "buyer_id",
+        "seller_id",
+        "items",
+        "item_amount",
+        "platform_fee",
+        "order_type",
+        "payment_mode",
+        "status",
+        "network_timestamp"
+      ]
+    },
+    "AppSettings": {
+      "title": "AppSettings",
+      "description": "Global configuration document managed exclusively by AndaExpress administrators.",
+      "type": "object",
+      "properties": {
+        "platform_fee_slabs": {
+          "type": "array",
+          "description": "Tiered platform fee slabs based on order item amount.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "min": { "type": "number" },
+              "max": { "type": "number" },
+              "fee": { "type": "number" }
+            },
+            "required": ["min", "max", "fee"]
+          }
+        },
+        "app_name": {
+          "type": "string",
+          "description": "Display name of the application."
+        },
+        "support_phone": {
+          "type": "string",
+          "description": "Support hotline for egg delivery inquiries."
+        },
+        "freshness_guarantee_days": {
+          "type": "integer",
+          "description": "Number of days eggs are guaranteed farm-fresh."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of configuration update."
+        },
+        "updated_by": {
+          "type": "string",
+          "description": "Admin UID who saved the settings."
+        }
+      },
+      "required": ["platform_fee_slabs"]
+    },
+    "Dispute": {
+      "title": "Dispute",
+      "description": "Customer complaint ticket, specifically supporting egg float-test freshness proofs.",
+      "type": "object",
+      "properties": {
+        "dispute_id": {
+          "type": "string",
+          "description": "Unique dispute ticket identifier.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "order_id": {
+          "type": "string",
+          "description": "Associated order ID being contested.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "buyer_id": {
+          "type": "string",
+          "description": "UID of the complainant buyer.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "seller_id": {
+          "type": "string",
+          "description": "UID of the seller who fulfilled the contested batch.",
+          "pattern": "^[a-zA-Z0-9_-]{1,128}$"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Detailed explanation of freshness or delivery defect.",
+          "minLength": 5,
+          "maxLength": 1000
+        },
+        "float_test_proof_photo_url": {
+          "type": "string",
+          "description": "Cloud Storage URL of the water-bowl float test photograph showing egg floating.",
+          "maxLength": 1024
+        },
+        "status": {
+          "type": "string",
+          "description": "Resolution status of dispute ticket.",
+          "enum": ["opened", "under_review", "resolved_refund", "rejected"]
+        },
+        "admin_remarks": {
+          "type": "string",
+          "description": "Notes and rationale logged by administrator.",
+          "maxLength": 1000
+        },
+        "created_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Submission timestamp."
+        },
+        "updated_at": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last status modification timestamp."
+        }
+      },
+      "required": [
+        "dispute_id",
+        "order_id",
+        "buyer_id",
+        "seller_id",
+        "reason",
+        "float_test_proof_photo_url",
+        "status",
+        "admin_remarks"
+      ]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "Stores user profiles with location, contact info, and role permissions."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/Product" },
+      "description": "Live inventory catalog of farm-fresh egg and chicken batches."
+    },
+    "/orders/{orderId}": {
+      "schema": { "$ref": "#/entities/Order" },
+      "description": "Transactional purchases with tiered platform fee calculations."
+    },
+    "/app_settings/general": {
+      "schema": { "$ref": "#/entities/AppSettings" },
+      "description": "Admin-controlled system settings including dynamic platform fee slabs."
+    },
+    "/disputes/{disputeId}": {
+      "schema": { "$ref": "#/entities/Dispute" },
+      "description": "Dispute cases filed by buyers with mandatory float test photo proofs."
+    }
+  }
+}
