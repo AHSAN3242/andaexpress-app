@@ -23,16 +23,14 @@ jobs:
           flutter-version: '3.24.x'
           channel: 'stable'
 
-      - name: Regenerate Modern Android Embedding
-        run: flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
-
-      - name: Configure Android SDK 35
+      - name: Clean Legacy Android & Generate Fresh Files
         run: |
-          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 35/g' android/app/build.gradle || true
-          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 35/g' android/app/build.gradle || true
+          rm -rf android
+          rm -f pubspec.lock
+          flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
 
-      - name: Install Dependencies
-        run: flutter pub get
+      - name: Upgrade Dependencies to Compatible Versions
+        run: flutter pub upgrade
 
       - name: Build APK
         run: flutter build apk --release
