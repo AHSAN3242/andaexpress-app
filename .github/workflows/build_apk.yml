@@ -29,11 +29,11 @@ jobs:
           rm -f pubspec.lock
           flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
 
-      - name: Force CompileSdkVersion 35 Across Plugins
+      - name: Setup Global Gradle Init Script for SDK 35
         run: |
-          mkdir -p android/app
-          cat << 'EOF' >> android/build.gradle
-          subprojects {
+          mkdir -p ~/.gradle
+          cat << 'EOF' > ~/.gradle/init.gradle
+          allprojects {
               afterEvaluate { project ->
                   if (project.hasProperty('android')) {
                       project.android {
