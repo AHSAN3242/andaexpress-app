@@ -26,6 +26,11 @@ jobs:
       - name: Regenerate Modern Android Embedding
         run: flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
 
+      - name: Configure Android SDK 35
+        run: |
+          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 35/g' android/app/build.gradle || true
+          sed -i 's/compileSdkVersion flutter.compileSdkVersion/compileSdkVersion 35/g' android/app/build.gradle || true
+
       - name: Install Dependencies
         run: flutter pub get
 
