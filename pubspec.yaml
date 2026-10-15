@@ -13,23 +13,23 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # Firebase Core, Auth, Cloud Firestore & Cloud Messaging
-  firebase_core: latest
-  firebase_auth: latest
-  cloud_firestore: latest
-  firebase_messaging: latest # (for FCM loud alerts)
+  firebase_core: any
+  firebase_auth: any
+  cloud_firestore: any
+  firebase_messaging: any
   firebase_storage: ^12.3.2
 
   # Camera Capture & Live GPS Tagging
-  image_picker: latest # (for camera capture)
-  geolocator: latest # (for live GPS tagging)
+  image_picker: any
+  geolocator: any
 
   # Drawing Watermark on Photo & Direct Cloudinary Upload
-  image: latest # (for drawing watermark on photo)
-  http: latest # (for Cloudinary direct upload)
+  image: any
+  http: any
 
   # Date Formatting & Instant Alerts (1-tap WhatsApp & phone calls)
-  intl: latest # (for date formatting)
-  url_launcher: latest # (for 1-tap WhatsApp and call alerts)
+  intl: any
+  url_launcher: any
 
   # State Management & Utilities
   flutter_riverpod: ^2.6.1
@@ -45,3 +45,4 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/
+    
