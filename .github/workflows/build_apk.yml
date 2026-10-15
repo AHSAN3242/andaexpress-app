@@ -24,7 +24,7 @@ jobs:
           channel: 'stable'
 
       - name: Regenerate Modern Android Embedding
-        run: flutter create . --platforms=android --org com.andaexpress
+        run: flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
 
       - name: Install Dependencies
         run: flutter pub get
