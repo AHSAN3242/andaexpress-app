@@ -29,27 +29,15 @@ jobs:
           rm -f pubspec.lock
           flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
 
-      - name: Apply Android SDK 35 Override
-        run: |
-          mkdir -p ~/.gradle
-          cat << 'EOF' > ~/.gradle/init.gradle
-          gradle.projectsLoaded {
-              rootProject.allprojects {
-                  afterEvaluate { project ->
-                      if (project.plugins.hasPlugin("com.android.application") ||
-                          project.plugins.hasPlugin("com.android.library")) {
-                          project.android {
-                              compileSdkVersion 35
-                              buildToolsVersion "35.0.0"
-                          }
-                      }
-                  }
-              }
-          }
-          EOF
-
       - name: Install Dependencies
         run: flutter pub get
+
+      - name: Patch Plugin Gradle Files Directly
+        run: |
+          find ~/.pub-cache/hosted/pub.dev/ -name "build.gradle" -exec sed -i 's/flutter.compileSdkVersion/35/g' {} +
+          find ~/.pub-cache/hosted/pub.dev/ -name "build.gradle" -exec sed -i 's/flutter.minSdkVersion/21/g' {} +
+          find ~/.pub-cache/hosted/pub.dev/ -name "build.gradle" -exec sed -i 's/flutter.targetSdkVersion/35/g' {} +
+          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 35/g' android/app/build.gradle || true
 
       - name: Build APK
         run: flutter build apk --release
