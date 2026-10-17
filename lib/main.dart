@@ -42,8 +42,8 @@ class CompleteLoginFlowScreen extends StatefulWidget {
 }
 
 class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
-  String _selectedRole = 'buyer'; // 'buyer', 'seller', 'commuter'
-  String _selectedLanguage = 'hi'; // 'hi', 'en', 'mr'
+  String _selectedRole = 'seller'; // Default role
+  String _selectedLanguage = 'hi';
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   bool _isOtpSent = false;
@@ -99,17 +99,18 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
       return;
     }
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       setState(() {
         _isLoading = false;
         _isOtpSent = true;
+        _otpController.text = '123456'; // Testing dummy OTP auto-fill
       });
     });
   }
 
   void _loginSuccess() {
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(milliseconds: 600), () {
+    Future.delayed(const Duration(milliseconds: 500), () {
       setState(() => _isLoading = false);
       Navigator.pushReplacement(
         context,
@@ -168,7 +169,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
             ),
             const SizedBox(height: 10),
 
-            // Profile Selection Options
             Row(
               children: [
                 Expanded(child: _buildRoleCard('buyer', t['buyer']!, Icons.shopping_bag)),
@@ -180,7 +180,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
             ),
             const SizedBox(height: 28),
 
-            // Phone Field
             TextField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
@@ -194,7 +193,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
             ),
             const SizedBox(height: 16),
 
-            // OTP Field if sent
             if (_isOtpSent) ...[
               TextField(
                 controller: _otpController,
@@ -273,78 +271,241 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
   }
 }
 
-// Role Dashboard Screen
-class RoleDashboardScreen extends StatelessWidget {
+// Master Dashboard with individual functional screens
+class RoleDashboardScreen extends StatefulWidget {
   final String role;
   final String phone;
 
   const RoleDashboardScreen({super.key, required this.role, required this.phone});
 
   @override
-  Widget build(BuildContext context) {
-    String title = role == 'seller'
-        ? 'सेलर डैशबोर्ड (Seller Panel)'
-        : role == 'commuter'
-            ? 'कम्यूटर डैशबोर्ड (Commuter Panel)'
-            : 'ग्राहक फ़ीड (Buyer Feed)';
+  State<RoleDashboardScreen> createState() => _RoleDashboardScreenState();
+}
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(title),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout),
-            onPressed: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const CompleteLoginFlowScreen()),
-              );
-            },
-          )
-        ],
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                role == 'seller'
-                    ? Icons.storefront
-                    : role == 'commuter'
-                        ? Icons.delivery_dining
-                        : Icons.shopping_basket,
-                size: 80,
-                color: const Color(0xFFD97706),
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'लॉगिन सफल! (Role: ${role.toUpperCase()})',
-                style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text('मोबाइल: +91 $phone', style: const TextStyle(color: Colors.grey, fontSize: 16)),
-              const SizedBox(height: 24),
-              Card(
-                elevation: 2,
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Text(
-                    role == 'seller'
-                        ? 'यहाँ से आप अपने पोल्ट्री फार्म के अंडे/चिकन की ताज़ा खेप लिस्ट कर सकते हैं।'
-                        : role == 'commuter'
-                            ? 'यहाँ आपको नजदीकी डिलीवरी रूट्स और पिकअप ऑर्डर्स दिखेंगे।'
-                            : 'यहाँ ताज़ा अंडे और पोल्ट्री प्रोडक्ट्स की लाइव लिस्टिंग दिख रही है।',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 15),
-                  ),
-                ),
-              ),
-            ],
-          ),
+class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
+  // Shared dummy data
+  List<Map<String, dynamic>> sellerListings = [
+    {'item': 'देसी ताज़ा अंडे (Desi Eggs)', 'quantity': '20 Crates (600 Eggs)', 'price': '₹190 / Crate', 'status': 'सक्रिय (Live)'},
+    {'item': 'ब्रायलर अंडे (Farm Fresh)', 'quantity': '50 Crates (1500 Eggs)', 'price': '₹155 / Crate', 'status': 'सक्रिय (Live)'},
+  ];
+
+  int cartCount = 0;
+
+  List<Map<String, dynamic>> commuterTrips = [
+    {'from': 'पाटिल पोल्ट्री फार्म (वडोदरा)', 'to': 'सेंट्रल सिटी हब, गेट नं 2', 'crates': '40 Crates', 'earning': '₹480', 'accepted': false},
+    {'from': 'ग्रीन वैली एग्स (नासिक)', 'to': 'लोकल मार्केट डिपो', 'crates': '25 Crates', 'earning': '₹320', 'accepted': false},
+  ];
+
+  void _showAddBatchModal() {
+    final itemController = TextEditingController(text: 'देसी पोल्ट्री अंडे');
+    final qtyController = TextEditingController(text: '10');
+    final priceController = TextEditingController(text: '180');
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            const Text('नई खेप लिस्ट करें (Add New Batch)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 16),
+            TextField(controller: itemController, decoration: const InputDecoration(labelText: 'उत्पाद का नाम / प्रकार', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(controller: qtyController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'मात्रा (Crates की संख्या)', border: OutlineInputBorder())),
+            const SizedBox(height: 12),
+            TextField(controller: priceController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'रेट प्रति Crate (₹)', border: OutlineInputBorder())),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+              onPressed: () {
+                setState(() {
+                  sellerListings.insert(0, {
+                    'item': itemController.text.trim(),
+                    'quantity': '${qtyController.text.trim()} Crates',
+                    'price': '₹${priceController.text.trim()} / Crate',
+                    'status': 'सक्रिय (Live)',
+                  });
+                });
+                Navigator.pop(ctx);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('खेप सफलतापूर्वक लिस्ट हो गई!')));
+              },
+              child: const Text('खेप पोस्ट करें (Submit)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            )
+          ],
         ),
       ),
     );
   }
-}
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.role == 'seller') {
+      return _buildSellerView();
+    } else if (widget.role == 'commuter') {
+      return _buildCommuterView();
+    } else {
+      return _buildBuyerView();
+    }
+  }
+
+  // SELLER INTERFACE
+  Widget _buildSellerView() {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('सेलर डैशबोर्ड (Seller)'),
+        actions: [_logoutButton()],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Wallet Header
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: const LinearGradient(colors: [Color(0xFFD97706), Color(0xFFF59E0B)]),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('कुल उपलब्ध बैलेंस (Wallet)', style: TextStyle(color: Colors.white70, fontSize: 14)),
+                  const SizedBox(height: 6),
+                  const Text('₹18,450.00', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 10),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text('मोबाइल: +91 ${widget.phone}', style: const TextStyle(color: Colors.white, fontSize: 13)),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(20)),
+                        child: const Text('KYC वेरिफाइड', style: TextStyle(color: Colors.white, fontSize: 12)),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text('आपकी सक्रिय खेप (Listings)', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                ElevatedButton.icon(
+                  onPressed: _showAddBatchModal,
+                  icon: const Icon(Icons.add, size: 18),
+                  label: const Text('नई खेप जोड़ें'),
+                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+
+            ...sellerListings.map((lot) => Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              elevation: 2,
+              child: ListTile(
+                leading: const CircleAvatar(
+                  backgroundColor: Color(0xFFFEF3C7),
+                  child: Icon(Icons.egg, color: Color(0xFFD97706)),
+                ),
+                title: Text(lot['item'], style: const TextStyle(fontWeight: FontWeight.bold)),
+                subtitle: Text('${lot['quantity']} • ${lot['price']}'),
+                trailing: Chip(
+                  label: Text(lot['status'], style: const TextStyle(fontSize: 11, color: Colors.green, fontWeight: FontWeight.bold)),
+                  backgroundColor: Colors.green.shade50,
+                ),
+              ),
+            )),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // BUYER INTERFACE
+  Widget _buildBuyerView() {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('अंडे व चिकन बाज़ार (Buyer Feed)'),
+        actions: [
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.shopping_cart),
+                onPressed: () {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: Text('कार्ट में कुल $cartCount आइटम हैं। चेकआउट स्क्रीन पर ले जाया जा रहा है...'),
+                  ));
+                },
+              ),
+              if (cartCount > 0)
+                Positioned(
+                  right: 8,
+                  top: 8,
+                  child: CircleAvatar(
+                    radius: 9,
+                    backgroundColor: Colors.red,
+                    child: Text('$cartCount', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
+                  ),
+                )
+            ],
+          ),
+          _logoutButton(),
+        ],
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          const Text('ताज़ा फार्म स्टॉक (Live Farm Batches)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          _buyerItemCard('कड़कनाथ शुद्ध देसी अंडे', 'आनंद पोल्ट्री फार्म • 2.5 किमी', '₹220 / Crate', '30 Eggs per Crate', Icons.egg),
+          _buyerItemCard('फार्म फ्रेश टेबल एग्स (White)', 'बालाजी एग्रो फार्म • 5 किमी', '₹150 / Crate', '30 Eggs per Crate', Icons.egg_alt),
+          _buyerItemCard('देसी चिकन (लाइव ब्रायलर)', 'किसान मित्र पोल्ट्री • 8 किमी', '₹135 / Kg', 'ताज़ा वजन डिलीवरी पर', Icons.scale),
+        ],
+      ),
+    );
+  }
+
+  Widget _buyerItemCard(String title, String subtitle, String price, String desc, IconData icon) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 14),
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), child: Icon(icon, color: const Color(0xFFD97706))),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                      Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 13)),
+                    ],
+                  ),
+                ),
+                Text(price, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF15803D))),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Text(desc, style: const TextStyle(color: Colors.black54, fontSize: 12)),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white),
+                icon: const Icon(Icons.add_shopping_cart, size: 18),
+   
