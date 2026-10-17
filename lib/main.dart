@@ -42,14 +42,14 @@ class CompleteLoginFlowScreen extends StatefulWidget {
 }
 
 class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
-  String _selectedRole = 'seller'; // Default role
+  String _selectedRole = 'seller';
   String _selectedLanguage = 'hi';
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
   bool _isOtpSent = false;
   bool _isLoading = false;
 
-  Map<String, Map<String, String>> localizedText = {
+  final Map<String, Map<String, String>> localizedText = {
     'hi': {
       'title': 'अंडा एक्सप्रेस (AndaExpress)',
       'subtitle': 'खेत से सीधे ताज़ा अंडे और चिकन',
@@ -94,23 +94,23 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
   void _sendOtp() {
     if (_phoneController.text.trim().length < 10) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('कृपया सही 10 अंकों का नंबर डालें / Enter valid 10-digit number')),
+        const SnackBar(content: Text('कृपया सही 10 अंकों का नंबर दर्ज करें')),
       );
       return;
     }
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 400), () {
       setState(() {
         _isLoading = false;
         _isOtpSent = true;
-        _otpController.text = '123456'; // Testing dummy OTP auto-fill
+        _otpController.text = '123456';
       });
     });
   }
 
   void _loginSuccess() {
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(milliseconds: 500), () {
+    Future.delayed(const Duration(milliseconds: 400), () {
       setState(() => _isLoading = false);
       Navigator.pushReplacement(
         context,
@@ -168,7 +168,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
               style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Colors.black87),
             ),
             const SizedBox(height: 10),
-
             Row(
               children: [
                 Expanded(child: _buildRoleCard('buyer', t['buyer']!, Icons.shopping_bag)),
@@ -179,7 +178,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
               ],
             ),
             const SizedBox(height: 28),
-
             TextField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
@@ -192,7 +190,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
               ),
             ),
             const SizedBox(height: 16),
-
             if (_isOtpSent) ...[
               TextField(
                 controller: _otpController,
@@ -212,12 +209,9 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
                 ),
               ),
             ],
-
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _isLoading
-                  ? null
-                  : (_isOtpSent ? _loginSuccess : _sendOtp),
+              onPressed: _isLoading ? null : (_isOtpSent ? _loginSuccess : _sendOtp),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFFD97706),
                 foregroundColor: Colors.white,
@@ -271,7 +265,6 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
   }
 }
 
-// Master Dashboard with individual functional screens
 class RoleDashboardScreen extends StatefulWidget {
   final String role;
   final String phone;
@@ -283,57 +276,55 @@ class RoleDashboardScreen extends StatefulWidget {
 }
 
 class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
-  // Shared dummy data
-  List<Map<String, dynamic>> sellerListings = [
-    {'item': 'देसी ताज़ा अंडे (Desi Eggs)', 'quantity': '20 Crates (600 Eggs)', 'price': '₹190 / Crate', 'status': 'सक्रिय (Live)'},
-    {'item': 'ब्रायलर अंडे (Farm Fresh)', 'quantity': '50 Crates (1500 Eggs)', 'price': '₹155 / Crate', 'status': 'सक्रिय (Live)'},
+  final List<Map<String, dynamic>> _sellerListings = [
+    {'item': 'देसी ताज़ा अंडे (Desi Eggs)', 'quantity': '20 Crates', 'price': '₹190/Crate'},
+    {'item': 'ब्रायलर अंडे (Farm Fresh)', 'quantity': '50 Crates', 'price': '₹155/Crate'},
   ];
 
-  int cartCount = 0;
+  int _cartCount = 0;
 
-  List<Map<String, dynamic>> commuterTrips = [
-    {'from': 'पाटिल पोल्ट्री फार्म (वडोदरा)', 'to': 'सेंट्रल सिटी हब, गेट नं 2', 'crates': '40 Crates', 'earning': '₹480', 'accepted': false},
-    {'from': 'ग्रीन वैली एग्स (नासिक)', 'to': 'लोकल मार्केट डिपो', 'crates': '25 Crates', 'earning': '₹320', 'accepted': false},
+  final List<Map<String, dynamic>> _commuterTrips = [
+    {'from': 'पाटिल पोल्ट्री फार्म', 'to': 'सेंट्रल सिटी हब', 'crates': '40 Crates', 'earning': '₹480', 'done': false},
+    {'from': 'ग्रीन वैली फार्म', 'to': 'लोकल मार्केट डिपो', 'crates': '25 Crates', 'earning': '₹320', 'done': false},
   ];
 
-  void _showAddBatchModal() {
-    final itemController = TextEditingController(text: 'देसी पोल्ट्री अंडे');
-    final qtyController = TextEditingController(text: '10');
-    final priceController = TextEditingController(text: '180');
+  void _showAddBatchDialog() {
+    final itemCtl = TextEditingController(text: 'देसी पोल्ट्री अंडे');
+    final qtyCtl = TextEditingController(text: '15');
+    final priceCtl = TextEditingController(text: '185');
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) => Padding(
-        padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+        padding: EdgeInsets.only(top: 16, left: 16, right: 16, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('नई खेप लिस्ट करें (Add New Batch)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 16),
-            TextField(controller: itemController, decoration: const InputDecoration(labelText: 'उत्पाद का नाम / प्रकार', border: OutlineInputBorder())),
+            const Text('नई खेप लिस्ट करें', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            TextField(controller: qtyController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'मात्रा (Crates की संख्या)', border: OutlineInputBorder())),
-            const SizedBox(height: 12),
-            TextField(controller: priceController, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'रेट प्रति Crate (₹)', border: OutlineInputBorder())),
-            const SizedBox(height: 16),
+            TextField(controller: itemCtl, decoration: const InputDecoration(labelText: 'उत्पाद का प्रकार', border: OutlineInputBorder())),
+            const SizedBox(height: 10),
+            TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'मात्रा (Crates)', border: OutlineInputBorder())),
+            const SizedBox(height: 10),
+            TextField(controller: priceCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'रेट प्रति Crate (₹)', border: OutlineInputBorder())),
+            const SizedBox(height: 14),
             ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white),
               onPressed: () {
                 setState(() {
-                  sellerListings.insert(0, {
-                    'item': itemController.text.trim(),
-                    'quantity': '${qtyController.text.trim()} Crates',
-                    'price': '₹${priceController.text.trim()} / Crate',
-                    'status': 'सक्रिय (Live)',
+                  _sellerListings.insert(0, {
+                    'item': itemCtl.text.trim(),
+                    'quantity': '${qtyCtl.text.trim()} Crates',
+                    'price': '₹${priceCtl.text.trim()}/Crate',
                   });
                 });
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('खेप सफलतापूर्वक लिस्ट हो गई!')));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('खेप सफलतापूर्वक जोड़ी गई!')));
               },
-              child: const Text('खेप पोस्ट करें (Submit)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              child: const Text('सबमिट करें'),
             )
           ],
         ),
@@ -341,171 +332,162 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
     );
   }
 
+  void _logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const CompleteLoginFlowScreen()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.role == 'seller') {
-      return _buildSellerView();
-    } else if (widget.role == 'commuter') {
-      return _buildCommuterView();
-    } else {
-      return _buildBuyerView();
-    }
-  }
-
-  // SELLER INTERFACE
-  Widget _buildSellerView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('सेलर डैशबोर्ड (Seller)'),
-        actions: [_logoutButton()],
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      return Scaffold(
+        appBar: AppBar(title: const Text('सेलर डैशबोर्ड (Seller)'), actions: [IconButton(icon: const Icon(Icons.logout), onPressed: _logout)]),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
           children: [
-            // Wallet Header
             Container(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(colors: [Color(0xFFD97706), Color(0xFFF59E0B)]),
-                borderRadius: BorderRadius.circular(12),
-              ),
+              decoration: BoxDecoration(color: const Color(0xFFD97706), borderRadius: BorderRadius.circular(12)),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('कुल उपलब्ध बैलेंस (Wallet)', style: TextStyle(color: Colors.white70, fontSize: 14)),
-                  const SizedBox(height: 6),
-                  const Text('₹18,450.00', style: TextStyle(color: Colors.white, fontSize: 26, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('मोबाइल: +91 ${widget.phone}', style: const TextStyle(color: Colors.white, fontSize: 13)),
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                        decoration: BoxDecoration(color: Colors.white24, borderRadius: BorderRadius.circular(20)),
-                        child: const Text('KYC वेरिफाइड', style: TextStyle(color: Colors.white, fontSize: 12)),
-                      )
-                    ],
-                  )
+                  const Text('उपलब्ध वॉलेट बैलेंस', style: TextStyle(color: Colors.white70, fontSize: 13)),
+                  const SizedBox(height: 4),
+                  const Text('₹18,450.00', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  Text('मोबाइल: +91 ${widget.phone}', style: const TextStyle(color: Colors.white, fontSize: 12)),
                 ],
               ),
             ),
-            const SizedBox(height: 20),
-
+            const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('आपकी सक्रिय खेप (Listings)', style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold)),
+                const Text('सक्रिय खेप (Listings)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ElevatedButton.icon(
-                  onPressed: _showAddBatchModal,
-                  icon: const Icon(Icons.add, size: 18),
-                  label: const Text('नई खेप जोड़ें'),
+                  onPressed: _showAddBatchDialog,
+                  icon: const Icon(Icons.add, size: 16),
+                  label: const Text('नई खेप'),
                   style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
-                ),
+                )
               ],
             ),
-            const SizedBox(height: 12),
-
-            ...sellerListings.map((lot) => Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              elevation: 2,
+            const SizedBox(height: 10),
+            ..._sellerListings.map((lot) => Card(
+              margin: const EdgeInsets.only(bottom: 10),
               child: ListTile(
-                leading: const CircleAvatar(
-                  backgroundColor: Color(0xFFFEF3C7),
-                  child: Icon(Icons.egg, color: Color(0xFFD97706)),
-                ),
+                leading: const Icon(Icons.egg, color: Color(0xFFD97706), size: 36),
                 title: Text(lot['item'], style: const TextStyle(fontWeight: FontWeight.bold)),
                 subtitle: Text('${lot['quantity']} • ${lot['price']}'),
-                trailing: Chip(
-                  label: Text(lot['status'], style: const TextStyle(fontSize: 11, color: Colors.green, fontWeight: FontWeight.bold)),
-                  backgroundColor: Colors.green.shade50,
+                trailing: const Chip(label: Text('सक्रिय', style: TextStyle(fontSize: 11, color: Colors.green))),
+              ),
+            )),
+          ],
+        ),
+      );
+    } else if (widget.role == 'commuter') {
+      return Scaffold(
+        appBar: AppBar(title: const Text('कम्यूटर डिलीवरी (Commuter)'), actions: [IconButton(icon: const Icon(Icons.logout), onPressed: _logout)]),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
+              child: const Text('अपनी यात्रा के रूट पर अंडे पिक करें और कमाई करें!', style: TextStyle(color: Color(0xFF166534), fontWeight: FontWeight.bold)),
+            ),
+            const SizedBox(height: 16),
+            const Text('उपलब्ध ट्रिप्स', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            ..._commuterTrips.map((trip) => Card(
+              margin: const EdgeInsets.only(bottom: 12),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text('कमीशन: ${trip['earning']}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF15803D))),
+                        Chip(label: Text(trip['crates'])),
+                      ],
+                    ),
+                    const Divider(),
+                    Text('पिकअप: ${trip['from']}'),
+                    Text('ड्रॉप: ${trip['to']}'),
+                    const SizedBox(height: 10),
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: trip['done'] ? Colors.grey : const Color(0xFFD97706),
+                          foregroundColor: Colors.white,
+                        ),
+                        onPressed: trip['done'] ? null : () {
+                          setState(() => trip['done'] = true);
+                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ट्रिप स्वीकार कर ली गई!')));
+                        },
+                        child: Text(trip['done'] ? 'स्वीकार किया जा चुका है' : 'ट्रिप स्वीकार करें'),
+                      ),
+                    )
+                  ],
                 ),
               ),
             )),
           ],
         ),
-      ),
-    );
-  }
-
-  // BUYER INTERFACE
-  Widget _buildBuyerView() {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('अंडे व चिकन बाज़ार (Buyer Feed)'),
-        actions: [
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart),
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: Text('कार्ट में कुल $cartCount आइटम हैं। चेकआउट स्क्रीन पर ले जाया जा रहा है...'),
-                  ));
-                },
+      );
+    } else {
+      return Scaffold(
+        appBar: AppBar(
+          title: const Text('ग्राहक बाज़ार (Buyer Feed)'),
+          actions: [
+            IconButton(
+              icon: Badge(
+                label: Text('$_cartCount'),
+                isLabelVisible: _cartCount > 0,
+                child: const Icon(Icons.shopping_cart),
               ),
-              if (cartCount > 0)
-                Positioned(
-                  right: 8,
-                  top: 8,
-                  child: CircleAvatar(
-                    radius: 9,
-                    backgroundColor: Colors.red,
-                    child: Text('$cartCount', style: const TextStyle(color: Colors.white, fontSize: 11, fontWeight: FontWeight.bold)),
-                  ),
-                )
-            ],
-          ),
-          _logoutButton(),
-        ],
-      ),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text('ताज़ा फार्म स्टॉक (Live Farm Batches)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-          const SizedBox(height: 12),
-          _buyerItemCard('कड़कनाथ शुद्ध देसी अंडे', 'आनंद पोल्ट्री फार्म • 2.5 किमी', '₹220 / Crate', '30 Eggs per Crate', Icons.egg),
-          _buyerItemCard('फार्म फ्रेश टेबल एग्स (White)', 'बालाजी एग्रो फार्म • 5 किमी', '₹150 / Crate', '30 Eggs per Crate', Icons.egg_alt),
-          _buyerItemCard('देसी चिकन (लाइव ब्रायलर)', 'किसान मित्र पोल्ट्री • 8 किमी', '₹135 / Kg', 'ताज़ा वजन डिलीवरी पर', Icons.scale),
-        ],
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('कार्ट में कुल $_cartCount आइटम हैं।')));
+              },
+            ),
+            IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
+          ],
+        ),
+        body: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            const Text('ताज़ा स्टॉक (Live Farm Batches)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 10),
+            _buyerCard('कड़कनाथ शुद्ध देसी अंडे', 'आनंद पोल्ट्री फार्म', '₹220/Crate', Icons.egg),
+            _buyerCard('फार्म फ्रेश टेबल एग्स (White)', 'बालाजी एग्रो फार्म', '₹150/Crate', Icons.egg_alt),
+            _buyerCard('देसी चिकन (लाइव ब्रायलर)', 'किसान मित्र पोल्ट्री', '₹135/Kg', Icons.scale),
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buyerCard(String name, String farm, String price, IconData icon) {
+    return Card(
+      margin: const EdgeInsets.only(bottom: 12),
+      child: ListTile(
+        leading: CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), child: Icon(icon, color: const Color(0xFFD97706))),
+        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
+        subtitle: Text('$farm • $price'),
+        trailing: ElevatedButton(
+          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white),
+          onPressed: () {
+            setState(() => _cartCount++);
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$name कार्ट में जोड़ा गया!'), duration: const Duration(seconds: 1)));
+          },
+          child: const Text('जोड़ें'),
+        ),
       ),
     );
   }
-
-  Widget _buyerItemCard(String title, String subtitle, String price, String desc, IconData icon) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 14),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), child: Icon(icon, color: const Color(0xFFD97706))),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 13)),
-                    ],
-                  ),
-                ),
-                Text(price, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF15803D))),
-              ],
-            ),
-            const SizedBox(height: 10),
-            Text(desc, style: const TextStyle(color: Colors.black54, fontSize: 12)),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white),
-                icon: const Icon(Icons.add_shopping_cart, size: 18),
-   
+}
