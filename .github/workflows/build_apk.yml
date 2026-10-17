@@ -29,15 +29,16 @@ jobs:
           rm -f pubspec.lock
           flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
 
-      - name: Install Dependencies
-        run: flutter pub get
-
-      - name: Patch Plugin Gradle Files Directly
+      - name: Update Kotlin Version to 2.0.21
         run: |
-          find ~/.pub-cache/hosted/pub.dev/ -name "build.gradle" -exec sed -i 's/flutter.compileSdkVersion/35/g' {} +
-          find ~/.pub-cache/hosted/pub.dev/ -name "build.gradle" -exec sed -i 's/flutter.minSdkVersion/21/g' {} +
-          find ~/.pub-cache/hosted/pub.dev/ -name "build.gradle" -exec sed -i 's/flutter.targetSdkVersion/35/g' {} +
-          sed -i 's/compileSdk = flutter.compileSdkVersion/compileSdk = 35/g' android/app/build.gradle || true
+          if [ -f "android/settings.gradle" ]; then
+            sed -i 's/id "org.jetbrains.kotlin.android" version "[^"]*"/id "org.jetbrains.kotlin.android" version "2.0.21"/g' android/settings.gradle
+          fi
+
+      - name: Pin Compatible Plugin Versions
+        run: |
+          flutter pub add geolocator:^13.0.1
+          flutter pub get
 
       - name: Build APK
         run: flutter build apk --release
