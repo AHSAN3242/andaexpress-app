@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'screens/login_screen.dart';
+import 'screens/customer_feed_screen.dart';
+import 'screens/seller_upload_screen.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Directly start the app UI so it never freezes on white or black screen
   runApp(
     const ProviderScope(
       child: AndaExpressApp(),
@@ -34,66 +35,20 @@ class AndaExpressApp extends StatelessWidget {
           centerTitle: true,
         ),
       ),
-      home: const AndaExpressHomeScreen(),
-    );
-  }
-}
-
-class AndaExpressHomeScreen extends StatefulWidget {
-  const AndaExpressHomeScreen({super.key});
-
-  @override
-  State<AndaExpressHomeScreen> createState() => _AndaExpressHomeScreenState();
-}
-
-class _AndaExpressHomeScreenState extends State<AndaExpressHomeScreen> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('AndaExpress'),
-      ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              const Icon(
-                Icons.egg_alt_outlined, 
-                size: 90, 
-                color: Color(0xFFD97706),
+      home: LoginScreen(
+        onLoginSuccess: (String phone, String role, String language) {
+          // लॉगिन सफल होने पर रोल (Buyer या Seller) के अनुसार स्क्रीन खोलें
+          runApp(
+            ProviderScope(
+              child: MaterialApp(
+                debugShowCheckedModeBanner: false,
+                home: role == 'seller'
+                    ? const SellerUploadScreen()
+                    : const CustomerFeedScreen(),
               ),
-              const SizedBox(height: 20),
-              const Text(
-                'AndaExpress',
-                style: TextStyle(
-                  fontSize: 28, 
-                  fontWeight: FontWeight.bold,
-                  color: Color(0xFF1E293B),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text(
-                'Farm-Fresh Eggs & Chicken Every Day',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 16, color: Colors.grey),
-              ),
-              const SizedBox(height: 30),
-              ElevatedButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.shopping_cart),
-                label: const Text('Start Order'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFFD97706),
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                  textStyle: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
