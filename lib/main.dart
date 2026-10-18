@@ -54,7 +54,7 @@ class _AndaRootState extends State<AndaRoot> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const Icon(Icons.egg_alt, size: 64, color: Color(0xFFF59E0B)),
+            const Icon(Icons.egg_alt, size: 64, color: Color(0xFF9F2089)),
             Text(cur[1], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
             const SizedBox(height: 20),
             Row(
@@ -76,7 +76,7 @@ class _AndaRootState extends State<AndaRoot> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF59E0B), foregroundColor: const Color(0xFF1F2937), padding: const EdgeInsets.symmetric(vertical: 14)),
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 14)),
                 onPressed: () {
                   if (!_sent) {
                     if (_phone.text.length < 10) return;
@@ -101,8 +101,8 @@ class _AndaRootState extends State<AndaRoot> {
         onTap: () => setState(() => _role = r),
         child: Container(
           padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(color: s ? const Color(0xFFFEF3C7) : Colors.white, border: Border.all(color: s ? const Color(0xFF15803D) : Colors.grey.shade300, width: s ? 2 : 1), borderRadius: BorderRadius.circular(8)),
-          child: Column(children: [Icon(ic, color: s ? const Color(0xFF15803D) : Colors.grey), Text(txt, style: TextStyle(fontWeight: s ? FontWeight.bold : FontWeight.normal))]),
+          decoration: BoxDecoration(color: s ? const Color(0xFFFDF2F8) : Colors.white, border: Border.all(color: s ? const Color(0xFF9F2089) : Colors.grey.shade300, width: s ? 2 : 1), borderRadius: BorderRadius.circular(8)),
+          child: Column(children: [Icon(ic, color: s ? const Color(0xFF9F2089) : Colors.grey), Text(txt, style: TextStyle(fontWeight: s ? FontWeight.bold : FontWeight.normal))]),
         ),
       ),
     );
@@ -137,7 +137,7 @@ class _DashScreenState extends State<DashScreen> {
             const Divider(),
             ...body,
             const SizedBox(height: 16),
-            ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFF59E0B), foregroundColor: const Color(0xFF1F2937)), onPressed: () { Navigator.pop(context); onAct(); }, child: Text(btnText, style: const TextStyle(fontWeight: FontWeight.bold))),
+            ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white), onPressed: () { Navigator.pop(context); onAct(); }, child: Text(btnText, style: const TextStyle(fontWeight: FontWeight.bold))),
           ],
         ),
       ),
@@ -176,7 +176,7 @@ class _DashScreenState extends State<DashScreen> {
             padding: const EdgeInsets.all(16),
             child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               const Text("वॉलेट बैलेंस", style: TextStyle(color: Colors.white70)),
-              const Text("₹18,450.00", style: TextStyle(color: Color(0xFFFEF08A), fontSize: 24, fontWeight: FontWeight.bold)),
+              const Text("₹18,450.00", style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
               Text("फोन: +91 ${widget.phone}", style: const TextStyle(color: Colors.white70)),
             ]),
           ),
@@ -223,7 +223,7 @@ class _DashScreenState extends State<DashScreen> {
           subtitle: Text("पिकअप: ${t['from']}\nड्रॉप: ${t['to']}\nदूरी: ${t['dist']}"),
           isThreeLine: true,
           trailing: ElevatedButton(
-            style: ElevatedButton.styleFrom(backgroundColor: t['done'] ? Colors.grey : const Color(0xFFF59E0B), foregroundColor: const Color(0xFF1F2937)),
+            style: ElevatedButton.styleFrom(backgroundColor: t['done'] ? Colors.grey : const Color(0xFF9F2089), foregroundColor: Colors.white),
             onPressed: () {
               _modal("ट्रिप विवरण", [Text("पिकअप: ${t['from']}"), Text("ड्रॉप: ${t['to']}"), Text("दूरी: ${t['dist']}"), Text("कमीशन: ${t['earn']}")], t['done'] ? "स्वीकृत" : "ट्रिप स्वीकार करें", () {
                 if (!t['done']) {
