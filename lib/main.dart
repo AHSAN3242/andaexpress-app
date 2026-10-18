@@ -353,10 +353,10 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
       'id': 'TRIP-802',
       'from': 'पाटिल पोल्ट्री फार्म, प्लॉट 14',
       'farmerName': 'रमेश पाटिल (+91 9822011223)',
-      'to': 'सेंट्रल सिटी हब, कोल्ड स्टोरेज डिपो गेट नं 2',
+      'to': 'सेंट्रल सिटी हब, गेट नं 2',
       'contactPerson': 'हब मैनेजर (+91 9422556677)',
       'distance': '12.4 किमी (लगभग 25 मिनट)',
-      'crates': '40 Crates (लगभग 1200 अंडे)',
+      'crates': '40 Crates',
       'earning': '₹480',
       'vehicle': 'टू-व्हीलर या ऑटो पिकअप',
       'done': false,
@@ -451,7 +451,7 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(lot['item'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text(lot['item'].toString(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 8),
             Text('फार्म: ${lot['farm']}', style: const TextStyle(color: Colors.grey, fontSize: 13)),
             const Divider(height: 20),
@@ -459,13 +459,13 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text('उपलब्ध स्टॉक: ${lot['quantity']}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                Text(lot['price'], style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 16)),
+                Text(lot['price'].toString(), style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 16)),
               ],
             ),
             const SizedBox(height: 8),
-            Text('ग्रेडिंग क्वालिटी: ${lot['grade']}'),
+            Text('ग्रेडिंग: ${lot['grade']}'),
             const SizedBox(height: 4),
-            Text('संग्रह का समय: ${lot['laidTime']}'),
+            Text('समय: ${lot['laidTime']}'),
             const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
@@ -494,14 +494,14 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
           children: [
             Row(
               children: [
-                CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), radius: 24, child: Icon(prod['icon'], color: const Color(0xFFD97706), size: 28)),
+                CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), radius: 24, child: Icon(prod['icon'] as IconData, color: const Color(0xFFD97706), size: 28)),
                 const SizedBox(width: 14),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(prod['name'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      Text(prod['price'], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                      Text(prod['name'].toString(), style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(prod['price'].toString(), style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
                     ],
                   ),
                 ),
@@ -518,7 +518,7 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(color: const Color(0xFFF3F4F6), borderRadius: BorderRadius.circular(8)),
-              child: Text(prod['details'], style: const TextStyle(fontSize: 13, color: Color(0xFF374151))),
+              child: Text(prod['details'].toString(), style: const TextStyle(fontSize: 13, color: Color(0xFF374151))),
             ),
             const SizedBox(height: 20),
             SizedBox(
@@ -530,4 +530,4 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
                 onPressed: () {
                   Navigator.pop(ctx);
                   setState(() => _cartCount++);
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${prod['name']} का ऑर्डर तैयार है! 
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ऑर्डर तैयार है! क
