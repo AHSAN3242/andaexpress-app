@@ -99,7 +99,7 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
       return;
     }
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(milliseconds: 400), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       setState(() {
         _isLoading = false;
         _isOtpSent = true;
@@ -110,7 +110,7 @@ class _CompleteLoginFlowScreenState extends State<CompleteLoginFlowScreen> {
 
   void _loginSuccess() {
     setState(() => _isLoading = true);
-    Future.delayed(const Duration(milliseconds: 400), () {
+    Future.delayed(const Duration(milliseconds: 300), () {
       setState(() => _isLoading = false);
       Navigator.pushReplacement(
         context,
@@ -275,19 +275,130 @@ class RoleDashboardScreen extends StatefulWidget {
   State<RoleDashboardScreen> createState() => _RoleDashboardScreenState();
 }
 
-class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
-  final List<Map<String, dynamic>> _sellerListings = [
-    {'item': 'देसी ताज़ा अंडे (Desi Eggs)', 'quantity': '20 Crates', 'price': '₹190/Crate'},
-    {'item': 'ब्रायलर अंडे (Farm Fresh)', 'quantity': '50 Crates', 'price': '₹155/Crate'},
-  ];
-
+class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTickerProviderStateMixin {
+  late TabController _sellerTabController;
   int _cartCount = 0;
 
-  final List<Map<String, dynamic>> _commuterTrips = [
-    {'from': 'पाटिल पोल्ट्री फार्म', 'to': 'सेंट्रल सिटी हब', 'crates': '40 Crates', 'earning': '₹480', 'done': false},
-    {'from': 'ग्रीन वैली फार्म', 'to': 'लोकल मार्केट डिपो', 'crates': '25 Crates', 'earning': '₹320', 'done': false},
+  // Active listings
+  final List<Map<String, dynamic>> _sellerListings = [
+    {
+      'item': 'देसी ताज़ा अंडे (Desi Eggs)',
+      'quantity': '20 Crates (600 Eggs)',
+      'price': '₹190/Crate',
+      'grade': 'A+ ग्रेड (55-60g)',
+      'laidTime': 'आज सुबह 5:30 AM',
+      'farm': 'पाटिल पोल्ट्री फार्म, प्लॉट 14',
+    },
+    {
+      'item': 'ब्रायलर अंडे (Farm Fresh)',
+      'quantity': '50 Crates (1500 Eggs)',
+      'price': '₹155/Crate',
+      'grade': 'स्टैंडर्ड टेबल एग्स',
+      'laidTime': 'कल शाम 6:00 PM',
+      'farm': 'पाटिल पोल्ट्री फार्म, प्लॉट 14',
+    },
   ];
 
+  // Buyer Demands for Seller
+  final List<Map<String, dynamic>> _buyerDemands = [
+    {
+      'buyerName': 'शाही बेकर्स प्राइवेट लिमिटेड',
+      'location': 'सेंट्रल मार्केट (दूरी 6 किमी)',
+      'requirement': 'ताज़ा व्हाइट अंडे - 100 Crates',
+      'targetRate': '₹152/Crate',
+      'frequency': 'रोज़ाना सुबह डिलीवरी चाहिए',
+    },
+    {
+      'buyerName': 'होटल ग्रीन पार्क & रेस्टोरेंट',
+      'location': 'हाइवे जंक्शन (दूरी 3.5 किमी)',
+      'requirement': 'देसी चिकन (लाइव ब्रायलर) - 80 Kg',
+      'targetRate': '₹140/Kg',
+      'frequency': 'हफ़्ते में 3 दिन',
+    },
+  ];
+
+  // Buyer Live Products
+  final List<Map<String, dynamic>> _buyerProducts = [
+    {
+      'name': 'कड़कनाथ शुद्ध देसी अंडे',
+      'price': '₹220/Crate',
+      'farmName': 'आनंद पोल्ट्री फार्म',
+      'farmer': 'आनंदराव देशमुख (प्रगतिशील किसान)',
+      'location': 'पारस फाटा रोड (2.5 किमी दूर)',
+      'stock': '35 Crates उपलब्ध',
+      'details': '100% प्रोटीन व शुद्धता की गारंटी। पानी पर तैरने (Float-Test) की ताज़गी गारंटी।',
+      'icon': Icons.egg,
+    },
+    {
+      'name': 'फार्म फ्रेश टेबल एग्स (White)',
+      'price': '₹150/Crate',
+      'farmName': 'बालाजी एग्रो पोल्ट्री',
+      'farmer': 'सुरेश पाटिल',
+      'location': 'इंडस्ट्रियल एस्टेट के पास (5 किमी दूर)',
+      'stock': '120 Crates उपलब्ध',
+      'details': 'स्वच्छ और सैनिटाइज्ड क्रेट्स। रोजमर्रा के उपयोग और रिटेल दुकानों के लिए उपयुक्त।',
+      'icon': Icons.egg_alt,
+    },
+    {
+      'name': 'देसी चिकन (लाइव फार्म ब्रायलर)',
+      'price': '₹135/Kg',
+      'farmName': 'किसान मित्र फार्म',
+      'farmer': 'विकास शिंदे',
+      'location': 'अकोला बायपास (8 किमी दूर)',
+      'stock': '250 पंछी (औसत वजन 1.8-2.2 Kg)',
+      'details': 'स्वस्थ और प्राकृतिक दानों पर पले चिकन। ऑन-डिमांड लाइव वजन पर डिलीवरी।',
+      'icon': Icons.scale,
+    },
+  ];
+
+  // Commuter Detailed Trips
+  final List<Map<String, dynamic>> _commuterTrips = [
+    {
+      'id': 'TRIP-802',
+      'from': 'पाटिल पोल्ट्री फार्म, प्लॉट 14',
+      'farmerName': 'रमेश पाटिल (+91 9822011223)',
+      'to': 'सेंट्रल सिटी हब, कोल्ड स्टोरेज डिपो गेट नं 2',
+      'contactPerson': 'हब मैनेजर (+91 9422556677)',
+      'distance': '12.4 किमी (लगभग 25 मिनट)',
+      'crates': '40 Crates (लगभग 1200 अंडे)',
+      'earning': '₹480',
+      'vehicle': 'टू-व्हीलर या ऑटो पिकअप',
+      'done': false,
+    },
+    {
+      'id': 'TRIP-805',
+      'from': 'ग्रीन वैली फार्म, गेट नं 1',
+      'farmerName': 'दिनेश गायकवाड़ (+91 9766112233)',
+      'to': 'लोकल होलसेल एग मार्केट, दुकान नं 18',
+      'contactPerson': 'दुकानदार (+91 9988776655)',
+      'distance': '7.8 किमी (लगभग 15 मिनट)',
+      'crates': '25 Crates',
+      'earning': '₹320',
+      'vehicle': 'टू-व्हीलर उपयुक्त',
+      'done': false,
+    },
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _sellerTabController = TabController(length: 2, vsync: this);
+  }
+
+  @override
+  void dispose() {
+    _sellerTabController.dispose();
+    super.dispose();
+  }
+
+  void _logout() {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => const CompleteLoginFlowScreen()),
+    );
+  }
+
+  // --- SELLER BOTTOM SHEET MODALS ---
   void _showAddBatchDialog() {
     final itemCtl = TextEditingController(text: 'देसी पोल्ट्री अंडे');
     final qtyCtl = TextEditingController(text: '15');
@@ -303,11 +414,11 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text('नई खेप लिस्ट करें', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const Text('नई खेप लिस्ट करें (Add Lot)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            TextField(controller: itemCtl, decoration: const InputDecoration(labelText: 'उत्पाद का प्रकार', border: OutlineInputBorder())),
+            TextField(controller: itemCtl, decoration: const InputDecoration(labelText: 'उत्पाद का प्रकार (Product Type)', border: OutlineInputBorder())),
             const SizedBox(height: 10),
-            TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'मात्रा (Crates)', border: OutlineInputBorder())),
+            TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'मात्रा (Crates की संख्या)', border: OutlineInputBorder())),
             const SizedBox(height: 10),
             TextField(controller: priceCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'रेट प्रति Crate (₹)', border: OutlineInputBorder())),
             const SizedBox(height: 14),
@@ -319,12 +430,15 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
                     'item': itemCtl.text.trim(),
                     'quantity': '${qtyCtl.text.trim()} Crates',
                     'price': '₹${priceCtl.text.trim()}/Crate',
+                    'grade': 'A ग्रेड फ्रेश',
+                    'laidTime': 'अभी-अभी पोस्ट किया',
+                    'farm': 'आपका पोल्ट्री फार्म',
                   });
                 });
                 Navigator.pop(ctx);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('खेप सफलतापूर्वक जोड़ी गई!')));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('नई खेप सफलतापूर्वक लाइव हो गई!')));
               },
-              child: const Text('सबमिट करें'),
+              child: const Text('खेप पोस्ट करें'),
             )
           ],
         ),
@@ -332,162 +446,90 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> {
     );
   }
 
-  void _logout() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const CompleteLoginFlowScreen()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (widget.role == 'seller') {
-      return Scaffold(
-        appBar: AppBar(title: const Text('सेलर डैशबोर्ड (Seller)'), actions: [IconButton(icon: const Icon(Icons.logout), onPressed: _logout)]),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
+  void _showListingDetail(Map<String, dynamic> lot) {
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(color: const Color(0xFFD97706), borderRadius: BorderRadius.circular(12)),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text('उपलब्ध वॉलेट बैलेंस', style: TextStyle(color: Colors.white70, fontSize: 13)),
-                  const SizedBox(height: 4),
-                  const Text('₹18,450.00', style: TextStyle(color: Colors.white, fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 8),
-                  Text('मोबाइल: +91 ${widget.phone}', style: const TextStyle(color: Colors.white, fontSize: 12)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
+            Text(lot['item'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 8),
+            Text('फार्म: ${lot['farm']}', style: const TextStyle(color: Colors.grey, fontSize: 13)),
+            const Divider(height: 20),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('सक्रिय खेप (Listings)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ElevatedButton.icon(
-                  onPressed: _showAddBatchDialog,
-                  icon: const Icon(Icons.add, size: 16),
-                  label: const Text('नई खेप'),
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
-                )
+                Text('उपलब्ध स्टॉक: ${lot['quantity']}', style: const TextStyle(fontWeight: FontWeight.w600)),
+                Text(lot['price'], style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 16)),
               ],
             ),
-            const SizedBox(height: 10),
-            ..._sellerListings.map((lot) => Card(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: ListTile(
-                leading: const Icon(Icons.egg, color: Color(0xFFD97706), size: 36),
-                title: Text(lot['item'], style: const TextStyle(fontWeight: FontWeight.bold)),
-                subtitle: Text('${lot['quantity']} • ${lot['price']}'),
-                trailing: const Chip(label: Text('सक्रिय', style: TextStyle(fontSize: 11, color: Colors.green))),
+            const SizedBox(height: 8),
+            Text('ग्रेडिंग क्वालिटी: ${lot['grade']}'),
+            const SizedBox(height: 4),
+            Text('संग्रह का समय: ${lot['laidTime']}'),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                icon: const Icon(Icons.edit),
+                label: const Text('रेट या मात्रा बदलें (Edit Listing)'),
+                onPressed: () => Navigator.pop(ctx),
               ),
-            )),
-          ],
-        ),
-      );
-    } else if (widget.role == 'commuter') {
-      return Scaffold(
-        appBar: AppBar(title: const Text('कम्यूटर डिलीवरी (Commuter)'), actions: [IconButton(icon: const Icon(Icons.logout), onPressed: _logout)]),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
-              child: const Text('अपनी यात्रा के रूट पर अंडे पिक करें और कमाई करें!', style: TextStyle(color: Color(0xFF166534), fontWeight: FontWeight.bold)),
             ),
-            const SizedBox(height: 16),
-            const Text('उपलब्ध ट्रिप्स', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            ..._commuterTrips.map((trip) => Card(
-              margin: const EdgeInsets.only(bottom: 12),
-              child: Padding(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('कमीशन: ${trip['earning']}', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF15803D))),
-                        Chip(label: Text(trip['crates'])),
-                      ],
-                    ),
-                    const Divider(),
-                    Text('पिकअप: ${trip['from']}'),
-                    Text('ड्रॉप: ${trip['to']}'),
-                    const SizedBox(height: 10),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: trip['done'] ? Colors.grey : const Color(0xFFD97706),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: trip['done'] ? null : () {
-                          setState(() => trip['done'] = true);
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('ट्रिप स्वीकार कर ली गई!')));
-                        },
-                        child: Text(trip['done'] ? 'स्वीकार किया जा चुका है' : 'ट्रिप स्वीकार करें'),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-            )),
           ],
-        ),
-      );
-    } else {
-      return Scaffold(
-        appBar: AppBar(
-          title: const Text('ग्राहक बाज़ार (Buyer Feed)'),
-          actions: [
-            IconButton(
-              icon: Badge(
-                label: Text('$_cartCount'),
-                isLabelVisible: _cartCount > 0,
-                child: const Icon(Icons.shopping_cart),
-              ),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('कार्ट में कुल $_cartCount आइटम हैं।')));
-              },
-            ),
-            IconButton(icon: const Icon(Icons.logout), onPressed: _logout),
-          ],
-        ),
-        body: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            const Text('ताज़ा स्टॉक (Live Farm Batches)', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 10),
-            _buyerCard('कड़कनाथ शुद्ध देसी अंडे', 'आनंद पोल्ट्री फार्म', '₹220/Crate', Icons.egg),
-            _buyerCard('फार्म फ्रेश टेबल एग्स (White)', 'बालाजी एग्रो फार्म', '₹150/Crate', Icons.egg_alt),
-            _buyerCard('देसी चिकन (लाइव ब्रायलर)', 'किसान मित्र पोल्ट्री', '₹135/Kg', Icons.scale),
-          ],
-        ),
-      );
-    }
-  }
-
-  Widget _buyerCard(String name, String farm, String price, IconData icon) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), child: Icon(icon, color: const Color(0xFFD97706))),
-        title: Text(name, style: const TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text('$farm • $price'),
-        trailing: ElevatedButton(
-          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white),
-          onPressed: () {
-            setState(() => _cartCount++);
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('$name कार्ट में जोड़ा गया!'), duration: const Duration(seconds: 1)));
-          },
-          child: const Text('जोड़ें'),
         ),
       ),
     );
   }
-}
+
+  // --- BUYER PRODUCT DETAIL MODAL ---
+  void _showBuyerProductDetail(Map<String, dynamic> prod) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                CircleAvatar(backgroundColor: const Color(0xFFFEF3C7), radius: 24, child: Icon(prod['icon'], color: const Color(0xFFD97706), size: 28)),
+                const SizedBox(width: 14),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(prod['name'], style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                      Text(prod['price'], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const Divider(height: 24),
+            const Text('पोल्ट्री फार्म का विवरण (Farmer & Farm Info):', style: TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text('🏡 फार्म का नाम: ${prod['farmName']}'),
+            Text('👨‍🌾 किसान: ${prod['farmer']}'),
+            Text('📍 स्थान/दूरी: ${prod['location']}'),
+            Text('📦 उपलब्ध मात्रा: ${prod['stock']}'),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(color: const Color(0xFFF3F4F6), borderRadius: BorderRadius.circular(8)),
+              child: Text(prod['details'], style: const TextStyle(fontSize: 13, color: Color(0xFF374151))),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+                icon: const Icon(Icons.shopping_cart_checkout),
+                label: const Text('अभी ऑ
