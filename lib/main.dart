@@ -279,7 +279,6 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
   late TabController _sellerTabController;
   int _cartCount = 0;
 
-  // Active listings
   final List<Map<String, dynamic>> _sellerListings = [
     {
       'item': 'देसी ताज़ा अंडे (Desi Eggs)',
@@ -299,7 +298,6 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
     },
   ];
 
-  // Buyer Demands for Seller
   final List<Map<String, dynamic>> _buyerDemands = [
     {
       'buyerName': 'शाही बेकर्स प्राइवेट लिमिटेड',
@@ -317,7 +315,6 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
     },
   ];
 
-  // Buyer Live Products
   final List<Map<String, dynamic>> _buyerProducts = [
     {
       'name': 'कड़कनाथ शुद्ध देसी अंडे',
@@ -351,7 +348,6 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
     },
   ];
 
-  // Commuter Detailed Trips
   final List<Map<String, dynamic>> _commuterTrips = [
     {
       'id': 'TRIP-802',
@@ -398,7 +394,6 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
     );
   }
 
-  // --- SELLER BOTTOM SHEET MODALS ---
   void _showAddBatchDialog() {
     final itemCtl = TextEditingController(text: 'देसी पोल्ट्री अंडे');
     final qtyCtl = TextEditingController(text: '15');
@@ -416,7 +411,7 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
           children: [
             const Text('नई खेप लिस्ट करें (Add Lot)', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
-            TextField(controller: itemCtl, decoration: const InputDecoration(labelText: 'उत्पाद का प्रकार (Product Type)', border: OutlineInputBorder())),
+            TextField(controller: itemCtl, decoration: const InputDecoration(labelText: 'उत्पाद का प्रकार', border: OutlineInputBorder())),
             const SizedBox(height: 10),
             TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: 'मात्रा (Crates की संख्या)', border: OutlineInputBorder())),
             const SizedBox(height: 10),
@@ -476,7 +471,7 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
               width: double.infinity,
               child: OutlinedButton.icon(
                 icon: const Icon(Icons.edit),
-                label: const Text('रेट या मात्रा बदलें (Edit Listing)'),
+                label: const Text('रेट या मात्रा बदलें'),
                 onPressed: () => Navigator.pop(ctx),
               ),
             ),
@@ -486,7 +481,6 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
     );
   }
 
-  // --- BUYER PRODUCT DETAIL MODAL ---
   void _showBuyerProductDetail(Map<String, dynamic> prod) {
     showModalBottomSheet(
       context: context,
@@ -514,12 +508,12 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
               ],
             ),
             const Divider(height: 24),
-            const Text('पोल्ट्री फार्म का विवरण (Farmer & Farm Info):', style: TextStyle(fontWeight: FontWeight.bold)),
+            const Text('पोल्ट्री फार्म का विवरण:', style: TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 6),
-            Text('🏡 फार्म का नाम: ${prod['farmName']}'),
-            Text('👨‍🌾 किसान: ${prod['farmer']}'),
-            Text('📍 स्थान/दूरी: ${prod['location']}'),
-            Text('📦 उपलब्ध मात्रा: ${prod['stock']}'),
+            Text('फार्म का नाम: ${prod['farmName']}'),
+            Text('किसान: ${prod['farmer']}'),
+            Text('स्थान/दूरी: ${prod['location']}'),
+            Text('उपलब्ध मात्रा: ${prod['stock']}'),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(10),
@@ -532,4 +526,8 @@ class _RoleDashboardScreenState extends State<RoleDashboardScreen> with SingleTi
               child: ElevatedButton.icon(
                 style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFD97706), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
                 icon: const Icon(Icons.shopping_cart_checkout),
-                label: const Text('अभी ऑ
+                label: const Text('अभी ऑर्डर करें'),
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  setState(() => _cartCount++);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('${prod['name']} का ऑर्डर तैयार है! 
