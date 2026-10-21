@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(const MaterialApp(
-    title: "AndaExpress",
+    title: "Anda Express",
     debugShowCheckedModeBanner: false,
     home: AndaRoot(),
   ));
@@ -16,13 +16,13 @@ class AndaRoot extends StatefulWidget {
 }
 
 class _AndaRootState extends State<AndaRoot> {
-  String _lang = "hi", _role = "seller";
+  String _lang = "hi", _role = "buyer";
   final _phone = TextEditingController(), _otp = TextEditingController();
   bool _sent = false;
 
   final Map<String, List<String>> _t = {
     "hi": ["अंडा एक्सप्रेस", "खेत से ताज़ा अंडे और चिकन", "खरीदार", "किसान", "डिलीवरी", "10 अंकों का फोन नंबर", "ओटीपी प्राप्त करें", "लॉगिन करें"],
-    "en": ["AndaExpress", "Farm Fresh Eggs & Chicken", "Buyer", "Seller", "Commuter", "10-digit Phone", "Get OTP", "Login"],
+    "en": ["Anda Express", "Farm Fresh Eggs & Chicken", "Buyer", "Seller", "Commuter", "10-digit Phone", "Get OTP", "Login"],
     "mr": ["अंडा एक्सप्रेस", "ताजी अंडी आणि चिकन", "ग्राहक", "शेतकरी", "डिलिव्हरी", "10 अंकी फोन नंबर", "ओटीपी मिळवा", "लॉगिन करा"],
   };
 
@@ -117,7 +117,7 @@ class _AndaRootState extends State<AndaRoot> {
         child: Container(
           padding: const EdgeInsets.all(10),
           decoration: BoxDecoration(color: s ? const Color(0xFFFDF2F8) : Colors.white, border: Border.all(color: s ? const Color(0xFF9F2089) : Colors.grey.shade300, width: s ? 2 : 1), borderRadius: BorderRadius.circular(8)),
-          child: Column(children: [Icon(ic, color: s ? const Color(0xFF9F2089) : Colors.grey), Text(txt, style: TextStyle(fontWeight: s ? FontWeight.bold : FontWeight.normal))]),
+          child: Column(children: [Icon(ic, color: s ? const Color(0xFF9F2089) : Colors.grey), const SizedBox(height: 4), Text(txt, style: TextStyle(fontWeight: s ? FontWeight.bold : FontWeight.normal))]),
         ),
       ),
     );
@@ -133,10 +133,39 @@ class DashScreen extends StatefulWidget {
 
 class _DashScreenState extends State<DashScreen> {
   int _cart = 0;
+  String _selectedCategory = "अंडे";
+  String _selectedEggSub = "सभी";
 
-  final List<Map<String, String>> _listings = [
-    {"item": "देसी ताज़ा अंडे", "qty": "20 Crates", "price": "₹190/Crate", "farm": "पाटिल फार्म (प्लॉट 14)", "grade": "Grade A+ ताज़ा"},
-    {"item": "ब्रायलर फार्म फ्रेश", "qty": "50 Crates", "price": "₹155/Crate", "farm": "पाटिल फार्म (प्लॉट 14)", "grade": "Standard Table"},
+  final List<Map<String, dynamic>> _mainCategories = [
+    {"name": "अंडे", "icon": "🥚"},
+    {"name": "देसी चिकन", "icon": "🐔"},
+    {"name": "बतख", "icon": "🦆"},
+    {"name": "बटेर", "icon": "🐦"},
+    {"name": "ईमू", "icon": "🦤"},
+  ];
+
+  final List<String> _eggSubCategories = [
+    "सभी",
+    "देसी अंडे",
+    "कड़कनाथ अंडे",
+    "टेबल एग्स",
+    "बतख के अंडे",
+    "बटेर अंडे",
+    "ईमू अंडे"
+  ];
+
+  final List<Map<String, String>> _allProducts = [
+    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे", "qty": "30 Crates", "price": "₹190/Crate", "farm": "कृष्णा फार्म (2.1 किमी)", "grade": "खेत से ताज़ा"},
+    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे", "qty": "20 Crates", "price": "₹240/Crate", "farm": "आनंद पोल्ट्री (3.5 किमी)", "grade": "High Protein A+"},
+    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "qty": "100 Crates", "price": "₹155/Crate", "farm": "पाटिल पोल्ट्री हब (5 किमी)", "grade": "Commercial Fresh"},
+    {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख (Duck) अंडे", "qty": "15 Crates", "price": "₹210/Crate", "farm": "रिवरसाइड डक फार्म (7 किमी)", "grade": "Large Size"},
+    {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "qty": "40 Crates", "price": "₹120/Crate", "farm": "ग्रीन वैली पोल्ट्री (4 किमी)", "grade": "Nutrient Rich"},
+    {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू (Emu) जंबो अंडे", "qty": "8 Pieces", "price": "₹450/Piece", "farm": "महावीर ईमू फार्म (12 किमी)", "grade": "Giant Green Shell"},
+    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी फ्री-रेंज चिकन", "qty": "50 Birds", "price": "₹280/किग्रा", "farm": "बालाजी फार्म (6 किमी)", "grade": "Natural Fed"},
+    {"cat": "देसी चिकन", "sub": "कड़कनाथ", "item": "कड़कनाथ प्योर ब्लैक चिकन", "qty": "25 Birds", "price": "₹650/किग्रा", "farm": "आनंद पोल्ट्री (3.5 किमी)", "grade": "Pure Aseel Bloodline"},
+    {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख लाइव", "qty": "30 Birds", "price": "₹320/किग्रा", "farm": "रिवरसाइड फार्म (7 किमी)", "grade": "Farm Raised"},
+    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (Quail)", "qty": "120 Birds", "price": "₹65/Bird", "farm": "ग्रीन वैली (4 किमी)", "grade": "Healthy Weight"},
+    {"cat": "ईमू", "sub": "ईमू", "item": "वयस्क ईमू जोड़ी", "qty": "4 Pairs", "price": "₹8,500/Pair", "farm": "महावीर फार्म (12 किमी)", "grade": "Breeding Quality"},
   ];
 
   final List<Map<String, dynamic>> _trips = [
@@ -166,36 +195,12 @@ class _DashScreenState extends State<DashScreen> {
     );
   }
 
-  void _addBatchDialog() {
-    final itemCtl = TextEditingController(text: "देसी पोल्ट्री अंडे");
-    final qtyCtl = TextEditingController(text: "15");
-    final rateCtl = TextEditingController(text: "185");
-    _modal("नई खेप लिस्ट करें (Add Lot)", [
-      TextField(controller: itemCtl, decoration: const InputDecoration(labelText: "उत्पाद का प्रकार", border: OutlineInputBorder())),
-      const SizedBox(height: 10),
-      TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "मात्रा (Crates की संख्या)", border: OutlineInputBorder())),
-      const SizedBox(height: 10),
-      TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "रेट प्रति Crate (₹)", border: OutlineInputBorder())),
-    ], "खेप तुरंत लाइव करें", () {
-      setState(() {
-        _listings.insert(0, {
-          "item": itemCtl.text.trim(),
-          "qty": "${qtyCtl.text.trim()} Crates",
-          "price": "₹${rateCtl.text.trim()}/Crate",
-          "farm": "मेरा फार्म (+91 ${widget.phone})",
-          "grade": "Grade A+ ताज़ा",
-        });
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("नई खेप सफलतापूर्वक जुड़ गई!")));
-    });
-  }
-
   void _showCheckout() {
-    _modal("ऑर्डर चेकआउट (Order Bill)", [
-      Text("कुल चुने गए आइटम: $_cart लॉट", style: const TextStyle(fontWeight: FontWeight.bold)),
+    _modal("ऑर्डर चेकआउट (Order Summary)", [
+      Text("कुल आइटम: $_cart लॉट", style: const TextStyle(fontWeight: FontWeight.bold)),
       const SizedBox(height: 8),
       const Text("डिलीवरी: सीधा आपके पते पर (एक्सप्रेस कम्यूटर)"),
-      const Text("भुगतान का तरीका: कैश ऑन डिलीवरी (COD) / UPI"),
+      const Text("भुगतान: कैश ऑन डिलीवरी (COD) / UPI"),
       const Divider(),
       const Text("अनुमानित कुल राशि: ₹1,900.00", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
     ], "ऑर्डर कन्फर्म करें", () {
@@ -206,7 +211,7 @@ class _DashScreenState extends State<DashScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String heading = widget.role == "seller" ? "सेलर डैशबोर्ड" : (widget.role == "commuter" ? "कम्यूटर डिलीवरी" : "ग्राहक बाज़ार");
+    String heading = widget.role == "seller" ? "सेलर डैशबोर्ड" : (widget.role == "commuter" ? "कम्यूटर डिलीवरी" : "ग्राहक बाज़ार (Anda Express)");
     return PopScope(
       canPop: true,
       child: Scaffold(
@@ -226,6 +231,169 @@ class _DashScreenState extends State<DashScreen> {
     );
   }
 
+  Widget _buildBuyer() {
+    final filtered = _allProducts.where((p) {
+      if (p["cat"] != _selectedCategory) return false;
+      if (_selectedCategory == "अंडे" && _selectedEggSub != "सभी") {
+        return p["sub"] == _selectedEggSub;
+      }
+      return true;
+    }).toList();
+
+    return Column(
+      children: [
+        // 1. Amazon/Flipkart स्टाइल मुख्य कैटेगरी मेनू (Top Category Bar)
+        Container(
+          color: Colors.grey.shade100,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: SizedBox(
+            height: 75,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              itemCount: _mainCategories.length,
+              itemBuilder: (context, i) {
+                final cat = _mainCategories[i];
+                final isSel = _selectedCategory == cat["name"];
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _selectedCategory = cat["name"] as String;
+                      _selectedEggSub = "सभी";
+                    });
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 8),
+                    child: Column(
+                      children: [
+                        Container(
+                          width: 48,
+                          height: 48,
+                          decoration: BoxDecoration(
+                            color: isSel ? const Color(0xFF15803D) : Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: isSel ? const Color(0xFF15803D) : Colors.grey.shade300, width: 2),
+                            boxShadow: [
+                              BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 4, offset: const Offset(0, 2)),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(cat["icon"] as String, style: const TextStyle(fontSize: 22)),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          cat["name"] as String,
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: isSel ? FontWeight.bold : FontWeight.w500,
+                            color: isSel ? const Color(0xFF15803D) : Colors.black87,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+
+        // 2. सब-मेन्यू (अंडे सेलेक्ट होने पर दिखने वाली गोल पट्टियाँ)
+        if (_selectedCategory == "अंडे")
+          Container(
+            height: 45,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              border: Border(bottom: BorderSide(color: Colors.grey.shade200)),
+            ),
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              itemCount: _eggSubCategories.length,
+              itemBuilder: (context, i) {
+                final sub = _eggSubCategories[i];
+                final isSubSel = _selectedEggSub == sub;
+                return GestureDetector(
+                  onTap: () => setState(() => _selectedEggSub = sub),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isSubSel ? const Color(0xFFFEF3C7) : Colors.grey.shade100,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: isSubSel ? const Color(0xFFF59E0B) : Colors.transparent),
+                    ),
+                    child: Center(
+                      child: Text(
+                        sub,
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: isSubSel ? FontWeight.bold : FontWeight.normal,
+                          color: isSubSel ? const Color(0xFFB45309) : Colors.black87,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+
+        // 3. प्रोडक्ट्स की लिस्ट
+        Expanded(
+          child: filtered.isEmpty
+              ? const Center(child: Text("इस कैटेगरी में अभी कोई माल उपलब्ध नहीं है।"))
+              : ListView.builder(
+                  padding: const EdgeInsets.all(12),
+                  itemCount: filtered.length,
+                  itemBuilder: (context, i) {
+                    final item = filtered[i];
+                    return Card(
+                      elevation: 2,
+                      margin: const EdgeInsets.only(bottom: 12),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      child: ListTile(
+                        leading: CircleAvatar(
+                          backgroundColor: const Color(0xFFFFFBEB),
+                          child: Text(
+                            item["cat"] == "अंडे" ? "🥚" : (item["cat"] == "देसी चिकन" ? "🐔" : (item["cat"] == "बतख" ? "🦆" : (item["cat"] == "बटेर" ? "🐦" : "🦤"))),
+                            style: const TextStyle(fontSize: 20),
+                          ),
+                        ),
+                        title: Text(item["item"]!, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                        subtitle: Text("${item['farm']}\nउपलब्ध: ${item['qty']} • ${item['grade']}", style: const TextStyle(fontSize: 12)),
+                        isThreeLine: true,
+                        trailing: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(item["price"]!, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 14)),
+                            const SizedBox(height: 4),
+                            ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF9F2089),
+                                foregroundColor: Colors.white,
+                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                minimumSize: const Size(50, 26),
+                              ),
+                              onPressed: () {
+                                setState(() => _cart++);
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("${item['item']} कार्ट में जोड़ा गया!"), duration: const Duration(seconds: 1)));
+                              },
+                              child: const Text("खरीदें", style: TextStyle(fontSize: 11)),
+                            )
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+        ),
+      ],
+    );
+  }
+
   Widget _buildSeller() {
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -242,47 +410,19 @@ class _DashScreenState extends State<DashScreen> {
           ),
         ),
         const SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text("सक्रिय खेप:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            ElevatedButton.icon(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white),
-              icon: const Icon(Icons.add, size: 16),
-              label: const Text("नई खेप"),
-              onPressed: _addBatchDialog,
-            )
-          ],
-        ),
+        const Text("सक्रिय खेप लिस्टिंग:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         const SizedBox(height: 8),
-        ..._listings.map((l) => _cardTile(l["item"]!, "${l['qty']} • ${l['price']}\n${l['farm']}", () {
-          _modal(l["item"]!, [Text("फार्म: ${l['farm']}"), Text("मात्रा: ${l['qty']}"), Text("रेट: ${l['price']}"), Text("ग्रेड: ${l['grade']}")], "रेट या स्टॉक अपडेट करें", () {});
-        })),
+        Card(
+          child: ListTile(
+            leading: const Text("🥚", style: TextStyle(fontSize: 24)),
+            title: const Text("देसी पोल्ट्री अंडे", style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: const Text("20 Crates • ₹190/Crate\nमेरा फार्म"),
+            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
+          ),
+        ),
       ],
     );
   }
-
-  Widget _buildBuyer() {
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        const Text("फार्म उत्पाद (विवरण हेतु टैप करें):", style: TextStyle(fontWeight: FontWeight.bold)),
-        _cardTile("कड़कनाथ शुद्ध अंडे", "आनंद पोल्ट्री • ₹220/Crate\nपारस रोड (2.5 किमी)", () {
-          _modal("कड़कनाथ अंडे", [const Text("फार्म: आनंद पोल्ट्री फार्म"), const Text("स्थान: पारस रोड (2.5 किमी)"), const Text("स्टॉक: 35 Crates उपलब्ध"), const Text("गारंटी: 100% Float-Test ताज़ा")], "कार्ट में जोड़ें और बिल देखें", () {
-            setState(() => _cart++);
-            _showCheckout();
-          });
-        }),
-        _cardTile("फार्म फ्रेश टेबल एग्स", "बालाजी पोल्ट्री • ₹150/Crate\nMIDC एरिया (5 किमी)", () {
-          _modal("टेबल एग्स", [const Text("फार्म: बालाजी पोल्ट्री"), const Text("स्टॉक: 120 Crates"), const Text("रेट: ₹150/Crate")], "कार्ट में जोड़ें और बिल देखें", () {
-            setState(() => _cart++);
-            _showCheckout();
-          });
-        }),
-      ],
-    );
-  }
-
   Widget _buildCommuter() {
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -294,21 +434,13 @@ class _DashScreenState extends State<DashScreen> {
           trailing: ElevatedButton(
             style: ElevatedButton.styleFrom(backgroundColor: t['done'] ? Colors.grey : const Color(0xFF9F2089), foregroundColor: Colors.white),
             onPressed: () {
-              _modal("ट्रिप विवरण", [Text("पिकअप: ${t['from']}"), Text("ड्रॉप: ${t['to']}"), Text("दूरी: ${t['dist']}"), Text("कमीशन: ${t['earn']}")], t['done'] ? "स्वीकृत" : "ट्रिप स्वीकार करें", () {
-                if (!t['done']) {
-                  setState(() => t['done'] = true);
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("ट्रिप स्वीकार कर ली गई")));
-                }
-              });
+              setState(() => t['done'] = true);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("ट्रिप स्वीकार कर ली गई")));
             },
-            child: Text(t['done'] ? "स्वीकृत" : "विवरण", style: const TextStyle(fontWeight: FontWeight.bold)),
+            child: Text(t['done'] ? "स्वीकृत" : "स्वीकार करें", style: const TextStyle(fontWeight: FontWeight.bold)),
           ),
         ),
       )).toList(),
     );
-  }
-
-  Widget _cardTile(String t, String sub, VoidCallback onTap) {
-    return Card(child: ListTile(title: Text(t, style: const TextStyle(fontWeight: FontWeight.bold)), subtitle: Text(sub), trailing: const Icon(Icons.arrow_forward_ios, size: 14), onTap: onTap));
   }
 }
