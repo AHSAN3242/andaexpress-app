@@ -689,7 +689,7 @@ class _DashScreenState extends State<DashScreen> {
                             } else {
                               ord["status"] = "delivered";
                               AppState.sellerWallet += (ord["amount"] as double);
-                              AppState.escrowHold -= (ord["amount"] as double + ord["deliveryFee"] as double);
+                                                            AppState.escrowHold -= ((ord["amount"] as double) + (ord["deliveryFee"] as double));
                               ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("डिलीवरी सफल! किसान के खाते में एस्क्रो रिलीज़ हो गया।")));
                             }
                           });
