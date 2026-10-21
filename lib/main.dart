@@ -54,7 +54,22 @@ class _AndaRootState extends State<AndaRoot> {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            const Icon(Icons.egg_alt, size: 64, color: Color(0xFF9F2089)),
+            Container(
+              width: 90,
+              height: 90,
+              decoration: BoxDecoration(
+                color: const Color(0xFFFFFBEB),
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 10, spreadRadius: 2),
+                ],
+                border: Border.all(color: const Color(0xFFFEF3C7), width: 3),
+              ),
+              child: const Center(
+                child: Icon(Icons.egg_alt, size: 54, color: Color(0xFFF59E0B)),
+              ),
+            ),
+            const SizedBox(height: 12),
             Text(cur[1], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
             const SizedBox(height: 20),
             Row(
@@ -118,7 +133,6 @@ class DashScreen extends StatefulWidget {
 
 class _DashScreenState extends State<DashScreen> {
   int _cart = 0;
-  List<Map<String, String>> _cartItems = [];
 
   final List<Map<String, String>> _listings = [
     {"item": "देसी ताज़ा अंडे", "qty": "20 Crates", "price": "₹190/Crate", "farm": "पाटिल फार्म (प्लॉट 14)", "grade": "Grade A+ ताज़ा"},
@@ -185,7 +199,7 @@ class _DashScreenState extends State<DashScreen> {
       const Divider(),
       const Text("अनुमानित कुल राशि: ₹1,900.00", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
     ], "ऑर्डर कन्फर्म करें", () {
-      setState(() { _cart = 0; _cartItems.clear(); });
+      setState(() => _cart = 0);
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("ऑर्डर सफलतापूर्वक बुक हो गया!")));
     });
   }
