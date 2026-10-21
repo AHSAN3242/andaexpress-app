@@ -138,7 +138,9 @@ class _DashScreenState extends State<DashScreen> {
 
   final List<Map<String, dynamic>> _mainCategories = [
     {"name": "अंडे", "icon": "🥚"},
-    {"name": "देसी चिकन", "icon": "🐔"},
+    {"name": "देसी चिकन", "icon": "🐓"},
+    {"name": "बॉयलर चिकन", "icon": "🐔"},
+    {"name": "कड़कनाथ", "icon": "🖤"},
     {"name": "बतख", "icon": "🦆"},
     {"name": "बटेर", "icon": "🐦"},
     {"name": "ईमू", "icon": "🦤"},
@@ -161,12 +163,25 @@ class _DashScreenState extends State<DashScreen> {
     {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख (Duck) अंडे", "qty": "15 Crates", "price": "₹210/Crate", "farm": "रिवरसाइड डक फार्म (7 किमी)", "grade": "Large Size"},
     {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "qty": "40 Crates", "price": "₹120/Crate", "farm": "ग्रीन वैली पोल्ट्री (4 किमी)", "grade": "Nutrient Rich"},
     {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू (Emu) जंबो अंडे", "qty": "8 Pieces", "price": "₹450/Piece", "farm": "महावीर ईमू फार्म (12 किमी)", "grade": "Giant Green Shell"},
-    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी फ्री-रेंज चिकन", "qty": "50 Birds", "price": "₹280/किग्रा", "farm": "बालाजी फार्म (6 किमी)", "grade": "Natural Fed"},
-    {"cat": "देसी चिकन", "sub": "कड़कनाथ", "item": "कड़कनाथ प्योर ब्लैक चिकन", "qty": "25 Birds", "price": "₹650/किग्रा", "farm": "आनंद पोल्ट्री (3.5 किमी)", "grade": "Pure Aseel Bloodline"},
+    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी फ्री-रेंज रंगीन चिकन", "qty": "50 Birds", "price": "₹290/किग्रा", "farm": "बालाजी फार्म (6 किमी)", "grade": "100% Natural Organic"},
+    {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर", "qty": "200 Birds", "price": "₹135/किग्रा", "farm": "स्टार पोल्ट्री (3 किमी)", "grade": "Standard 2.2kg avg"},
+    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ प्योर ब्लैक लाइव", "qty": "35 Birds", "price": "₹650/किग्रा", "farm": "आनंद पोल्ट्री (3.5 किमी)", "grade": "Pure Aseel Bloodline"},
     {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख लाइव", "qty": "30 Birds", "price": "₹320/किग्रा", "farm": "रिवरसाइड फार्म (7 किमी)", "grade": "Farm Raised"},
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (Quail)", "qty": "120 Birds", "price": "₹65/Bird", "farm": "ग्रीन वैली (4 किमी)", "grade": "Healthy Weight"},
     {"cat": "ईमू", "sub": "ईमू", "item": "वयस्क ईमू जोड़ी", "qty": "4 Pairs", "price": "₹8,500/Pair", "farm": "महावीर फार्म (12 किमी)", "grade": "Breeding Quality"},
   ];
+
+  // किसान की सक्रिय खेप (Seller Listings)
+  late List<Map<String, String>> _sellerListings;
+
+  @override
+  void initState() {
+    super.initState();
+    _sellerListings = [
+      {"item": "देसी पोल्ट्री अंडे", "qty": "20 Crates", "price": "₹190/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "grade": "Grade A+ ताज़ा"},
+      {"item": "कड़कनाथ अंडे", "qty": "10 Crates", "price": "₹240/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "grade": "प्रीमियम"},
+    ];
+  }
 
   final List<Map<String, dynamic>> _trips = [
     {"from": "पाटिल फार्म (रमेश)", "to": "सिटी हब गेट 2", "dist": "12.4 किमी", "earn": "₹480", "crates": "40 Crates", "done": false},
@@ -188,11 +203,62 @@ class _DashScreenState extends State<DashScreen> {
             const Divider(),
             ...body,
             const SizedBox(height: 16),
-            ElevatedButton(style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white), onPressed: () { Navigator.pop(context); onAct(); }, child: Text(btnText, style: const TextStyle(fontWeight: FontWeight.bold))),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+              onPressed: () {
+                Navigator.pop(context);
+                onAct();
+              },
+              child: Text(btnText, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+            ),
           ],
         ),
       ),
     );
+  }
+
+  void _addBatchDialog() {
+    final itemCtl = TextEditingController(text: "देसी पोल्ट्री अंडे");
+    final qtyCtl = TextEditingController(text: "15");
+    final rateCtl = TextEditingController(text: "190");
+    _modal("नई खेप लिस्ट करें (Add Lot)", [
+      TextField(controller: itemCtl, decoration: const InputDecoration(labelText: "उत्पाद का नाम (उदा. देसी अंडे, कड़कनाथ)", border: OutlineInputBorder())),
+      const SizedBox(height: 10),
+      TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "मात्रा (Crates या Birds)", border: OutlineInputBorder())),
+      const SizedBox(height: 10),
+      TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "रेट प्रति Crate/किग्रा (₹)", border: OutlineInputBorder())),
+    ], "खेप तुरंत लाइव करें", () {
+      setState(() {
+        _sellerListings.insert(0, {
+          "item": itemCtl.text.trim(),
+          "qty": "${qtyCtl.text.trim()} Crates",
+          "price": "₹${rateCtl.text.trim()}/Crate",
+          "farm": "मेरा फार्म (+91 ${widget.phone})",
+          "grade": "खेत से ताज़ा",
+        });
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("नई खेप सफलतापूर्वक जुड़ गई!")));
+    });
+  }
+
+  void _editBatchDialog(int index) {
+    final lot = _sellerListings[index];
+    final qtyCtl = TextEditingController(text: lot["qty"]!.replaceAll(RegExp(r'[^0-9]'), ''));
+    final rateCtl = TextEditingController(text: lot["price"]!.replaceAll(RegExp(r'[^0-9]'), ''));
+
+    _modal("लॉट अपडेट करें (${lot['item']})", [
+      Text("उत्पाद: ${lot['item']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+      const SizedBox(height: 12),
+      TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "नई मात्रा (उपलब्ध Crates)", border: OutlineInputBorder())),
+      const SizedBox(height: 10),
+      TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "नया रेट प्रति Crate (₹)", border: OutlineInputBorder())),
+    ], "बदलाव सेव करें", () {
+      setState(() {
+        _sellerListings[index]["qty"] = "${qtyCtl.text.trim()} Crates";
+        _sellerListings[index]["price"] = "₹${rateCtl.text.trim()}/Crate";
+      });
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("लॉट की जानकारी अपडेट हो गई!")));
+    });
   }
 
   void _showCheckout() {
@@ -242,7 +308,6 @@ class _DashScreenState extends State<DashScreen> {
 
     return Column(
       children: [
-        // 1. Amazon/Flipkart स्टाइल मुख्य कैटेगरी मेनू (Top Category Bar)
         Container(
           color: Colors.grey.shade100,
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -298,8 +363,6 @@ class _DashScreenState extends State<DashScreen> {
             ),
           ),
         ),
-
-        // 2. सब-मेन्यू (अंडे सेलेक्ट होने पर दिखने वाली गोल पट्टियाँ)
         if (_selectedCategory == "अंडे")
           Container(
             height: 45,
@@ -339,8 +402,7 @@ class _DashScreenState extends State<DashScreen> {
               },
             ),
           ),
-
-        // 3. प्रोडक्ट्स की लिस्ट
+        
         Expanded(
           child: filtered.isEmpty
               ? const Center(child: Text("इस कैटेगरी में अभी कोई माल उपलब्ध नहीं है।"))
@@ -357,7 +419,7 @@ class _DashScreenState extends State<DashScreen> {
                         leading: CircleAvatar(
                           backgroundColor: const Color(0xFFFFFBEB),
                           child: Text(
-                            item["cat"] == "अंडे" ? "🥚" : (item["cat"] == "देसी चिकन" ? "🐔" : (item["cat"] == "बतख" ? "🦆" : (item["cat"] == "बटेर" ? "🐦" : "🦤"))),
+                            item["cat"] == "अंडे" ? "🥚" : (item["cat"] == "देसी चिकन" ? "🐓" : (item["cat"] == "बॉयलर चिकन" ? "🐔" : (item["cat"] == "कड़कनाथ" ? "🖤" : (item["cat"] == "बतख" ? "🦆" : "🐦")))),
                             style: const TextStyle(fontSize: 20),
                           ),
                         ),
@@ -409,20 +471,51 @@ class _DashScreenState extends State<DashScreen> {
             ]),
           ),
         ),
-        const SizedBox(height: 12),
-        const Text("सक्रिय खेप लिस्टिंग:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        const SizedBox(height: 8),
-        Card(
-          child: ListTile(
-            leading: const Text("🥚", style: TextStyle(fontSize: 24)),
-            title: const Text("देसी पोल्ट्री अंडे", style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: const Text("20 Crates • ₹190/Crate\nमेरा फार्म"),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-          ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text("सक्रिय खेप लिस्टिंग:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF9F2089),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              ),
+              icon: const Icon(Icons.add_circle_outline, size: 18),
+              label: const Text("नई खेप जोड़ें", style: TextStyle(fontWeight: FontWeight.bold)),
+              onPressed: _addBatchDialog,
+            ),
+          ],
         ),
+        const SizedBox(height: 10),
+        ..._sellerListings.asMap().entries.map((entry) {
+          final idx = entry.key;
+          final lot = entry.value;
+          return Card(
+            elevation: 2,
+            margin: const EdgeInsets.only(bottom: 10),
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: const Color(0xFFFFFBEB),
+                child: Text(lot["item"]!.contains("अंडे") ? "🥚" : "🐓", style: const TextStyle(fontSize: 20)),
+              ),
+              title: Text(lot["item"]!, style: const TextStyle(fontWeight: FontWeight.bold)),
+              subtitle: Text("${lot['qty']} • ${lot['price']}\n${lot['farm']}"),
+              isThreeLine: true,
+              trailing: IconButton(
+                icon: const Icon(Icons.edit, color: Color(0xFF15803D)),
+                tooltip: "अपडेट करें",
+                onPressed: () => _editBatchDialog(idx),
+              ),
+              onTap: () => _editBatchDialog(idx),
+            ),
+          );
+        }),
       ],
     );
   }
+
   Widget _buildCommuter() {
     return ListView(
       padding: const EdgeInsets.all(16),
