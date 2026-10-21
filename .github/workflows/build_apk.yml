@@ -2,19 +2,21 @@ name: Build Android APK
 
 on:
   push:
-    branches: [ main, master ]
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'zulu'
+          distribution: 'temurin'
           java-version: '17'
 
       - name: Set up Flutter
@@ -22,18 +24,12 @@ jobs:
         with:
           channel: 'stable'
 
-      - name: Clean and Recreate Modern Android Structure
-        run: |
-          rm -rf android
-          rm -f pubspec.lock
-          flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress
-
       - name: Install Dependencies
         run: flutter pub get
 
       - name: Generate App Icons
         run: flutter pub run flutter_launcher_icons
-        
+
       - name: Build APK
         run: flutter build apk --release
 
