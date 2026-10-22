@@ -276,9 +276,8 @@ class _DashScreenState extends State<DashScreen> {
             ],
           ),
           actions: [
-            TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text("रद्द करें")),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                        TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text("रद्द करें")),
+            OutlinedButton(
               onPressed: () {
                 setState(() {
                   _cartItems.add({
@@ -296,7 +295,28 @@ class _DashScreenState extends State<DashScreen> {
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$qty $unit कार्ट में जोड़ा गया!"), duration: const Duration(seconds: 1)));
               },
               child: const Text("कार्ट में जोड़ें"),
-            )
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white),
+              onPressed: () {
+                setState(() {
+                  _cartItems.clear();
+                  _cartItems.add({
+                    "item": product["item"],
+                    "farm": product["farm"],
+                    "farmAddress": product["farmAddress"],
+                    "dist": product["dist"],
+                    "unitPrice": product["price"],
+                    "unitType": product["unitType"],
+                    "qty": qty,
+                    "total": (product["price"] as double) * qty,
+                  });
+                });
+                Navigator.pop(dCtx);
+                _showCheckout();
+              },
+              child: const Text("अभी खरीदें"),
+            ),
           ],
         ),
       ),
