@@ -423,10 +423,12 @@ class _DashScreenState extends State<DashScreen> {
                       final orderId = "AND-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}";
                       final otp = (1000 + Random().nextInt(9000)).toString();
                       final productSummary = _cartItems.map((e) => "${e['item']} (${e['qty']} ${e['unitType']})").join(", ");
-                      final firstFarm = _cartItems.first["farm"] as String;
+                                            final firstFarm = _cartItems.first["farm"] as String;
                       final firstFarmAddress = _cartItems.first["farmAddress"] as String;
                       final dist = _cartItems.first["dist"] as String;
-                                            final dropAddress = _selectedDeliveryMode == "self" ? "स्वयं पिकअप (फार्म से)" : (_buyerAddressCtl.text.trim().isEmpty ? "ग्राहक स्थान" : _buyerAddressCtl.text.trim());
+                      final dropAddress = _selectedDeliveryMode == "self" ? "स्वयं पिकअप (फार्म से)" : (_buyerAddressCtl.text.trim().isEmpty ? "ग्राहक स्थान" : _buyerAddressCtl.text.trim());
+                      // किसान का फोन नंबर (अगर फार्म नाम में मौजूद है तो वह, नहीं तो डिफ़ॉल्ट)
+                      final farmerPhone = "9876543210";
 
                       setState(() {
                         AppState.escrowHold += total;
@@ -434,6 +436,7 @@ class _DashScreenState extends State<DashScreen> {
                           "id": orderId,
                           "otp": otp,
                           "buyerPhone": widget.phone,
+                          "farmerPhone": farmerPhone,
                           "product": productSummary,
                           "farm": firstFarm,
                           "farmAddress": firstFarmAddress,
@@ -584,9 +587,10 @@ class _DashScreenState extends State<DashScreen> {
                               ),
                             ],
                           ),
-                          const SizedBox(height: 2),
+                                                    const SizedBox(height: 2),
                           Text("स्थिति: $stText", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
                           Text("📍 फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w500)),
+                          Text("📞 किसान संपर्क: +91 ${ord['farmerPhone'] ?? '9876543210'}", style: const TextStyle(fontSize: 11, color: Color(0xFF9F2089), fontWeight: FontWeight.bold)),
                         ],
                       ),
                     ),
