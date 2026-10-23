@@ -143,7 +143,7 @@ class _DashScreenState extends State<DashScreen> {
   final List<Map<String, dynamic>> _cartItems = [];
   String _selectedCategory = "अंडे";
   String _selectedEggSub = "सभी";
-  String _selectedDeliveryMode = "home"; // self, bus_stop, home
+  String _selectedDeliveryMode = "home";
   final _buyerAddressCtl = TextEditingController();
 
   final List<Map<String, dynamic>> _mainCategories = [
@@ -157,24 +157,22 @@ class _DashScreenState extends State<DashScreen> {
   ];
 
   final List<String> _eggSubCategories = [
-    "सभी",
-    "देसी अंडे",
-    "कड़कनाथ अंडे",
-    "टेबल एग्स",
-    "बतख के अंडे",
-    "बटेर अंडे",
-    "ईमू अंडे"
+    "सभी", "देसी अंडे", "कड़कनाथ अंडे", "टेबल एग्स", "बतख के अंडे", "बटेर अंडे", "ईमू अंडे"
   ];
 
   final List<Map<String, dynamic>> _allProducts = [
-    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे", "unitType": "Crate", "price": 190.0, "unit": "₹190/Crate", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "खेत से ताज़ा"},
-    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे", "unitType": "Crate", "price": 240.0, "unit": "₹240/Crate", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+"},
-    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "price": 155.0, "unit": "₹155/Crate", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh"},
-    {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख अंडे", "unitType": "Crate", "price": 210.0, "unit": "₹210/Crate", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Large Size"},
-    {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "unitType": "Crate", "price": 120.0, "unit": "₹120/Crate", "farm": "ग्रीन वैली पोल्ट्री", "farmAddress": "एमआईडीसी गेट क्र. 2", "dist": "4.0 किमी", "grade": "Nutrient Rich"},
-    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी फ्री-रेंज रंगीन चिकन", "unitType": "Bird", "price": 290.0, "unit": "₹290/Bird", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic"},
-    {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर", "unitType": "Bird", "price": 135.0, "unit": "₹135/Bird", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard 2.2kg"},
-    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ प्योर ब्लैक लाइव", "unitType": "Bird", "price": 650.0, "unit": "₹650/Bird", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Aseel"},
+    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे", "unitType": "Crate", "price": 190.0, "unit": "₹190/Crate", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "खेत से ताज़ा", "farmerPhone": "9876543210"},
+    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे", "unitType": "Crate", "price": 240.0, "unit": "₹240/Crate", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+", "farmerPhone": "9876543211"},
+    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "price": 155.0, "unit": "₹155/Crate", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh", "farmerPhone": "9876543212"},
+    {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख अंडे", "unitType": "Crate", "price": 210.0, "unit": "₹210/Crate", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Large Size", "farmerPhone": "9876543213"},
+    {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "unitType": "Crate", "price": 120.0, "unit": "₹120/Crate", "farm": "ग्रीन वैली पोल्ट्री", "farmAddress": "एमआईडीसी गेट क्र. 2", "dist": "4.0 किमी", "grade": "Nutrient Rich", "farmerPhone": "9876543214"},
+    {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू जंबो अंडे", "unitType": "Piece", "price": 450.0, "unit": "₹450/Piece", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Giant Green Shell", "farmerPhone": "9876543215"},
+    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी फ्री-रेंज रंगीन चिकन", "unitType": "Bird", "price": 290.0, "unit": "₹290/Bird", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216"},
+    {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर", "unitType": "Bird", "price": 135.0, "unit": "₹135/Bird", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard 2.2kg", "farmerPhone": "9876543217"},
+    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ प्योर ब्लैक लाइव", "unitType": "Bird", "price": 650.0, "unit": "₹650/Bird", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Aseel", "farmerPhone": "9876543211"},
+    {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख लाइव पक्षी", "unitType": "Bird", "price": 320.0, "unit": "₹320/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised", "farmerPhone": "9876543213"},
+    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (Live Quail Birds)", "unitType": "Bird", "price": 65.0, "unit": "₹65/Bird", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214"},
+    {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क पक्षी", "unitType": "Bird", "price": 3500.0, "unit": "₹3500/Bird", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215"},
   ];
 
   late List<Map<String, String>> _sellerListings;
@@ -184,25 +182,17 @@ class _DashScreenState extends State<DashScreen> {
     super.initState();
     _sellerListings = [
       {
-        "item": "देसी पोल्ट्री अंडे",
-        "qty": "20 Crates",
-        "price": "₹190/Crate",
-        "farm": "मेरा फार्म (+91 ${widget.phone})",
-        "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1",
-        "grade": "Grade A+ ताज़ा"
+        "item": "देसी पोल्ट्री अंडे", "type": "अंडे", "qty": "20 Crates", "price": "₹190/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा"
       },
       {
-        "item": "कड़कनाथ अंडे",
-        "qty": "10 Crates",
-        "price": "₹240/Crate",
-        "farm": "मेरा फार्म (+91 ${widget.phone})",
-        "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1",
-        "grade": "प्रीमियम"
+        "item": "कड़कनाथ ओरिजिनल अंडे", "type": "अंडे", "qty": "10 Crates", "price": "₹240/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम"
+      },
+      {
+        "item": "देसी बतख लाइव पक्षी", "type": "पक्षी/बर्ड्स", "qty": "50 Birds", "price": "₹320/Bird", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "हेल्दी लाइव"
       },
     ];
   }
-
-  void _modal(String title, List<Widget> body, String btnText, VoidCallback onAct) {
+    void _modal(String title, List<Widget> body, String btnText, VoidCallback onAct) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -235,7 +225,7 @@ class _DashScreenState extends State<DashScreen> {
 
   void _addToCartWithQty(Map<String, dynamic> product) {
     int qty = 1;
-    final unit = product["unitType"] == "Crate" ? "क्रेट / ट्रे" : "पंछी / नग";
+    final unit = product["unitType"] == "Crate" ? "क्रेट / ट्रे" : (product["unitType"] == "Bird" ? "पंछी / नग" : "पीस");
 
     showDialog(
       context: context,
@@ -276,7 +266,7 @@ class _DashScreenState extends State<DashScreen> {
             ],
           ),
           actions: [
-                        TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text("रद्द करें")),
+            TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text("रद्द करें")),
             OutlinedButton(
               onPressed: () {
                 setState(() {
@@ -284,6 +274,7 @@ class _DashScreenState extends State<DashScreen> {
                     "item": product["item"],
                     "farm": product["farm"],
                     "farmAddress": product["farmAddress"],
+                    "farmerPhone": product["farmerPhone"] ?? "9876543210",
                     "dist": product["dist"],
                     "unitPrice": product["price"],
                     "unitType": product["unitType"],
@@ -305,6 +296,7 @@ class _DashScreenState extends State<DashScreen> {
                     "item": product["item"],
                     "farm": product["farm"],
                     "farmAddress": product["farmAddress"],
+                    "farmerPhone": product["farmerPhone"] ?? "9876543210",
                     "dist": product["dist"],
                     "unitPrice": product["price"],
                     "unitType": product["unitType"],
@@ -423,12 +415,11 @@ class _DashScreenState extends State<DashScreen> {
                       final orderId = "AND-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}";
                       final otp = (1000 + Random().nextInt(9000)).toString();
                       final productSummary = _cartItems.map((e) => "${e['item']} (${e['qty']} ${e['unitType']})").join(", ");
-                                            final firstFarm = _cartItems.first["farm"] as String;
+                      final firstFarm = _cartItems.first["farm"] as String;
                       final firstFarmAddress = _cartItems.first["farmAddress"] as String;
+                      final farmerPhone = _cartItems.first["farmerPhone"] as String;
                       final dist = _cartItems.first["dist"] as String;
                       final dropAddress = _selectedDeliveryMode == "self" ? "स्वयं पिकअप (फार्म से)" : (_buyerAddressCtl.text.trim().isEmpty ? "ग्राहक स्थान" : _buyerAddressCtl.text.trim());
-                      // किसान का फोन नंबर (अगर फार्म नाम में मौजूद है तो वह, नहीं तो डिफ़ॉल्ट)
-                      final farmerPhone = "9876543210";
 
                       setState(() {
                         AppState.escrowHold += total;
@@ -463,54 +454,155 @@ class _DashScreenState extends State<DashScreen> {
       ),
     );
   }
-
-  void _addBatchDialog() {
-    final itemCtl = TextEditingController(text: "देसी पोल्ट्री अंडे");
+    void _addBatchDialog() {
+    String selectedType = "अंडे";
+    String selectedItem = "देसी पोल्ट्री अंडे";
     final qtyCtl = TextEditingController(text: "15");
     final rateCtl = TextEditingController(text: "190");
     final addressCtl = TextEditingController(text: "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1");
 
-    _modal("नई खेप लिस्ट करें (Add Lot)", [
-      TextField(controller: itemCtl, decoration: const InputDecoration(labelText: "उत्पाद का नाम", border: OutlineInputBorder())),
-      const SizedBox(height: 10),
-      TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "मात्रा (Crates/Birds)", border: OutlineInputBorder())),
-      const SizedBox(height: 10),
-      TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "रेट प्रति नग/Crate (₹)", border: OutlineInputBorder())),
-      const SizedBox(height: 10),
-      TextField(controller: addressCtl, decoration: const InputDecoration(labelText: "फार्म का पूरा पता (पिकअप लोकेशन)", border: OutlineInputBorder())),
-    ], "खेप तुरंत लाइव करें", () {
-      setState(() {
-        _sellerListings.insert(0, {
-          "item": itemCtl.text.trim(),
-          "qty": "${qtyCtl.text.trim()} Crates",
-          "price": "₹${rateCtl.text.trim()}/Crate",
-          "farm": "मेरा फार्म (+91 ${widget.phone})",
-          "farmAddress": addressCtl.text.trim(),
-          "grade": "खेत से ताज़ा",
-        });
-      });
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("नई खेप व फार्म पता सफलतापूर्वक जुड़ गया!")));
-    });
+    final Map<String, List<String>> itemOptions = {
+      "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो अंडे"],
+      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "व्हाइट पेकिन बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी"],
+    };
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setBState) {
+          final isEgg = selectedType == "अंडे";
+          final unitLabel = isEgg ? "Crate (ट्रे)" : "Birds (नग)";
+          final rateLabel = isEgg ? "रेट प्रति Crate (₹)" : "रेट प्रति Bird (₹)";
+
+          return Padding(
+            padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text("नई खेप लिस्ट करें (Add Lot)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                  const Divider(),
+                  const Text("1. प्रकार चुनें (Type):", style: TextStyle(fontWeight: FontWeight.bold)),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: const Text("अंडे 🥚"),
+                          value: "अंडे",
+                          groupValue: selectedType,
+                          onChanged: (v) {
+                            setBState(() {
+                              selectedType = v!;
+                              selectedItem = itemOptions[selectedType]!.first;
+                              rateCtl.text = "190";
+                            });
+                          },
+                        ),
+                      ),
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: const Text("पक्षी/बर्ड्स 🐓"),
+                          value: "पक्षी/बर्ड्स",
+                          groupValue: selectedType,
+                          onChanged: (v) {
+                            setBState(() {
+                              selectedType = v!;
+                              selectedItem = itemOptions[selectedType]!.first;
+                              rateCtl.text = "290";
+                            });
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  const Text("2. उत्पाद की नस्ल/कैटेगरी:", style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 4),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(6)),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                      value: selectedItem,
+                      items: itemOptions[selectedType]!.map((it) => DropdownMenuItem(value: it, child: Text(it))).toList(),
+                      onChanged: (v) => setBState(() => selectedItem = v!),
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: qtyCtl,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: "मात्रा ($unitLabel)", border: const OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: rateCtl,
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(labelText: rateLabel, border: const OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 10),
+                  TextField(
+                    controller: addressCtl,
+                    decoration: const InputDecoration(labelText: "फार्म का पूरा पता (पिकअप लोकेशन)", border: OutlineInputBorder()),
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      final finalUnit = isEgg ? "Crates" : "Birds";
+                      final finalRate = isEgg ? "₹${rateCtl.text.trim()}/Crate" : "₹${rateCtl.text.trim()}/Bird";
+
+                      setState(() {
+                        _sellerListings.insert(0, {
+                          "item": selectedItem,
+                          "type": selectedType,
+                          "qty": "${qtyCtl.text.trim()} $finalUnit",
+                          "price": finalRate,
+                          "farm": "मेरा फार्म (+91 ${widget.phone})",
+                          "farmAddress": addressCtl.text.trim(),
+                          "grade": isEgg ? "ताज़ा ग्रेड A" : "स्वस्थ लाइव",
+                        });
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("नई खेप सफलतापूर्वक लिस्ट हो गई!")));
+                    },
+                    child: const Text("खेप तुरंत लाइव करें", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
   }
 
   void _editBatchDialog(int index) {
     final lot = _sellerListings[index];
+    final isEgg = lot["type"] == "अंडे" || lot["item"]!.contains("अंडे");
     final qtyCtl = TextEditingController(text: lot["qty"]!.replaceAll(RegExp(r'[^0-9]'), ''));
     final rateCtl = TextEditingController(text: lot["price"]!.replaceAll(RegExp(r'[^0-9]'), ''));
     final addressCtl = TextEditingController(text: lot["farmAddress"] ?? "फार्म पता उपलब्ध");
 
     _modal("लॉट अपडेट करें (${lot['item']})", [
-      Text("उत्पाद: ${lot['item']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+      Text("उत्पाद: ${lot['item']} (${isEgg ? 'अंडे' : 'पक्षी'})", style: const TextStyle(fontWeight: FontWeight.bold)),
       const SizedBox(height: 12),
-      TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "नई मात्रा", border: OutlineInputBorder())),
-            const SizedBox(height: 10),
-      TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "नया रेट (₹)", border: OutlineInputBorder())),
+      TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "नई मात्रा (${isEgg ? 'Crates' : 'Birds'})", border: const OutlineInputBorder())),
       const SizedBox(height: 10),
-      TextField(controller: addressCtl, decoration: const InputDecoration(labelText: "फार्म का पता", border: OutlineInputBorder())),
+      TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "नया रेट (${isEgg ? '₹/Crate' : '₹/Bird'})", border: const OutlineInputBorder())),
+      const SizedBox(height: 10),
+      TextField(controller: addressCtl, decoration: const InputDecoration(labelText: "फार्म का पता", border: const OutlineInputBorder())),
     ], "बदलाव सेव करें", () {
+      final unitStr = isEgg ? "Crates" : "Birds";
+      final rateStr = isEgg ? "₹${rateCtl.text.trim()}/Crate" : "₹${rateCtl.text.trim()}/Bird";
+
       setState(() {
-        _sellerListings[index]["qty"] = "${qtyCtl.text.trim()} Crates";
-        _sellerListings[index]["price"] = "₹${rateCtl.text.trim()}/Crate";
+        _sellerListings[index]["qty"] = "${qtyCtl.text.trim()} $unitStr";
+        _sellerListings[index]["price"] = rateStr;
         _sellerListings[index]["farmAddress"] = addressCtl.text.trim();
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("लॉट की जानकारी अपडेट हो गई!")));
@@ -587,7 +679,7 @@ class _DashScreenState extends State<DashScreen> {
                               ),
                             ],
                           ),
-                                                    const SizedBox(height: 2),
+                          const SizedBox(height: 2),
                           Text("स्थिति: $stText", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
                           Text("📍 फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w500)),
                           Text("📞 किसान संपर्क: +91 ${ord['farmerPhone'] ?? '9876543210'}", style: const TextStyle(fontSize: 11, color: Color(0xFF9F2089), fontWeight: FontWeight.bold)),
@@ -599,7 +691,6 @@ class _DashScreenState extends State<DashScreen> {
               ],
             ),
           ),
-        
         Container(
           color: Colors.grey.shade100,
           padding: const EdgeInsets.symmetric(vertical: 10),
@@ -710,7 +801,7 @@ class _DashScreenState extends State<DashScreen> {
                         leading: CircleAvatar(
                           backgroundColor: const Color(0xFFFFFBEB),
                           child: Text(
-                            item["cat"] == "अंडे" ? "🥚" : (item["cat"] == "देसी चिकन" ? "🐓" : (item["cat"] == "बॉयलर चिकन" ? "🐔" : (item["cat"] == "कड़कनाथ" ? "🖤" : (item["cat"] == "बतख" ? "🦆" : "🐦")))),
+                            item["cat"] == "अंडे" ? "🥚" : (item["cat"] == "देसी चिकन" ? "🐓" : (item["cat"] == "बॉयलर चिकन" ? "🐔" : (item["cat"] == "कड़कनाथ" ? "🖤" : (item["cat"] == "बतख" ? "🦆" : (item["cat"] == "बटेर" ? "🐦" : "🦤"))))),
                             style: const TextStyle(fontSize: 20),
                           ),
                         ),
@@ -759,7 +850,7 @@ class _DashScreenState extends State<DashScreen> {
                 ],
               ),
               const SizedBox(height: 4),
-              Text("₹${AppState.sellerWallet.toStringAsFixed(2)}", style: const TextStyle(color: Color(0xFFFEF08A), fontSize: 24, fontWeight: FontWeight.bold)),
+                            Text("₹${AppState.sellerWallet.toStringAsFixed(2)}", style: const TextStyle(color: Color(0xFFFEF08A), fontSize: 24, fontWeight: FontWeight.bold)),
               Text("फोन: +91 ${widget.phone}", style: const TextStyle(color: Colors.white70)),
             ]),
           ),
@@ -841,13 +932,14 @@ class _DashScreenState extends State<DashScreen> {
         ..._sellerListings.asMap().entries.map((entry) {
           final idx = entry.key;
           final lot = entry.value;
+          final isEgg = lot["type"] == "अंडे" || lot["item"]!.contains("अंडे");
           return Card(
             elevation: 2,
             margin: const EdgeInsets.only(bottom: 10),
             child: ListTile(
               leading: CircleAvatar(
                 backgroundColor: const Color(0xFFFFFBEB),
-                child: Text(lot["item"]!.contains("अंडे") ? "🥚" : "🐓", style: const TextStyle(fontSize: 20)),
+                child: Text(isEgg ? "🥚" : (lot["item"]!.contains("बतख") ? "🦆" : "🐓"), style: const TextStyle(fontSize: 20)),
               ),
               title: Text(lot["item"]!, style: const TextStyle(fontWeight: FontWeight.bold)),
               subtitle: Text("${lot['qty']} • ${lot['price']}\nफार्म पता: ${lot['farmAddress'] ?? lot['farm']}"),
@@ -864,126 +956,4 @@ class _DashScreenState extends State<DashScreen> {
       ],
     );
   }
-
-  Widget _buildCommuter() {
-    final liveTrips = AppState.orders.where((o) => (o["status"] == "ready_for_pickup" || o["status"] == "in_transit") && o["mode"] != "self").toList();
-
-    return ListView(
-      padding: const EdgeInsets.all(16),
-      children: [
-        Card(
-          color: const Color(0xFF0F172A),
-          child: const Padding(
-            padding: EdgeInsets.all(16),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Text("कम्यूटर एक्सप्रेस पार्टनर", style: TextStyle(color: Colors.white70)),
-              Text("सक्रिय डिलीवरी कार्य", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 4),
-              Text("पिकअप करें और गंतव्य पर ग्राहक का OTP डालकर एस्क्रो रिलीज़ करें", style: TextStyle(color: Colors.white60, fontSize: 12)),
-            ]),
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text("उपलब्ध पिकअप कार्य:", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-        const SizedBox(height: 8),
-        if (liveTrips.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: 24),
-            child: Center(child: Text("फिलहाल कोई सक्रिय पिकअप नहीं है।\n(किसान के ऑर्डर स्वीकार करने पर यहाँ दिखेगा)", textAlign: TextAlign.center, style: TextStyle(color: Colors.grey))),
-          )
-        else
-          ...liveTrips.map((ord) {
-            final isInTransit = ord["status"] == "in_transit";
-            String modeStr = ord["mode"] == "bus_stop" ? "बस स्टॉप पिकअप" : "सीधी होम डिलीवरी";
-            return Card(
-              elevation: 3,
-              margin: const EdgeInsets.only(bottom: 12),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-              child: Padding(
-                padding: const EdgeInsets.all(14),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text("कमीशन: ₹${ord['deliveryFee']}", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 16)),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(color: isInTransit ? Colors.blue.shade100 : Colors.amber.shade100, borderRadius: BorderRadius.circular(6)),
-                          child: Text(isInTransit ? "रास्ते में" : "पिकअप के लिए तैयार", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isInTransit ? Colors.blue.shade900 : Colors.amber.shade900)),
-                        )
-                      ],
-                    ),
-                    const SizedBox(height: 6),
-                    Text("📦 उत्पाद: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                    Text("📍 फार्म नाम: ${ord['farm']} (${ord['dist']})"),
-                    Text("🏠 पिकअप फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF15803D))),
-                    const SizedBox(height: 4),
-                    Text("🎯 डिलीवरी मोड: $modeStr", style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF9F2089))),
-                    Text("📍 ड्रॉप लोकेशन: ${ord['dropAddress']}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.black87)),
-                    Text("📞 ग्राहक फोन: +91 ${ord['buyerPhone']}"),
-                    const SizedBox(height: 12),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: isInTransit ? const Color(0xFF15803D) : const Color(0xFF9F2089),
-                          foregroundColor: Colors.white,
-                        ),
-                        onPressed: () {
-                          if (!isInTransit) {
-                            setState(() {
-                              ord["status"] = "in_transit";
-                            });
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("माल पिकअप कर लिया गया!")));
-                          } else {
-                            final otpCtl = TextEditingController();
-                            showDialog(
-                              context: context,
-                              builder: (oCtx) => AlertDialog(
-                                title: const Text("ग्राहक OTP दर्ज करें"),
-                                content: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const Text("डिलीवरी पूरी करने और एस्क्रो भुगतान के लिए ग्राहक से 4 अंकों का OTP लें:"),
-                                    const SizedBox(height: 10),
-                                    TextField(controller: otpCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "4-Digit OTP", border: OutlineInputBorder())),
-                                  ],
-                                ),
-                                actions: [
-                                  TextButton(onPressed: () => Navigator.pop(oCtx), child: const Text("रद्द करें")),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
-                                    onPressed: () {
-                                      if (otpCtl.text.trim() == ord["otp"].toString()) {
-                                        Navigator.pop(oCtx);
-                                        setState(() {
-                                          ord["status"] = "delivered";
-                                          AppState.sellerWallet += (ord["amount"] as double);
-                                          AppState.escrowHold -= (((ord["amount"] as double)) + ((ord["deliveryFee"] as double)));
-                                        });
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("OTP सत्यापित! डिलीवरी सफल और किसान को एस्क्रो रिलीज़ हो गया।")));
-                                      } else {
-                                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("गलत OTP! कृपया ग्राहक से सही OTP पूछें।")));
-                                      }
-                                    },
-                                    child: const Text("सत्यापित करें"),
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-                        },
-                        child: Text(isInTransit ? "OTP सत्यापन व डिलीवरी पूरी करें" : "पिकअप स्वीकार करें"),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            );
-          }),
-      ],
-    );
-  }
-}
+  
