@@ -145,11 +145,11 @@ class _DashScreenState extends State<DashScreen> {
   String _selectedDeliveryMode = "home";
   final _buyerAddressCtl = TextEditingController();
 
-  final List<Map<String, dynamic>> _mainCategories = [
+    final List<Map<String, dynamic>> _mainCategories = [
     {"name": "अंडे", "icon": "🥚"},
     {"name": "देसी चिकन", "icon": "🐓"},
     {"name": "बॉयलर चिकन", "icon": "🐔"},
-    {"name": "कड़कनाथ", "icon": "🐓"},
+    {"name": "कड़कनाथ", "icon": "black_rooster"},
     {"name": "बतख", "icon": "🦆"},
     {"name": "बटेर", "icon": "🐦"},
     {"name": "ईमू", "icon": "🦤"},
@@ -204,14 +204,14 @@ class _DashScreenState extends State<DashScreen> {
         ),
       );
     } 
-    // ईमू अंडा: बड़ा गहरा हरा अंडा
+        // ईमू अंडा: ग्रीनिश-ब्लू (Teal Emerald) रंग का अंडा
     else if (n.contains("ईमू") && n.contains("अंडे")) {
       return Container(
         width: size * 1.1, height: size * 1.35,
         decoration: BoxDecoration(
-          color: const Color(0xFF1B4332),
+          color: const Color(0xFF0D5C58), // स्पष्ट ग्रीनिश-ब्लू (गहरा टील)
           borderRadius: BorderRadius.all(Radius.elliptical(size * 1.1, size * 1.35)),
-          border: Border.all(color: const Color(0xFF081C15), width: 1.5),
+          border: Border.all(color: const Color(0xFF063533), width: 1.5),
         ),
       );
     } 
@@ -847,7 +847,7 @@ class _DashScreenState extends State<DashScreen> {
                             ],
                           ),
                           child: Center(
-                            child: getItemIcon(cat["name"] as String, size: 22),
+                            child: getItemIcon(cat["name"] == "कड़कनाथ" ? "कड़कनाथ ब्लैक लाइव" : (cat["name"] as String), size: 22),
                           ),
                         ),
                         const SizedBox(height: 4),
