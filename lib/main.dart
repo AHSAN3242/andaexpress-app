@@ -153,6 +153,7 @@ class _DashScreenState extends State<DashScreen> {
     {"name": "बतख", "icon": "🦆"},
     {"name": "बटेर", "icon": "🐦"},
     {"name": "ईमू", "icon": "🦤"},
+    {"name": "अन्य", "icon": "✨"},
   ];
 
   final List<String> _eggSubCategories = [
@@ -202,7 +203,7 @@ class _DashScreenState extends State<DashScreen> {
         width: size * 1.1, height: size * 1.35,
         decoration: BoxDecoration(
           color: const Color(0xFF0D5C58),
-          borderRadius: BorderRadius.all(Radius.elliptical(size * 1.1, size * 1.35)),
+          borderRadius: BorderRadius.all(Radius.elliptical(size, size * 1.35)),
           border: Border.all(color: const Color(0xFF063533), width: 1.5),
         ),
       );
@@ -232,6 +233,8 @@ class _DashScreenState extends State<DashScreen> {
       return Text("🦤", style: TextStyle(fontSize: size));
     } else if (n.contains("बॉयलर")) {
       return Text("🐔", style: TextStyle(fontSize: size));
+    } else if (n.contains("अन्य") || n == "✨") {
+      return Text("✨", style: TextStyle(fontSize: size));
     }
     return Text("🐓", style: TextStyle(fontSize: size));
   }
@@ -248,12 +251,13 @@ class _DashScreenState extends State<DashScreen> {
     {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर", "unitType": "Bird", "price": 135.0, "unit": "₹135/Bird", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard 2.2kg", "farmerPhone": "9876543217"},
     {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️ Rooster)", "unitType": "Bird", "price": 700.0, "unit": "₹700/Bird", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211"},
     {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (मादा ♀️ Hen)", "unitType": "Bird", "price": 600.0, "unit": "₹600/Bird", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211"},
-    {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख (नर ♂️ Drake)", "unitType": "Bird", "price": 350.0, "unit": "₹350/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213"},
-    {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख (मादा ♀️ Duck)", "unitType": "Bird", "price": 310.0, "unit": "₹310/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213"},
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (नर ♂️ Drake)", "unitType": "Bird", "price": 350.0, "unit": "₹350/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213"},
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (मादा ♀️ Duck)", "unitType": "Bird", "price": 310.0, "unit": "₹310/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213"},
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (नर ♂️ Male Quail)", "unitType": "Bird", "price": 70.0, "unit": "₹70/Bird", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214"},
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (मादा ♀️ Female Quail)", "unitType": "Bird", "price": 60.0, "unit": "₹60/Bird", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Egg Layer Quality", "farmerPhone": "9876543214"},
     {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क (नर ♂️ Male Emu)", "unitType": "Bird", "price": 3800.0, "unit": "₹3800/Bird", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215"},
     {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क (मादा ♀️ Female Emu)", "unitType": "Bird", "price": 3500.0, "unit": "₹3500/Bird", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed Breeding Female", "farmerPhone": "9876543215"},
+    {"cat": "अन्य", "sub": "अन्य", "item": "वनराजा / ग्रामप्रिया लाइव देसी", "unitType": "Bird", "price": 320.0, "unit": "₹320/Bird", "farm": "किसान स्पेशल फार्म", "dist": "5.0 किमी", "farmAddress": "ग्रामीण शेड नंबर 2", "grade": "देसी फ्री-रेंज", "farmerPhone": "9876543216"},
   ];
 
   late List<Map<String, String>> _sellerListings;
@@ -552,13 +556,14 @@ class _DashScreenState extends State<DashScreen> {
     String selectedType = "अंडे";
     String selectedGender = "नर ♂️ (Rooster)";
     String selectedItem = "देसी पोल्ट्री अंडे";
+    final customNameCtl = TextEditingController();
     final qtyCtl = TextEditingController(text: "15");
     final rateCtl = TextEditingController(text: "190");
     final addressCtl = TextEditingController(text: "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1");
 
     final Map<String, List<String>> itemOptions = {
-      "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो औषधीय अंडे"],
-      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "व्हाइट पेकिन बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी"],
+      "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो औषधीय अंडे", "अन्य अंडे (Other Eggs)"],
+      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "देसी / फार्म बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी", "अन्य नस्ल (Other Breed)"],
     };
 
     showModalBottomSheet(
@@ -568,6 +573,7 @@ class _DashScreenState extends State<DashScreen> {
       builder: (_) => StatefulBuilder(
         builder: (ctx, setBState) {
           final isEgg = selectedType == "अंडे";
+          final isOther = selectedItem.contains("अन्य");
           final unitLabel = isEgg ? "Crate (ट्रे)" : "Birds (नग)";
           final rateLabel = isEgg ? "रेट प्रति Crate (₹)" : "रेट प्रति Bird (₹)";
 
@@ -621,8 +627,8 @@ class _DashScreenState extends State<DashScreen> {
                         Expanded(
                           child: RadioListTile<String>(
                             dense: true,
-                            title: const Text("नर ♂️ (Rooster)"),
-                            value: "नर ♂️ (Rooster)",
+                            title: const Text("नर ♂️ (Rooster/Drake)"),
+                            value: "नर ♂️",
                             groupValue: selectedGender,
                             onChanged: (v) => setBState(() => selectedGender = v!),
                           ),
@@ -630,8 +636,8 @@ class _DashScreenState extends State<DashScreen> {
                         Expanded(
                           child: RadioListTile<String>(
                             dense: true,
-                            title: const Text("मादा ♀️ (Hen)"),
-                            value: "मादा ♀️ (Hen)",
+                            title: const Text("मादा ♀️ (Hen/Duck)"),
+                            value: "मादा ♀️",
                             groupValue: selectedGender,
                             onChanged: (v) => setBState(() => selectedGender = v!),
                           ),
@@ -653,6 +659,17 @@ class _DashScreenState extends State<DashScreen> {
                       onChanged: (v) => setBState(() => selectedItem = v!),
                     ),
                   ),
+                  if (isOther) ...[
+                    const SizedBox(height: 10),
+                    TextField(
+                      controller: customNameCtl,
+                      decoration: InputDecoration(
+                        labelText: isEgg ? "अंडे/नस्ल का नाम लिखें (उदा. वनराजा अंडे)" : "पक्षी/नस्ल का नाम लिखें (उदा. वनराजा, ग्रामप्रिया)",
+                        border: const OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                    ),
+                  ],
                   const SizedBox(height: 12),
                   TextField(
                     controller: qtyCtl,
@@ -677,7 +694,9 @@ class _DashScreenState extends State<DashScreen> {
                       Navigator.pop(ctx);
                       final finalUnit = isEgg ? "Crates" : "Birds";
                       final finalRate = isEgg ? "₹${rateCtl.text.trim()}/Crate" : "₹${rateCtl.text.trim()}/Bird";
-                      final finalTitle = isEgg ? selectedItem : "$selectedItem ($selectedGender)";
+
+                      String baseName = isOther && customNameCtl.text.trim().isNotEmpty ? customNameCtl.text.trim() : selectedItem;
+                      final finalTitle = isEgg ? baseName : "$baseName ($selectedGender)";
 
                       setState(() {
                         _sellerListings.insert(0, {
