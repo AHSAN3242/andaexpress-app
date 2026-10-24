@@ -145,7 +145,7 @@ class _DashScreenState extends State<DashScreen> {
   String _selectedDeliveryMode = "home";
   final _buyerAddressCtl = TextEditingController();
 
-    final List<Map<String, dynamic>> _mainCategories = [
+  final List<Map<String, dynamic>> _mainCategories = [
     {"name": "अंडे", "icon": "🥚"},
     {"name": "देसी चिकन", "icon": "🐓"},
     {"name": "बॉयलर चिकन", "icon": "🐔"},
@@ -159,12 +159,10 @@ class _DashScreenState extends State<DashScreen> {
     "सभी", "देसी अंडे", "कड़कनाथ अंडे", "टेबल एग्स", "बतख के अंडे", "बटेर अंडे", "ईमू अंडे"
   ];
 
-  // कड़कनाथ काली मुर्गी, काले अंडे और चितकबरे कोयल अंडे का सटीक डिज़ाइन
   static Widget getItemIcon(String name, {double size = 24}) {
     final n = name.toLowerCase();
     
-    // कड़कनाथ लाइव पक्षी: काली मुर्गी
-    if (n.contains("कड़कनाथ") && (n.contains("लाइव") || n.contains("ब्लैक") || n.contains("चिकन") || n.contains("पक्षी"))) {
+    if (n.contains("कड़कनाथ") && (n.contains("लाइव") || n.contains("ब्लैक") || n.contains("चिकन") || n.contains("पक्षी") || n == "black_rooster")) {
       return ColorFiltered(
         colorFilter: const ColorFilter.matrix(<double>[
           -1.0, 0, 0, 0, 40,
@@ -174,9 +172,7 @@ class _DashScreenState extends State<DashScreen> {
         ]),
         child: Text("🐓", style: TextStyle(fontSize: size)),
       );
-    } 
-    // कड़कनाथ अंडा: काला अंडा
-    else if (n.contains("कड़कनाथ") && n.contains("अंडे")) {
+    } else if (n.contains("कड़कनाथ") && n.contains("अंडे")) {
       return Container(
         width: size, height: size * 1.25,
         decoration: BoxDecoration(
@@ -185,9 +181,7 @@ class _DashScreenState extends State<DashScreen> {
           border: Border.all(color: Colors.black54, width: 1.5),
         ),
       );
-    } 
-    // बटेर/कोयल अंडा: ब्लैक-व्हाइट चितकबरे स्पॉट्स वाला अंडा
-    else if (n.contains("बटेर") && (n.contains("अंडे") || n.contains("quail"))) {
+    } else if (n.contains("बटेर") && (n.contains("अंडे") || n.contains("quail"))) {
       return Container(
         width: size, height: size * 1.25,
         decoration: BoxDecoration(
@@ -203,20 +197,16 @@ class _DashScreenState extends State<DashScreen> {
           ],
         ),
       );
-    } 
-        // ईमू अंडा: ग्रीनिश-ब्लू (Teal Emerald) रंग का अंडा
-    else if (n.contains("ईमू") && n.contains("अंडे")) {
+    } else if (n.contains("ईमू") && n.contains("अंडे")) {
       return Container(
         width: size * 1.1, height: size * 1.35,
         decoration: BoxDecoration(
-          color: const Color(0xFF0D5C58), // स्पष्ट ग्रीनिश-ब्लू (गहरा टील)
+          color: const Color(0xFF0D5C58),
           borderRadius: BorderRadius.all(Radius.elliptical(size * 1.1, size * 1.35)),
           border: Border.all(color: const Color(0xFF063533), width: 1.5),
         ),
       );
-    } 
-    // टेबल एग: सफेद अंडा
-    else if (n.contains("टेबल") || (n.contains("व्हाइट") && n.contains("अंडे"))) {
+    } else if (n.contains("टेबल") || (n.contains("व्हाइट") && n.contains("अंडे"))) {
       return Container(
         width: size, height: size * 1.25,
         decoration: BoxDecoration(
@@ -225,9 +215,7 @@ class _DashScreenState extends State<DashScreen> {
           border: Border.all(color: Colors.grey.shade400, width: 1),
         ),
       );
-    } 
-    // देसी अंडा: ब्राउनिश/हल्का बादामी अंडा
-    else if (n.contains("अंडे")) {
+    } else if (n.contains("अंडे")) {
       return Container(
         width: size, height: size * 1.25,
         decoration: BoxDecoration(
@@ -236,9 +224,7 @@ class _DashScreenState extends State<DashScreen> {
           border: Border.all(color: const Color(0xFFB45309), width: 1),
         ),
       );
-    } 
-    // लाइव पक्षी
-    else if (n.contains("बतख")) {
+    } else if (n.contains("बतख")) {
       return Text("🦆", style: TextStyle(fontSize: size));
     } else if (n.contains("बटेर")) {
       return Text("🐦", style: TextStyle(fontSize: size));
@@ -257,26 +243,15 @@ class _DashScreenState extends State<DashScreen> {
     {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख अंडे", "unitType": "Crate", "price": 210.0, "unit": "₹210/Crate", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Large Size", "farmerPhone": "9876543213"},
     {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "unitType": "Crate", "price": 120.0, "unit": "₹120/Crate", "farm": "ग्रीन वैली पोल्ट्री", "farmAddress": "एमआईडीसी गेट क्र. 2", "dist": "4.0 किमी", "grade": "चितकबरे स्पॉट Nutrient Rich", "farmerPhone": "9876543214"},
     {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू जंबो औषधीय अंडे", "unitType": "Piece", "price": 450.0, "unit": "₹450/Piece", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Dark Green Shell", "farmerPhone": "9876543215"},
-    // देसी चिकन (नर और मादा)
     {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️ Rooster)", "unitType": "Bird", "price": 310.0, "unit": "₹310/Bird", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216"},
     {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (मादा ♀️ Hen)", "unitType": "Bird", "price": 270.0, "unit": "₹270/Bird", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216"},
-    
-    // बॉयलर चिकन
     {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर", "unitType": "Bird", "price": 135.0, "unit": "₹135/Bird", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard 2.2kg", "farmerPhone": "9876543217"},
-    
-    // कड़कनाथ (नर और मादा)
     {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️ Rooster)", "unitType": "Bird", "price": 700.0, "unit": "₹700/Bird", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211"},
     {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (मादा ♀️ Hen)", "unitType": "Bird", "price": 600.0, "unit": "₹600/Bird", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211"},
-    
-    // बतख (नर और मादा)
     {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख (नर ♂️ Drake)", "unitType": "Bird", "price": 350.0, "unit": "₹350/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213"},
     {"cat": "बतख", "sub": "बतख", "item": "व्हाइट पेकिन बतख (मादा ♀️ Duck)", "unitType": "Bird", "price": 310.0, "unit": "₹310/Bird", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213"},
-    
-    // बटेर / Quail (नर और मादा)
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (नर ♂️ Male Quail)", "unitType": "Bird", "price": 70.0, "unit": "₹70/Bird", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214"},
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (मादा ♀️ Female Quail)", "unitType": "Bird", "price": 60.0, "unit": "₹60/Bird", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Egg Layer Quality", "farmerPhone": "9876543214"},
-    
-    // ईमू (नर और मादा)
     {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क (नर ♂️ Male Emu)", "unitType": "Bird", "price": 3800.0, "unit": "₹3800/Bird", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215"},
     {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क (मादा ♀️ Female Emu)", "unitType": "Bird", "price": 3500.0, "unit": "₹3500/Bird", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed Breeding Female", "farmerPhone": "9876543215"},
   ];
@@ -287,18 +262,10 @@ class _DashScreenState extends State<DashScreen> {
   void initState() {
     super.initState();
     _sellerListings = [
-      {
-        "item": "देसी पोल्ट्री अंडे", "type": "अंडे", "qty": "20 Crates", "price": "₹190/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा"
-      },
-      {
-        "item": "कड़कनाथ ओरिजिनल अंडे", "type": "अंडे", "qty": "10 Crates", "price": "₹240/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम"
-      },
-      {
-        "item": "कड़कनाथ ब्लैक लाइव पक्षी", "type": "पक्षी/बर्ड्स", "qty": "25 Birds", "price": "₹650/Bird", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्योर ब्लैक"
-      },
-      {
-        "item": "देसी बतख लाइव पक्षी", "type": "पक्षी/बर्ड्स", "qty": "50 Birds", "price": "₹320/Bird", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "हेल्दी लाइव"
-      },
+      {"item": "देसी पोल्ट्री अंडे", "type": "अंडे", "qty": "20 Crates", "price": "₹190/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा"},
+      {"item": "कड़कनाथ ओरिजिनल अंडे", "type": "अंडे", "qty": "10 Crates", "price": "₹240/Crate", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम"},
+      {"item": "कड़कनाथ ब्लैक लाइव (नर ♂️ Rooster)", "type": "पक्षी/बर्ड्स", "qty": "15 Birds", "price": "₹700/Bird", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्योर ब्लैक"},
+      {"item": "देसी बतख लाइव (मादा ♀️ Duck)", "type": "पक्षी/बर्ड्स", "qty": "40 Birds", "price": "₹310/Bird", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "हेल्दी लाइव"},
     ];
   }
     void _modal(String title, List<Widget> body, String btnText, VoidCallback onAct) {
@@ -423,8 +390,7 @@ class _DashScreenState extends State<DashScreen> {
       ),
     );
   }
-
-  void _showCheckout() {
+    void _showCheckout() {
     if (_cartItems.isEmpty) return;
 
     double subtotal = 0;
@@ -440,7 +406,6 @@ class _DashScreenState extends State<DashScreen> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) => StatefulBuilder(
         builder: (context, setMState) {
-          // डिलीवरी कमीशन
           double deliveryFee = 0.0;
           if (_selectedDeliveryMode == "bus_stop") {
             deliveryFee = max(30.0, totalQuantityUnits * 15.0);
@@ -539,7 +504,6 @@ class _DashScreenState extends State<DashScreen> {
                       final dropAddress = _selectedDeliveryMode == "self" ? "स्वयं पिकअप (फार्म से)" : (_buyerAddressCtl.text.trim().isEmpty ? "ग्राहक स्थान" : _buyerAddressCtl.text.trim());
 
                       setState(() {
-                        // किसान के स्टॉक में से आर्डर की गई मात्रा घटाना (Auto Stock Reduction)
                         for (var cartItem in _cartItems) {
                           for (var sellerLot in _sellerListings) {
                             if (sellerLot["item"] == cartItem["item"]) {
@@ -583,117 +547,8 @@ class _DashScreenState extends State<DashScreen> {
         },
       ),
     );
-  }
+    }
     void _addBatchDialog() {
-    String selectedType = "अंडे";
-    String selectedItem = "देसी पोल्ट्री अंडे";
-    final qtyCtl = TextEditingController(text: "15");
-    final rateCtl = TextEditingController(text: "190");
-    final addressCtl = TextEditingController(text: "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1");
-
-    final Map<String, List<String>> itemOptions = {
-      "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो औषधीय अंडे"],
-      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव पक्षी", "व्हाइट पेकिन बतख लाइव पक्षी", "जापानी बटेर (Quail) लाइव पक्षी", "ईमू लाइव वयस्क पक्षी"],
-    };
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setBState) {
-          final isEgg = selectedType == "अंडे";
-          final unitLabel = isEgg ? "Crate (ट्रे)" : "Birds (नग)";
-          final rateLabel = isEgg ? "रेट प्रति Crate (₹)" : "रेट प्रति Bird (₹)";
-
-          return Padding(
-            padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const Text("नई खेप लिस्ट करें (Add Lot)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-                  const Divider(),
-                  const Text("1. प्रकार चुनें (Type):", style: TextStyle(fontWeight: FontWeight.bold)),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text("अंडे"),
-                          value: "अंडे",
-                          groupValue: selectedType,
-                          onChanged: (v) {
-                            setBState(() {
-                              selectedType = v!;
-                              selectedItem = itemOptions[selectedType]!.first;
-                              rateCtl.text = "190";
-                            });
-                          },
-                        ),
-                      ),
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text("पक्षी/बर्ड्स"),
-                          value: "पक्षी/बर्ड्स",
-                          groupValue: selectedType,
-                          onChanged: (v) {
-                            setBState(() {
-                              selectedType = v!;
-                              selectedItem = itemOptions[selectedType]!.first;
-                              rateCtl.text = "290";
-                            });
-                          },
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  const Text("2. उत्पाद की नस्ल/कैटेगरी:", style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(6)),
-                    child: DropdownButton<String>(
-                      isExpanded: true,
-                      underline: const SizedBox(),
-                      value: selectedItem,
-                      items: itemOptions[selectedType]!.map((it) => DropdownMenuItem(value: it, child: Text(it))).toList(),
-                      onChanged: (v) => setBState(() => selectedItem = v!),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  TextField(
-                    controller: qtyCtl,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: "मात्रा ($unitLabel)", border: const OutlineInputBorder()),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: rateCtl,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(labelText: rateLabel, border: const OutlineInputBorder()),
-                  ),
-                  const SizedBox(height: 10),
-                  TextField(
-                    controller: addressCtl,
-                    decoration: const InputDecoration(labelText: "फार्म का पूरा पता (पिकअप लोकेशन)", border: OutlineInputBorder()),
-                  ),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
-                    onPressed: () {
-                      Navigator.pop(ctx);
-                      final finalUnit = isEgg ? "Crates" : "Birds";
-                      final finalRate = isEgg ? "₹${rateCtl.text.trim()}/Crate" : "₹${rateCtl.text.trim()}/Bird";
-
-                      setState(() {
-                        _sellerListings.insert(0, {
-                          "item": selectedItem,
-                          "type": selectedType,
-                          "qty": "${qtyCtl.text.trim()} $finalUnit",
-                          "price": finalRate,
-  void _addBatchDialog() {
     String selectedType = "अंडे";
     String selectedGender = "नर ♂️ (Rooster)";
     String selectedItem = "देसी पोल्ट्री अंडे";
@@ -703,7 +558,7 @@ class _DashScreenState extends State<DashScreen> {
 
     final Map<String, List<String>> itemOptions = {
       "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो औषधीय अंडे"],
-      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव पक्षी", "व्हाइट पेकिन बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी"],
+      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "व्हाइट पेकिन बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी"],
     };
 
     showModalBottomSheet(
@@ -875,8 +730,7 @@ class _DashScreenState extends State<DashScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("लॉट की जानकारी अपडेट हो गई!")));
     });
   }
-
-  @override
+    @override
   Widget build(BuildContext context) {
     String heading = widget.role == "seller" ? "किसान डैशबोर्ड" : (widget.role == "commuter" ? "कम्यूटर डिलीवरी" : "ग्राहक बाज़ार (Anda Express)");
     return PopScope(
@@ -962,7 +816,6 @@ class _DashScreenState extends State<DashScreen> {
                             Text("📍 डिलीवरी मोड: ${ord['mode'] == 'bus_stop' ? 'बस स्टॉप पिकअप' : 'होम डिलीवरी'}", style: const TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w500)),
                             Text("🚚 डिलीवरी पार्टनर: कम्यूटर द्वारा रास्ते में लाया जाएगा", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
                           ],
-
                         ],
                       ),
                     ),
@@ -1103,7 +956,6 @@ class _DashScreenState extends State<DashScreen> {
       ],
     );
   }
-
     Widget _buildSeller() {
     final pendingOrders = AppState.orders.where((o) => o["status"] == "pending_seller").toList();
 
@@ -1232,6 +1084,7 @@ class _DashScreenState extends State<DashScreen> {
       ],
     );
   }
+
   Widget _buildCommuter() {
     final liveTrips = AppState.orders.where((o) => (o["status"] == "ready_for_pickup" || o["status"] == "in_transit") && o["mode"] != "self").toList();
 
