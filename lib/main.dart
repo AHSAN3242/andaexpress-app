@@ -802,8 +802,14 @@ class _DashScreenState extends State<DashScreen> {
                           ),
                           const SizedBox(height: 2),
                           Text("स्थिति: $stText", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
-                          Text("📍 फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w500)),
-                          Text("📞 किसान संपर्क: +91 ${ord['farmerPhone'] ?? '9876543210'}", style: const TextStyle(fontSize: 11, color: Color(0xFF9F2089), fontWeight: FontWeight.bold)),
+                          if (ord["mode"] == "self") ...[
+                            Text("📍 फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w500)),
+                            Text("📞 किसान संपर्क: +91 ${ord['farmerPhone'] ?? '9876543210'}", style: const TextStyle(fontSize: 11, color: Color(0xFF9F2089), fontWeight: FontWeight.bold)),
+                          ] else ...[
+                            Text("📍 डिलीवरी मोड: ${ord['mode'] == 'bus_stop' ? 'बस स्टॉप पिकअप' : 'होम डिलीवरी'}", style: const TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w500)),
+                            Text("🚚 डिलीवरी पार्टनर: कम्यूटर द्वारा रास्ते में लाया जाएगा", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                          ],
+
                         ],
                       ),
                     ),
