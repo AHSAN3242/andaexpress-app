@@ -40,39 +40,39 @@ class _AndaRootState extends State<AndaRoot> {
     "mr": ["अंडा एक्सप्रेस", "ताजी अंडी आणि चिकन", "ग्राहक", "शेतकरी", "डिलिव्हरी", "10 अंकी फोन नंबर", "ओटीपी मिळवा", "लॉगिन करा"],
   };
 
-  Widget _buildRoleGuidelines() {
+    Widget _buildRoleGuidelines() {
     if (_role == "seller") {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Text("👨‍🌾 किसान कार्य-गाइडलाइन (अनिवार्य नियम):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          Text("👨‍🌾 किसान कार्य-गाइडलाइन (कम्यूटर व ग्राहक सुरक्षा):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
           SizedBox(height: 6),
-          Text("1. अंडों पर तारीख: प्रत्येक अंडे या क्रेट पर संकलन/पैकिंग की तारीख स्पष्ट रूप से लिखें।", style: TextStyle(fontSize: 12)),
-          Text("2. सुरक्षित पैकिंग: माल हमेशा मजबूत क्रेट या जालीदार शेड पैकिंग में दें ताकि रास्ते में नुकसान न हो।", style: TextStyle(fontSize: 12)),
-          Text("3. प्रामाणिक माल: जो नस्ल, लिंग (नर/मादा) और लाइव GPS फोटो डाली है, ग्राहक को वही माल सौंपें।", style: TextStyle(fontSize: 12)),
-          Text("4. समय पर हाजिरी: पिकअप समय पर खेत/शेड पर माल तैयार रखें ताकि कम्यूटर का समय व्यर्थ न हो।", style: TextStyle(fontSize: 12)),
+          Text("1. पूर्व-तैयारी व समय: कम्यूटर के आने से पहले माल पैक करके रखें। कम्यूटर को इंतज़ार न कराएँ।", style: TextStyle(fontSize: 12)),
+          Text("2. प्रामाणिक नस्ल व गिनती: जो फोटो, तारीख व क्रेट में अंडों की संख्या दिखाई है, हूबहू वही माल दें।", style: TextStyle(fontSize: 12)),
+          Text("3. सुरक्षित पैकेजिंग: माल को मजबूत क्रेट/जाली में दें ताकि रास्ते के धक्कों से नुकसान का दोष कम्यूटर पर न आए।", style: TextStyle(fontSize: 12)),
         ],
       );
     } else if (_role == "buyer") {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Text("🛒 ग्राहक कार्य-गाइडलाइन (अनिवार्य नियम):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          Text("🛒 ग्राहक कार्य-गाइडलाइन (कम्यूटर व किसान सुरक्षा):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
           SizedBox(height: 6),
-          Text("1. हाथों-हाथ जांच: डिलीवरी मिलते ही कम्यूटर के सामने अंडे/पक्षी गिनें और स्थिति की जांच करें।", style: TextStyle(fontSize: 12)),
-          Text("2. OTP की सुरक्षा: माल पूरी तरह सही मिलने और संतुष्ट होने के बाद ही कम्यूटर को डिलीवरी OTP दें।", style: TextStyle(fontSize: 12)),
-          Text("3. समय पर उपस्थिति: चुने गए ड्रॉप पते (घर या बस स्टॉप) पर समय पर उपस्थित रहकर माल प्राप्त करें।", style: TextStyle(fontSize: 12)),
+          Text("1. समय पर हाजिरी: कम्यूटर के लोकेशन पर पहुँचने के 10 मिनट के भीतर माल प्राप्त करें; अकारण खड़ा न रखें।", style: TextStyle(fontSize: 12)),
+          Text("2. तुरंत मिलान व OTP: माल लिस्टिंग अनुसार सही मिलते ही तुरंत OTP देकर कम्यूटर को मुक्त करें।", style: TextStyle(fontSize: 12)),
+          Text("3. बिना कारण वापसी निषेध: सही माल होने पर मन बदलने या बिना ठोस कारण के डिलीवरी रद्द नहीं कर सकते।", style: TextStyle(fontSize: 12)),
+          Text("4. अनुपस्थिति का हर्जाना: लोकेशन पर न मिलने या फोन न उठाने पर कम्यूटर की डिलीवरी फ़ीस काटी जाएगी।", style: TextStyle(fontSize: 12)),
         ],
       );
     } else {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Text("🚚 कम्यूटर कार्य-गाइडलाइन (अनिवार्य नियम):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          Text("🚚 कम्यूटर कार्य-गाइडलाइन (किसान व ग्राहक सुरक्षा):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
           SizedBox(height: 6),
-          Text("1. सुरक्षित परिवहन: अंडों को धक्कों से और जीवित पक्षियों को धूप-हवा की सुरक्षा के साथ ले जाएं।", style: TextStyle(fontSize: 12)),
-          Text("2. सही लोकेशन: माल को ग्राहक द्वारा चुने गए ड्रॉप पॉइंट या घर पर ही सुरक्षित हैंडओवर करें।", style: TextStyle(fontSize: 12)),
-          Text("3. वैध OTP: डिलीवरी पूरी करने और एस्क्रो पेमेंट रिलीज के लिए ग्राहक से 4 अंकों का OTP जरूर लें।", style: TextStyle(fontSize: 12)),
+          Text("1. सुरक्षित परिवहन: किसान से माल लेने के बाद रास्ते में लापरवाही या धक्कों से माल को क्षति न पहुँचाएँ।", style: TextStyle(fontSize: 12)),
+          Text("2. सीधा गंतव्य: माल उठाकर बिना किसी अनावश्यक देरी के सीधे ग्राहक के दिए गए पते/पॉइंट पर पहुँचें।", style: TextStyle(fontSize: 12)),
+          Text("3. पारदर्शी हैंडओवर: ग्राहक को माल सामने सुपुर्द करें और सही OTP लेने के बाद ही डिलीवरी पूरी करें।", style: TextStyle(fontSize: 12)),
         ],
       );
     }
