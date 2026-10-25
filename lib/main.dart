@@ -31,6 +31,8 @@ class _AndaRootState extends State<AndaRoot> {
   String _lang = "hi", _role = "buyer";
   final _phone = TextEditingController(), _otp = TextEditingController();
   bool _sent = false;
+  bool _agreeGuidelines = false;
+  bool _agreeLegalDisclaimer = false;
 
   final Map<String, List<String>> _t = {
     "hi": ["अंडा एक्सप्रेस", "खेत से ताज़ा अंडे और चिकन", "खरीदार", "किसान", "डिलीवरी", "10 अंकों का फोन नंबर", "ओटीपी प्राप्त करें", "लॉगिन करें"],
@@ -38,9 +40,49 @@ class _AndaRootState extends State<AndaRoot> {
     "mr": ["अंडा एक्सप्रेस", "ताजी अंडी आणि चिकन", "ग्राहक", "शेतकरी", "डिलिव्हरी", "10 अंकी फोन नंबर", "ओटीपी मिळवा", "लॉगिन करा"],
   };
 
+  Widget _buildRoleGuidelines() {
+    if (_role == "seller") {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text("👨‍🌾 किसान कार्य-गाइडलाइन (अनिवार्य नियम):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          SizedBox(height: 6),
+          Text("1. अंडों पर तारीख: प्रत्येक अंडे या क्रेट पर संकलन/पैकिंग की तारीख स्पष्ट रूप से लिखें।", style: TextStyle(fontSize: 12)),
+          Text("2. सुरक्षित पैकिंग: माल हमेशा मजबूत क्रेट या जालीदार शेड पैकिंग में दें ताकि रास्ते में नुकसान न हो।", style: TextStyle(fontSize: 12)),
+          Text("3. प्रामाणिक माल: जो नस्ल, लिंग (नर/मादा) और लाइव GPS फोटो डाली है, ग्राहक को वही माल सौंपें।", style: TextStyle(fontSize: 12)),
+          Text("4. समय पर हाजिरी: पिकअप समय पर खेत/शेड पर माल तैयार रखें ताकि कम्यूटर का समय व्यर्थ न हो।", style: TextStyle(fontSize: 12)),
+        ],
+      );
+    } else if (_role == "buyer") {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text("🛒 ग्राहक कार्य-गाइडलाइन (अनिवार्य नियम):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          SizedBox(height: 6),
+          Text("1. हाथों-हाथ जांच: डिलीवरी मिलते ही कम्यूटर के सामने अंडे/पक्षी गिनें और स्थिति की जांच करें।", style: TextStyle(fontSize: 12)),
+          Text("2. OTP की सुरक्षा: माल पूरी तरह सही मिलने और संतुष्ट होने के बाद ही कम्यूटर को डिलीवरी OTP दें।", style: TextStyle(fontSize: 12)),
+          Text("3. समय पर उपस्थिति: चुने गए ड्रॉप पते (घर या बस स्टॉप) पर समय पर उपस्थित रहकर माल प्राप्त करें।", style: TextStyle(fontSize: 12)),
+        ],
+      );
+    } else {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: const [
+          Text("🚚 कम्यूटर कार्य-गाइडलाइन (अनिवार्य नियम):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          SizedBox(height: 6),
+          Text("1. सुरक्षित परिवहन: अंडों को धक्कों से और जीवित पक्षियों को धूप-हवा की सुरक्षा के साथ ले जाएं।", style: TextStyle(fontSize: 12)),
+          Text("2. सही लोकेशन: माल को ग्राहक द्वारा चुने गए ड्रॉप पॉइंट या घर पर ही सुरक्षित हैंडओवर करें।", style: TextStyle(fontSize: 12)),
+          Text("3. वैध OTP: डिलीवरी पूरी करने और एस्क्रो पेमेंट रिलीज के लिए ग्राहक से 4 अंकों का OTP जरूर लें।", style: TextStyle(fontSize: 12)),
+        ],
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final cur = _t[_lang]!;
+    final canProceed = _agreeGuidelines && _agreeLegalDisclaimer;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(cur[0]),
@@ -63,12 +105,12 @@ class _AndaRootState extends State<AndaRoot> {
         ],
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(18),
         child: Column(
           children: [
             Container(
-              width: 90,
-              height: 90,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
                 color: const Color(0xFFFFFBEB),
                 shape: BoxShape.circle,
@@ -78,12 +120,12 @@ class _AndaRootState extends State<AndaRoot> {
                 border: Border.all(color: const Color(0xFFFEF3C7), width: 3),
               ),
               child: const Center(
-                child: Icon(Icons.egg_alt, size: 54, color: Color(0xFFF59E0B)),
+                child: Icon(Icons.egg_alt, size: 48, color: Color(0xFFF59E0B)),
               ),
             ),
-            const SizedBox(height: 12),
-            Text(cur[1], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
+            Text(cur[1], style: const TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+            const SizedBox(height: 16),
             Row(
               children: [
                 _roleBox("buyer", cur[2], Icons.shopping_bag),
@@ -93,28 +135,129 @@ class _AndaRootState extends State<AndaRoot> {
                 _roleBox("commuter", cur[4], Icons.delivery_dining),
               ],
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 16),
             TextField(controller: _phone, keyboardType: TextInputType.phone, decoration: InputDecoration(prefixText: "+91 ", labelText: cur[5], border: const OutlineInputBorder())),
             if (_sent) ...[
-              const SizedBox(height: 12),
+              const SizedBox(height: 10),
               TextField(controller: _otp, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "OTP (123456)", border: OutlineInputBorder())),
             ],
-            const SizedBox(height: 20),
+            const SizedBox(height: 14),
+
+            // हिस्सा 1: रोल अनुसार कार्य-गाइडलाइन कार्ड
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFF8FAFC),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.grey.shade300),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildRoleGuidelines(),
+                  const Divider(height: 16),
+                  InkWell(
+                    onTap: () => setState(() => _agreeGuidelines = !_agreeGuidelines),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Checkbox(
+                          value: _agreeGuidelines,
+                          activeColor: const Color(0xFF15803D),
+                          onChanged: (v) => setState(() => _agreeGuidelines = v ?? false),
+                        ),
+                        const Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "मैंने अपनी भूमिका की उपरोक्त कार्य-गाइडलाइंस पढ़ ली हैं और मैं इनका शत-प्रतिशत पालन करने की सहमति देता हूँ।",
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 12),
+
+            // हिस्सा 2: कड़ा कानूनी अस्वीकरण व कोर्ट विवाद से मुक्ति
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFFFEF2F2),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: const Color(0xFFFECACA)),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text("⚖️ कानूनी नीति व कोर्ट/धोखाधड़ी अस्वीकरण:", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFDC2626), fontSize: 13)),
+                  const SizedBox(height: 6),
+                  const Text(
+                    "1. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है।\n"
+                    "2. धोखाधड़ी व विवाद: किसी भी पक्ष द्वारा गलत जानकारी, टूटने-फूटने, नुकसान या धोखाधड़ी के लिए ऐप अथवा इसके संचालक उत्तरदायी नहीं होंगे। यह क्रेता, विक्रेता व कम्यूटर के मध्य का आपसी मामला है।\n"
+                    "3. न्यायालय/पुलिस विवाद से मुक्ति: किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार (Party) नहीं बनाया जाएगा। सभी पक्ष अपने विवाद आपसी स्तर पर सुलझाएंगे।\n"
+                    "4. एस्क्रो सीमा: एस्क्रो केवल OTP आधारित फंड सुरक्षा है, यह माल की भौतिक गारंटी नहीं लेता।",
+                    style: TextStyle(fontSize: 11, color: Colors.black87, height: 1.3),
+                  ),
+                  const Divider(height: 16),
+                  InkWell(
+                    onTap: () => setState(() => _agreeLegalDisclaimer = !_agreeLegalDisclaimer),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Checkbox(
+                          value: _agreeLegalDisclaimer,
+                          activeColor: const Color(0xFFDC2626),
+                          onChanged: (v) => setState(() => _agreeLegalDisclaimer = v ?? false),
+                        ),
+                        const Expanded(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Text(
+                              "मैं प्लेटफ़ॉर्म की कानूनी नीति, धोखाधड़ी अस्वीकरण और न्यायालय विवाद से दायित्व-मुक्ति शर्तों से पूर्णतः सहमत हूँ।",
+                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFB91C1C)),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 16),
+
+            // लॉगिन बटन - दोनों टिक होने पर ही सक्रिय होगा
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 14)),
-                onPressed: () {
-                  if (!_sent) {
-                    if (_phone.text.length < 10) return;
-                    setState(() { _sent = true; _otp.text = "123456"; });
-                  } else {
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => DashScreen(role: _role, phone: _phone.text, lang: _lang)));
-                  }
-                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: canProceed ? const Color(0xFF9F2089) : Colors.grey.shade400,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                ),
+                onPressed: canProceed
+                    ? () {
+                        if (!_sent) {
+                          if (_phone.text.length < 10) return;
+                          setState(() { _sent = true; _otp.text = "123456"; });
+                        } else {
+                          Navigator.push(context, MaterialPageRoute(builder: (_) => DashScreen(role: _role, phone: _phone.text, lang: _lang)));
+                        }
+                      }
+                    : null,
                 child: Text(_sent ? cur[7] : cur[6], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
+            if (!canProceed)
+              const Padding(
+                padding: EdgeInsets.only(top: 6),
+                child: Text("⚠️ आगे बढ़ने के लिए दोनों नियमों पर टिक करके सहमति दें।", style: TextStyle(fontSize: 11, color: Colors.red)),
+              ),
           ],
         ),
       ),
@@ -194,7 +337,7 @@ class _DashScreenState extends State<DashScreen> {
     } else if (n.contains("ईमू") && n.contains("अंडे")) {
       return Container(
         width: size * 1.1, height: size * 1.35,
-        decoration: BoxDecoration(color: const Color(0xFF0D5C58), borderRadius: BorderRadius.all(Radius.elliptical(size, size * 1.35)), border: Border.all(color: const Color(0xFF063533), width: 1.5)),
+        decoration: BoxDecoration(color: const Color(0xFF0D5C58), borderRadius: BorderRadius.all(Radius.elliptical(size * 1.1, size * 1.35)), border: Border.all(color: const Color(0xFF063533), width: 1.5)),
       );
     } else if (n.contains("टेबल") || (n.contains("व्हाइट") && n.contains("अंडे"))) {
       return Container(
@@ -317,8 +460,8 @@ class _DashScreenState extends State<DashScreen> {
     {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर", "unitType": "Bird", "piecesPerCrate": 1, "price": 135.0, "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard 2.2kg", "farmerPhone": "9876543217", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gps": "20.6990° N, 77.0090° E"},
     {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️ Rooster)", "unitType": "Bird", "piecesPerCrate": 1, "price": 700.0, "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.6985° N, 77.0120° E"},
     {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (मादा ♀️ Hen)", "unitType": "Bird", "piecesPerCrate": 1, "price": 600.0, "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.6985° N, 77.0120° E"},
-    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (नर ♂️ Drake)", "unitType": "Bird", "piecesPerCrate": 1, "price": 350.0, "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213", "image": "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80", "gps": "20.7100° N, 77.0250° E"},
-    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (मादा ♀️ Duck)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213", "image": "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80", "gps": "20.7100° N, 77.0250° E"},
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (नर ♂️ Drake)", "unitType": "Bird", "piecesPerCrate": 1, "price": 350.0, "farm": "रिवरसाイド डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213", "image": "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80", "gps": "20.7100° N, 77.0250° E"},
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (मादा ♀️ Duck)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "farm": "रिवरसाイド डक फार्म", "farmAddress": "नहर पुलिया के पास", "dist": "7.0 किमी", "grade": "Farm Raised Live", "farmerPhone": "9876543213", "image": "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80", "gps": "20.7100° N, 77.0250° E"},
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (नर ♂️ Male Quail)", "unitType": "Bird", "piecesPerCrate": 1, "price": 70.0, "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214", "image": "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80", "gps": "20.6950° N, 77.0040° E"},
     {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर (मादा ♀️ Female Quail)", "unitType": "Bird", "piecesPerCrate": 1, "price": 60.0, "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Egg Layer Quality", "farmerPhone": "9876543214", "image": "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80", "gps": "20.6950° N, 77.0040° E"},
     {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क (नर ♂️ Male Emu)", "unitType": "Bird", "piecesPerCrate": 1, "price": 3800.0, "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215", "image": "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80", "gps": "20.6800° N, 77.0300° E"},
