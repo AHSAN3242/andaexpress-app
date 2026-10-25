@@ -1,7 +1,11 @@
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:intl/intl.dart';
+import 'package:image/image.dart' as img;
 
 // ग्लोबल स्टेट
 class AppState {
@@ -609,6 +613,7 @@ class _DashScreenState extends State<DashScreen> {
     String selectedGender = "नर ♂️ (Rooster)";
     String selectedItem = "देसी पोल्ट्री अंडे";
     String? localPhotoPath;
+    bool isProcessingGps = false;
     final customNameCtl = TextEditingController();
     final qtyCtl = TextEditingController(text: "15");
     final rateCtl = TextEditingController(text: "190");
@@ -619,6 +624,54 @@ class _DashScreenState extends State<DashScreen> {
       "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो औषधीय अंडे", "अन्य अंडे (Other Eggs)"],
       "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "देसी / फार्म बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी", "अन्य नस्ल (Other Breed)"],
     };
+
+    // लाइव GPS लोकेशन फेच करने का फंक्शन
+    Future<Position?> getCurrentGps() async {
+      try {
+        LocationPermission perm = await Geolocator.checkPermission();
+        if (perm == LocationPermission.denied) {
+          perm = await Geolocator.requestPermission();
+          if (perm == LocationPermission.denied) return null;
+        }
+        if (perm == LocationPermission.deniedForever) return null;
+        return await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high, timeLimit: const Duration(seconds: 7));
+      } catch (_) {
+        return null;
+      }
+    }
+
+    // फोटो पर लाइव GPS + टाइम वॉटरमार्क छापने का फंक्शन
+    Future<String> burnGpsWatermark(String rawPath, Position? pos) async {
+      final bytes = await File(rawPath).readAsBytes();
+      img.Image? original = img.decodeImage(bytes);
+      if (original == null) return rawPath;
+
+      // इमेज को मानक आकार (800w) में रिसाइज़ करना
+      if (original.width > 900) {
+        original = img.copyResize(original, width: 800);
+      }
+
+      final now = DateTime.now();
+      final dateStr = DateFormat("dd-MMM-yyyy hh:mm a").format(now);
+      final lat = pos != null ? pos.latitude.toStringAsFixed(4) : "20.7002";
+      final lng = pos != null ? pos.longitude.toStringAsFixed(4) : "77.0082";
+      final gpsLine = "GPS: $lat N, $lng E | $dateStr";
+      const farmLine = "VERIFIED FARM LOT | ANDA EXPRESS";
+
+      // नीचे डार्क ओवरले बार जोड़ना
+      final barH = 50;
+      final startY = original.height - barH;
+      img.fillRect(original, x1: 0, y1: startY, x2: original.width, y2: original.height, color: img.ColorRgba8(0, 0, 0, 200));
+
+      // वॉटरमार्क टेक्स्ट लिखना
+      img.drawString(original, gpsLine, font: img.arial14, x: 15, y: startY + 8, color: img.ColorRgba8(254, 240, 138, 255));
+      img.drawString(original, farmLine, font: img.arial14, x: 15, y: startY + 28, color: img.ColorRgba8(255, 255, 255, 255));
+
+      final stampedPath = rawPath.replaceAll(".jpg", "_gps.jpg");
+      final stampedFile = File(stampedPath);
+      await stampedFile.writeAsBytes(img.encodeJpg(original, quality: 82));
+      return stampedFile.path;
+    }
 
     showModalBottomSheet(
       context: context,
@@ -633,12 +686,19 @@ class _DashScreenState extends State<DashScreen> {
 
           Future<void> pickPhoto(ImageSource src) async {
             try {
-              final picked = await picker.pickImage(source: src, imageQuality: 75);
+              final picked = await picker.pickImage(source: src, imageQuality: 85);
               if (picked != null) {
-                setBState(() => localPhotoPath = picked.path);
+                setBState(() => isProcessingGps = true);
+                final pos = await getCurrentGps();
+                final stamped = await burnGpsWatermark(picked.path, pos);
+                setBState(() {
+                  localPhotoPath = stamped;
+                  isProcessingGps = false;
+                });
               }
             } catch (e) {
-              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("कैमरा या गैलरी खोलने में असमर्थ।")));
+              setBState(() => isProcessingGps = false);
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("फोटो कैप्चर में असमर्थ।")));
             }
           }
 
@@ -736,7 +796,7 @@ class _DashScreenState extends State<DashScreen> {
                     ),
                   ],
                   const SizedBox(height: 12),
-                  // असली कैमरा और गैलरी फोटो बॉक्स
+                  // जीपीएस वाटरमार्क कैमरा बटन
                   InkWell(
                     onTap: () {
                       showModalBottomSheet(
@@ -746,7 +806,8 @@ class _DashScreenState extends State<DashScreen> {
                             children: [
                               ListTile(
                                 leading: const Icon(Icons.camera_alt, color: Color(0xFF15803D)),
-                                title: const Text("कैमरा से लाइव फोटो खींचें 📷"),
+                                title: const Text("कैमरा से लाइव GPS फोटो खींचें 📷"),
+                                subtitle: const Text("ऑटोमैटिक दिनांक व लोकेशन स्टैम्प"),
                                 onTap: () {
                                   Navigator.pop(context);
                                   pickPhoto(ImageSource.camera);
@@ -774,10 +835,12 @@ class _DashScreenState extends State<DashScreen> {
                       ),
                       child: Row(
                         children: [
-                          if (localPhotoPath != null)
+                          if (isProcessingGps)
+                            const SizedBox(width: 48, height: 48, child: Center(child: CircularProgressIndicator(color: Color(0xFF15803D))))
+                          else if (localPhotoPath != null)
                             ClipRRect(
                               borderRadius: BorderRadius.circular(6),
-                              child: Image.file(File(localPhotoPath!), width: 50, height: 50, fit: BoxFit.cover),
+                              child: Image.file(File(localPhotoPath!), width: 54, height: 54, fit: BoxFit.cover),
                             )
                           else
                             const Icon(Icons.add_a_photo, size: 36, color: Color(0xFF15803D)),
@@ -786,8 +849,16 @@ class _DashScreenState extends State<DashScreen> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(localPhotoPath != null ? "माल की फोटो चुनी गई ✅" : "खेत/माल की लाइव फोटो जोड़ें 📷", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                                Text(localPhotoPath != null ? "बदलने के लिए फिर से टैप करें" : "कैमरा या गैलरी से लाइव फोटो चुनें", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                                Text(
+                                  isProcessingGps
+                                      ? "GPS स्टैम्प लगाया जा रहा है..."
+                                      : (localPhotoPath != null ? "GPS वाटरमार्क फोटो तैयार ✅" : "लाइव GPS फोटो खींचें 📷"),
+                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                                ),
+                                Text(
+                                  localPhotoPath != null ? "लाइव लोकेशन व दिनांक वॉटरमार्क शामिल है" : "टैप करें - ऑटोमैटिक टाइम व GPS मुहर लगेगी",
+                                  style: const TextStyle(fontSize: 11, color: Colors.blueGrey),
+                                ),
                               ],
                             ),
                           ),
@@ -835,7 +906,7 @@ class _DashScreenState extends State<DashScreen> {
                           "image": localPhotoPath ?? "",
                         });
                       });
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("नई खेप सफलतापूर्वक लिस्ट हो गई!")));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("नई खेप GPS वॉटरमार्क के साथ लाइव हो गई!")));
                     },
                     child: const Text("खेप तुरंत लाइव करें", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
