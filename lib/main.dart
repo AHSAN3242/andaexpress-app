@@ -1321,6 +1321,9 @@ class _DashScreenState extends State<DashScreen> {
       TextField(controller: qtyCtl, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "नई मात्रा (${isEgg ? 'Crates' : 'Birds'})", border: const OutlineInputBorder())),
       if (isEgg) ...[
         const SizedBox(height: 10),
+        TextField(controller: pcsCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "1 क्रेट में अंडों की संख्या", border: OutlineInputBorder())),
+      ],
+      const SizedBox(height: 10),
       TextField(controller: rateCtl, keyboardType: TextInputType.number, decoration: InputDecoration(labelText: "नया रेट (${isEgg ? '₹/Crate' : '₹/Bird'})", border: const OutlineInputBorder())),
       const SizedBox(height: 10),
       TextField(controller: addressCtl, decoration: const InputDecoration(labelText: "फार्म का पता", border: const OutlineInputBorder())),
@@ -1337,8 +1340,8 @@ class _DashScreenState extends State<DashScreen> {
       });
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("लॉट की जानकारी अपडेट हो गई!")));
     });
-      }
-        @override
+  }
+    @override
   Widget build(BuildContext context) {
     String heading = widget.role == "seller" ? "किसान डैशबोर्ड" : (widget.role == "commuter" ? "कम्यूटर डिलीवरी" : "ग्राहक बाज़ार (Anda Express)");
     return PopScope(
@@ -1595,7 +1598,7 @@ class _DashScreenState extends State<DashScreen> {
       ],
     );
   }
-        Widget _buildSeller() {
+    Widget _buildSeller() {
     final pendingOrders = AppState.orders.where((o) => o["status"] == "pending_seller" || o["status"] == "packed_ready").toList();
 
     return ListView(
