@@ -32,8 +32,7 @@ class _AndaRootState extends State<AndaRoot> {
   String _lang = "hi", _role = "buyer";
   final _phone = TextEditingController(), _otp = TextEditingController();
   bool _sent = false;
-  bool _agreeGuidelines = false;
-  bool _agreeLegalDisclaimer = false;
+  bool _agreeAllRules = false;
 
   final Map<String, List<String>> _t = {
     "hi": ["अंडा एक्सप्रेस", "खेत से ताज़ा अंडे और चिकन", "खरीदार", "किसान", "डिलीवरी", "10 अंकों का फोन नंबर", "ओटीपी प्राप्त करें", "लॉगिन करें"],
@@ -41,49 +40,63 @@ class _AndaRootState extends State<AndaRoot> {
     "mr": ["अंडा एक्सप्रेस", "ताजी अंडी आणि चिकन", "ग्राहक", "शेतकरी", "डिलिव्हरी", "10 अंकी फोन नंबर", "ओटीपी मिळवा", "लॉगिन करा"],
   };
 
-  Widget _buildRoleGuidelines() {
+  Widget _buildUnifiedGuidelines() {
+    String roleRespTitle = "ग्राहक की जिम्मेदारी";
+    List<String> rolePoints = [
+      "1. समय पर हाजिरी: 15-मिनट WhatsApp अलर्ट मिलते ही डिलीवरी पॉइंट/बस स्टॉप पर समय पर उपस्थित रहें; कम्यूटर को अकारण इंतज़ार न कराएँ।",
+      "2. अकारण वापसी निषेध: यदि माल किसान द्वारा लिस्टिंग अनुसार सही है, तो मन बदलने या अकारण डिलीवरी अस्वीकार नहीं की जा सकती।",
+      "3. सूचना पर रिप्लाई: ऑर्डर बुकिंग के बाद उपलब्ध कन्फर्मेशन विंडो में WhatsApp/कॉल पर उत्तर देना अनिवार्य है।",
+      "4. अनुपस्थिति पर दोनों तरफ का किराया: कम्यूटर के 10 मिनट इंतज़ार के बाद न पहुँचने पर माल वापस गाँव भेज दिया जाएगा और दोनों तरफ का कुल किराया आपके अग्रिम भुगतान से काटा जाएगा।",
+    ];
+
     if (_role == "seller") {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text("👨‍🌾 किसान कार्य-गाइडलाइन व हर्जाना नीति:", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
-          SizedBox(height: 6),
-          Text("1. प्रत्येक पक्षी का अलग टैग व वजन: हर पक्षी का अलग विशिष्ट टैग नंबर और कांटे पर वजन के साथ फोटो अपलोड करना अनिवार्य है।", style: TextStyle(fontSize: 12)),
-          Text("2. अंडों पर उत्पादन तारीख: प्रत्येक अंडे/क्रेट पर उत्पादन तिथि स्टैम्प व औसत वजन स्पष्ट होना चाहिए (±10-15g मार्जिन मान्य)।", style: TextStyle(fontSize: 12)),
-          Text("3. प्रामाणिक माल की सुपुर्दगी: जो फोटो और विवरण ऐप पर दिखाया है, कम्यूटर को हूबहू वही माल सौंपना होगा।", style: TextStyle(fontSize: 12)),
-          Text("4. गलत माल पर दोनों तरफ का भाड़ा वसूली: यदि दिखाया हुआ माल नहीं दिया जाता या टैग मेल नहीं खाता, तो कम्यूटर फ़ीस और रिटर्न का दोनों तरफ का पूरा भाड़ा किसान के वॉलेट से काटा जाएगा।", style: TextStyle(fontSize: 12, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold)),
-        ],
-      );
-    } else if (_role == "buyer") {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text("🛒 ग्राहक कार्य-गाइडलाइन व अनुपस्थिति हर्जाना नीति:", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
-          SizedBox(height: 6),
-          Text("1. समय पर हाजिरी: 15-मिनट WhatsApp अलर्ट मिलते ही डिलीवरी पॉइंट/बस स्टॉप पर समय पर उपस्थित रहें; कम्यूटर को अकारण इंतज़ार न कराएँ।", style: TextStyle(fontSize: 12)),
-          Text("2. अकारण वापसी निषेध: यदि माल किसान द्वारा लिस्टिंग अनुसार सही है, तो मन बदलने या अकारण डिलीवरी अस्वीकार नहीं की जा सकती।", style: TextStyle(fontSize: 12)),
-          Text("3. सूचना पर रिप्लाई: ऑर्डर बुकिंग के बाद उपलब्ध कैंसिलेशन/कन्फर्मेशन अवधि के दौरान WhatsApp या कॉल पर उत्तर देना अनिवार्य है।", style: TextStyle(fontSize: 12)),
-          Text("4. अनुपस्थिति पर दोनों तरफ का किराया: कम्यूटर के 10 मिनट इंतज़ार के बाद न पहुँचने पर माल वापस गाँव भेज दिया जाएगा और दोनों तरफ का कुल किराया आपके अग्रिम भुगतान से काटा जाएगा।", style: TextStyle(fontSize: 12, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold)),
-        ],
-      );
-    } else {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
-          Text("🚚 कम्यूटर कार्य-गाइडलाइन (फार्म पर सत्यापन व सुरक्षा):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
-          SizedBox(height: 6),
-          Text("1. फार्म पर टैग व वजन मिलान: फार्म पर हर पक्षी का टैग नंबर व वजन स्क्रीन से जांचकर ही पिकअप स्वीकार करें।", style: TextStyle(fontSize: 12)),
-          Text("2. 15-Min WhatsApp अलर्ट: बस स्टैंड पहुँचने से 15 मिनट पूर्व ग्राहक को ऐप के माध्यम से WhatsApp चेतावनी ज़रूर भेजें।", style: TextStyle(fontSize: 12)),
-          Text("3. वापसी बस हैंडओवर: ग्राहक के न आने पर 10 मिनट बाद लोकल बस कंडक्टर को माल सौंपकर बस नंबर व फ़ोटो ऐप में दर्ज करें; आपकी डिलीवरी फ़ीस 100% सुरक्षित रहेगी।", style: TextStyle(fontSize: 12)),
-        ],
-      );
+      roleRespTitle = "किसान की जिम्मेदारी";
+      rolePoints = [
+        "1. अलग-अलग टैग व वजन: हर पक्षी का अलग विशिष्ट टैग नंबर और कांटे पर वजन के साथ 5 से 7 फोटो अपलोड करना अनिवार्य है।",
+        "2. अंडों पर उत्पादन तारीख: प्रत्येक अंडे/क्रेट पर उत्पादन तिथि स्टैम्प व औसत वजन दर्ज करें (±10-15g मार्जिन मान्य)।",
+        "3. प्रामाणिक माल की सुपुर्दगी: जो फोटो और विवरण ऐप पर दिखाया है, कम्यूटर को हूबहू वही माल सौंपना होगा।",
+        "4. गलत माल पर दोनों तरफ का भाड़ा वसूली: यदि दिखाया हुआ माल नहीं दिया जाता या टैग मेल नहीं खाता, तो दोनों तरफ का पूरा भाड़ा किसान के वॉलेट से काटा जाएगा।",
+      ];
+    } else if (_role == "commuter") {
+      roleRespTitle = "कम्यूटर की जिम्मेदारी";
+      rolePoints = [
+        "1. फार्म पर टैग व वजन मिलान: फार्म पर हर पक्षी का टैग नंबर व वजन स्क्रीन से जांचकर ही पिकअप स्वीकार करें।",
+        "2. 15-Min WhatsApp अलर्ट: बस स्टैंड पहुँचने से 15 मिनट पूर्व ग्राहक को ऐप से WhatsApp चेतावनी ज़रूर भेजें।",
+        "3. वापसी बस हैंडओवर: ग्राहक के न आने पर 10 मिनट बाद लोकल बस कंडक्टर को माल सौंपकर बस नंबर व फ़ोटो ऐप में दर्ज करें; आपकी डिलीवरी फ़ीस सुरक्षित रहेगी।",
+      ];
     }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "सभी तरह के गैर व्यवहार और धोखाधड़ी से बचने के लिए हर नियम का पालन करना अनिवार्य है",
+          style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13, height: 1.3),
+        ),
+        const SizedBox(height: 10),
+        Text("📋 $roleRespTitle:", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF166534), fontSize: 13)),
+        const SizedBox(height: 4),
+        ...rolePoints.map((pt) => Padding(
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Text(pt, style: const TextStyle(fontSize: 12, color: Color(0xFF14532D))),
+        )),
+        const Divider(color: Color(0xFFBBF7D0), height: 16),
+        const Text("⚖️ लीगल प्रक्रिया (कानूनी नीति व न्यायालय मुक्ति):", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF166534), fontSize: 13)),
+        const SizedBox(height: 4),
+        const Text(
+          "1. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है।\n"
+          "2. धोखाधड़ी व विवाद: किसी भी पक्ष द्वारा गलत जानकारी, टूटने-फूटने, नुकसान या धोखाधड़ी के लिए ऐप अथवा इसके संचालक उत्तरदायी नहीं होंगे।\n"
+          "3. न्यायालय/पुलिस विवाद से मुक्ति: किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार (Party) नहीं बनाया जाएगा; सभी पक्ष अपने विवाद आपसी स्तर पर सुलझाएंगे।\n"
+          "4. एस्क्रो व टोकन सीमा: एस्क्रो केवल OTP आधारित फंड सुरक्षा व किराया कटौती प्रबंधन करता है, यह माल की भौतिक गारंटी नहीं लेता।",
+          style: TextStyle(fontSize: 11, color: Color(0xFF14532D), height: 1.3),
+        ),
+      ],
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final cur = _t[_lang]!;
-    final canProceed = _agreeGuidelines && _agreeLegalDisclaimer;
 
     return Scaffold(
       appBar: AppBar(
@@ -145,81 +158,37 @@ class _AndaRootState extends State<AndaRoot> {
             ],
             const SizedBox(height: 14),
 
+            // पूर्णतः एकीकृत हरा कार्ड (जिम्मेदारी + लीगल प्रक्रिया)
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(14),
               decoration: BoxDecoration(
-                color: const Color(0xFFF8FAFC),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.grey.shade300),
+                color: const Color(0xFFF0FDF4),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: const Color(0xFF86EFAC), width: 1.5),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  _buildRoleGuidelines(),
-                  const Divider(height: 16),
+                  _buildUnifiedGuidelines(),
+                  const Divider(color: Color(0xFFBBF7D0), height: 18),
                   InkWell(
-                    onTap: () => setState(() => _agreeGuidelines = !_agreeGuidelines),
+                    onTap: () => setState(() => _agreeAllRules = !_agreeAllRules),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Checkbox(
-                          value: _agreeGuidelines,
+                          value: _agreeAllRules,
                           activeColor: const Color(0xFF15803D),
-                          onChanged: (v) => setState(() => _agreeGuidelines = v ?? false),
+                          checkColor: Colors.white,
+                          side: const BorderSide(color: Color(0xFF15803D), width: 2),
+                          onChanged: (v) => setState(() => _agreeAllRules = v ?? false),
                         ),
                         const Expanded(
                           child: Padding(
                             padding: EdgeInsets.only(top: 8),
                             child: Text(
-                              "मैंने हर पक्षी के अलग टैग, अंडों पर तारीख, समय पर हाजिरी और दोनों तरफ का किराया कटने की शर्तों को पढ़ लिया है और मैं सहमत हूँ।",
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 12),
-
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: const Color(0xFFFEF2F2),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: const Color(0xFFFECACA)),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text("⚖️ कानूनी नीति व कोर्ट/धोखाधड़ी अस्वीकरण:", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFDC2626), fontSize: 13)),
-                  const SizedBox(height: 6),
-                  const Text(
-                    "1. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है।\n"
-                    "2. धोखाधड़ी व विवाद: किसी भी पक्ष द्वारा गलत जानकारी, टूटने-फूटने, नुकसान या धोखाधड़ी के लिए ऐप अथवा इसके संचालक उत्तरदायी नहीं होंगे।\n"
-                    "3. न्यायालय/पुलिस विवाद से मुक्ति: किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार (Party) नहीं बनाया जाएगा।\n"
-                    "4. एस्क्रो व टोकन सीमा: एस्क्रो केवल OTP आधारित फंड सुरक्षा व किराया कटौती प्रबंधन करता है, यह माल की भौतिक गारंटी नहीं लेता।",
-                    style: TextStyle(fontSize: 11, color: Colors.black87, height: 1.3),
-                  ),
-                  const Divider(height: 16),
-                  InkWell(
-                    onTap: () => setState(() => _agreeLegalDisclaimer = !_agreeLegalDisclaimer),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Checkbox(
-                          value: _agreeLegalDisclaimer,
-                          activeColor: const Color(0xFFDC2626),
-                          onChanged: (v) => setState(() => _agreeLegalDisclaimer = v ?? false),
-                        ),
-                        const Expanded(
-                          child: Padding(
-                            padding: EdgeInsets.only(top: 8),
-                            child: Text(
-                              "मैं प्लेटफ़ॉर्म की कानूनी नीति, धोखाधड़ी अस्वीकरण और न्यायालय विवाद से दायित्व-मुक्ति शर्तों से पूर्णतः सहमत हूँ।",
-                              style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFB91C1C)),
+                              "मैंने प्लेटफ़ॉर्म के सभी नियम, जिम्मेदारी, हर्जाना नीति व लीगल प्रक्रिया को पढ़ लिया है और मैं शत-प्रतिशत सहमत हूँ।",
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF14532D)),
                             ),
                           ),
                         ),
@@ -235,11 +204,11 @@ class _AndaRootState extends State<AndaRoot> {
               width: double.infinity,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: canProceed ? const Color(0xFF9F2089) : Colors.grey.shade400,
+                  backgroundColor: _agreeAllRules ? const Color(0xFF9F2089) : Colors.grey.shade400,
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                 ),
-                onPressed: canProceed
+                onPressed: _agreeAllRules
                     ? () {
                         if (!_sent) {
                           if (_phone.text.length < 10) return;
@@ -252,10 +221,10 @@ class _AndaRootState extends State<AndaRoot> {
                 child: Text(_sent ? cur[7] : cur[6], style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
               ),
             ),
-            if (!canProceed)
+            if (!_agreeAllRules)
               const Padding(
                 padding: EdgeInsets.only(top: 6),
-                child: Text("⚠️ आगे बढ़ने के लिए दोनों नियमों पर टिक करके सहमति दें।", style: TextStyle(fontSize: 11, color: Colors.red)),
+                child: Text("⚠️ आगे बढ़ने के लिए हरे नियम बॉक्स पर टिक करके सहमति दें।", style: TextStyle(fontSize: 11, color: Colors.red)),
               ),
           ],
         ),
@@ -369,6 +338,8 @@ class _DashScreenState extends State<DashScreen> {
       return Text("🦤", style: TextStyle(fontSize: size));
     } else if (n.contains("बॉयलर")) {
       return Text("🐔", style: TextStyle(fontSize: size));
+    } else if (n.contains("अन्य") || n == "✨") {
+      return Text("✨", style: TextStyle(fontSize: size));
     }
     return Text("🐓", style: TextStyle(fontSize: size));
   }
@@ -465,49 +436,88 @@ class _DashScreenState extends State<DashScreen> {
     );
   }
 
-  // सभी श्रेणियों और उपश्रेणियों का संपूर्ण कैटलॉग (ताकि कोई भी श्रेणी खाली न दिखे)
+  // सभी बर्ड्स और अंडों में 5-7 मल्टीपल फोटो (कंबाइन लॉट + अलग-अलग पक्षियों के कांटे पर वजन व टैग)
   final List<Map<String, dynamic>> _allProducts = [
-    // 1. अंडे (Eggs) - सभी 6 उपश्रेणियाँ
-    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 190.0, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "ताज़ा • तारीख मुहर सहित", "farmerPhone": "9876543210", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0094° E"},
-    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 20, "price": 240.0, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
-    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "piecesPerCrate": 30, "price": 155.0, "weight": "55-60g/अंडा (±10g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh", "farmerPhone": "9876543212", "gallery": ["https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=800&q=80"], "gps": "20.7050° N, 77.0180° E"},
-    {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 210.0, "weight": "65-70g/अंडा (±15g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Large Organic Size", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
-    {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "unitType": "Crate", "piecesPerCrate": 24, "price": 120.0, "weight": "12-15g/अंडा (±5g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "ग्रीन वैली पोल्ट्री", "farmAddress": "एमआईडीसी गेट क्र. 2", "dist": "4.0 किमी", "grade": "चितकबरे स्पॉट Nutrient Rich", "farmerPhone": "9876543214", "gallery": ["https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"], "gps": "20.6950° N, 77.0040° E"},
-    {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू जंबो औषधीय अंडे", "unitType": "Piece", "piecesPerCrate": 1, "price": 450.0, "weight": "550-600g/अंडा (±50g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 45 दिन", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Dark Green Shell", "farmerPhone": "9876543215", "gallery": ["https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"], "gps": "20.6800° N, 77.0300° E"},
+    // 1. अंडे
+    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 190.0, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "ताज़ा • तारीख मुहर सहित", "farmerPhone": "9876543210", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0094° E"},
+    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 20, "price": 240.0, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
+    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "piecesPerCrate": 30, "price": 155.0, "weight": "55-60g/अंडा (±10g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh", "farmerPhone": "9876543212", "gallery": ["https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=800&q=80"], "gps": "20.7050° N, 77.0180° E"},
+    {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 210.0, "weight": "65-70g/अंडा (±15g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Large Organic Size", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
+    {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "unitType": "Crate", "piecesPerCrate": 24, "price": 120.0, "weight": "12-15g/अंडा (±5g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "ग्रीन वैली पोल्ट्री", "farmAddress": "एमआईडीसी गेट क्र. 2", "dist": "4.0 किमी", "grade": "चितकबरे स्पॉट Nutrient Rich", "farmerPhone": "9876543214", "gallery": ["https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"], "gps": "20.6950° N, 77.0040° E"},
+    {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू जंबो औषधीय अंडे", "unitType": "Piece", "piecesPerCrate": 1, "price": 450.0, "weight": "550-600g/अंडा (±50g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 45 दिन", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Dark Green Shell", "farmerPhone": "9876543215", "gallery": ["https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"], "gps": "20.6800° N, 77.0300° E"},
 
-    // 2. देसी चिकन (Desi Chicken)
-    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.8kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "D", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": ["https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80"], "gps": "20.7020° N, 77.0110° E"},
-    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (मादा ♀️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 270.0, "weight": "1.4kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DF", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": ["https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80"], "gps": "20.7020° N, 77.0110° E"},
+    // 2. देसी चिकन (5-7 फोटो: 1 कंबाइन + बाकी अलग-अलग बर्ड्स कांटे पर)
+    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.8kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "D", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": [
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.7020° N, 77.0110° E"},
 
-    // 3. बॉयलर चिकन (Broiler Chicken)
-    {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर (लाइव)", "unitType": "Bird", "piecesPerCrate": 1, "price": 135.0, "weight": "2.2kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "B", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard Fresh Live", "farmerPhone": "9876543217", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"], "gps": "20.6990° N, 77.0090° E"},
+    // 3. बॉयलर चिकन (5 फोटो गैलरी)
+    {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर (लाइव)", "unitType": "Bird", "piecesPerCrate": 1, "price": 135.0, "weight": "2.2kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "B", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard Fresh Live", "farmerPhone": "9876543217", "gallery": [
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.6990° N, 77.0090° E"},
 
-    // 4. कड़कनाथ (Kadaknath)
-    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 700.0, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "K", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
-    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (मादा ♀️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 600.0, "weight": "1.2kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "KF", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
+    // 4. कड़कनाथ (5-7 फोटो गैलरी)
+    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 700.0, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "K", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "gallery": [
+      "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.6985° N, 77.0120° E"},
 
-    // 5. बतख (Ducks)
-    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (नर ♂️ Drake)", "unitType": "Bird", "piecesPerCrate": 1, "price": 350.0, "weight": "2.0kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DK", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Healthy Live Duck", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
-    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (मादा ♀️ Duck)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.7kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DKF", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Healthy Live Duck", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
+    // 5. बतख (5 फोटो गैलरी)
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (नर ♂️ Drake)", "unitType": "Bird", "piecesPerCrate": 1, "price": 350.0, "weight": "2.0kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DK", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Healthy Live Duck", "farmerPhone": "9876543213", "gallery": [
+      "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.7100° N, 77.0250° E"},
 
-    // 6. बटेर (Quail)
-    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 70.0, "weight": "220g (±30g प्राकृतिक मार्जिन)", "tagPrefix": "Q", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214", "gallery": ["https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"], "gps": "20.6950° N, 77.0040° E"},
+    // 6. बटेर (5 फोटो गैलरी)
+    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 70.0, "weight": "220g (±30g प्राकृतिक मार्जिन)", "tagPrefix": "Q", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214", "gallery": [
+      "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.6950° N, 77.0040° E"},
 
-    // 7. ईमू (Emu)
-    {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क पक्षी", "unitType": "Bird", "piecesPerCrate": 1, "price": 3800.0, "weight": "35kg (±2kg मार्जिन)", "tagPrefix": "EM", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215", "gallery": ["https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"], "gps": "20.6800° N, 77.0300° E"},
+    // 7. ईमू (5 फोटो गैलरी)
+    {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क पक्षी", "unitType": "Bird", "piecesPerCrate": 1, "price": 3800.0, "weight": "35kg (±2kg मार्जिन)", "tagPrefix": "EM", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215", "gallery": [
+      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.6800° N, 77.0300° E"},
 
-    // 8. अन्य (Other)
-    {"cat": "अन्य", "sub": "अन्य", "item": "वनराजा / ग्रामप्रिया लाइव देसी", "unitType": "Bird", "piecesPerCrate": 1, "price": 320.0, "weight": "1.9kg (±200g मार्जिन)", "tagPrefix": "V", "farm": "किसान स्पेशल फार्म", "dist": "5.0 किमी", "farmAddress": "ग्रामीण शेड नंबर 2", "grade": "देसी फ्री-रेंज", "farmerPhone": "9876543216", "gallery": ["https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"], "gps": "20.7020° N, 77.0110° E"},
+    // 8. अन्य (5 फोटो गैलरी)
+    {"cat": "अन्य", "sub": "अन्य", "item": "वनराजा / ग्रामप्रिया लाइव देसी", "unitType": "Bird", "piecesPerCrate": 1, "price": 320.0, "weight": "1.9kg (±200g मार्जिन)", "tagPrefix": "V", "farm": "किसान स्पेशल फार्म", "dist": "5.0 किमी", "farmAddress": "ग्रामीण शेड नंबर 2", "grade": "देसी फ्री-रेंज", "farmerPhone": "9876543216", "gallery": [
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
+      "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"
+    ], "gps": "20.7020° N, 77.0110° E"},
   ];
 
   late List<Map<String, dynamic>> _sellerListings;
 
-  @override
+@override
   void initState() {
     super.initState();
     _sellerListings = [
-      {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
-      {"item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "10 Crates", "price": 240.0, "pieces": 20, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम", "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
+      {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
+      {"item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "10 Crates", "price": 240.0, "pieces": 20, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम", "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
       {"item": "कड़कनाथ ब्लैक लाइव (नर ♂️)", "type": "पक्षी/बर्ड्स", "qty": "15 Birds", "price": 700.0, "pieces": 1, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्योर ब्लैक", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
     ];
   }
@@ -538,14 +548,21 @@ class _DashScreenState extends State<DashScreen> {
               ),
               const SizedBox(height: 14),
               
-              // फ्लिपकार्ट स्टाइल लेफ्ट-राइट स्वाइप फोटो स्लाइडर (हर बर्ड का अलग फोटो + टैग व वजन)
+              // फ्लिपकार्ट स्टाइल 5-7 फोटो स्लाइडर (पहला फोटो कंबाइन लॉट, बाकी अलग-अलग बर्ड्स कांटे पर)
               SizedBox(
                 height: 250,
                 child: PageView.builder(
                   itemCount: max(1, gallery.length),
                   itemBuilder: (pCtx, pageIdx) {
                     final img = gallery.isNotEmpty ? gallery[pageIdx] : "";
-                    final tagOverlay = !isEgg ? "पक्षी #${pageIdx + 1} • टैग #${product['tagPrefix'] ?? 'B'}-${101 + pageIdx} • वजन: $weight" : "अंडे • मुद्रित तिथि: $prodDate";
+                    String tagOverlay;
+                    if (isEgg) {
+                      tagOverlay = pageIdx == 0 ? "📦 कंबाइन लॉट (क्रेट्स) • मुद्रित तिथि: $prodDate" : "तारीख व वजन मुहर • अंडा #${pageIdx}";
+                    } else {
+                      tagOverlay = pageIdx == 0
+                          ? "📸 पूरे लॉट का संयुक्त (कंबाइन) फोटो"
+                          : "पक्षी #${pageIdx} • टैग #${product['tagPrefix'] ?? 'B'}-${100 + pageIdx} • कांटे पर वजन: $weight";
+                    }
 
                     return Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -565,7 +582,7 @@ class _DashScreenState extends State<DashScreen> {
               const SizedBox(height: 6),
               if (gallery.length > 1)
                 const Center(
-                  child: Text("👈 अलग-अलग पक्षियों के टैग व वजन देखने के लिए स्वाइप करें 👉", style: TextStyle(fontSize: 11, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                  child: Text("👈 कंबाइन व अलग-अलग पक्षियों के कांटे पर वजन देखने के लिए स्वाइप करें 👉", style: TextStyle(fontSize: 11, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
                 ),
               const SizedBox(height: 12),
 
@@ -661,7 +678,6 @@ class _DashScreenState extends State<DashScreen> {
     );
   }
 
-  // मात्रा चुनने और अलग-अलग टैग नंबर तैयार करने का सिस्टम
   void _addToCartWithQty(Map<String, dynamic> product) {
     int qty = 1;
     final isEgg = product["unitType"] == "Crate" || (product["item"] as String).contains("अंडे");
@@ -669,13 +685,12 @@ class _DashScreenState extends State<DashScreen> {
     final unit = isEgg ? "क्रेट / ट्रे" : "पंछी / नग";
     final price = (product["price"] as double?) ?? 0.0;
     final perPiece = isEgg && pcs > 0 ? (price / pcs).toStringAsFixed(2) : null;
-    final prefix = (product["tagPrefix"] ?? "B").toString();
+    final prefix = (product["tagPrefix"] ?? "D").toString();
 
     showDialog(
       context: context,
       builder: (dCtx) => StatefulBuilder(
         builder: (context, setDState) {
-          // हर पक्षी के लिए अलग विशिष्ट टैग नंबर बनाना (उदा. #D-101, #D-102, #D-103)
           List<String> birdTags = [];
           if (!isEgg) {
             for (int k = 1; k <= qty; k++) {
@@ -1004,7 +1019,7 @@ class _DashScreenState extends State<DashScreen> {
     String selectedType = "अंडे";
     String selectedGender = "नर ♂️ (Rooster)";
     String selectedItem = "देसी पोल्ट्री अंडे";
-    String? localPhotoPath;
+    List<String> uploadedPhotos = []; // 5 से 7 फोटो रखने की सूची
     String liveGpsCoord = "20.7002° N, 77.0082° E";
     bool isProcessingGps = false;
     final customNameCtl = TextEditingController();
@@ -1050,14 +1065,14 @@ class _DashScreenState extends State<DashScreen> {
           final unitLabel = isEgg ? "Crate (ट्रे)" : "Birds (नग)";
           final rateLabel = isEgg ? "रेट प्रति Crate (₹)" : "रेट प्रति Bird (₹)";
 
-          Future<void> pickPhoto(ImageSource src) async {
+          Future<void> pickSinglePhoto(ImageSource src) async {
             try {
               final picked = await picker.pickImage(source: src, imageQuality: 80);
               if (picked != null) {
                 setBState(() => isProcessingGps = true);
                 final coord = await fetchCurrentGps();
                 setBState(() {
-                  localPhotoPath = picked.path;
+                  uploadedPhotos.add(picked.path);
                   liveGpsCoord = coord;
                   isProcessingGps = false;
                 });
@@ -1068,6 +1083,27 @@ class _DashScreenState extends State<DashScreen> {
             }
           }
 
+          Future<void> pickMultipleGalleryPhotos() async {
+            try {
+              final pickedList = await picker.pickMultiImage(imageQuality: 80);
+              if (pickedList.isNotEmpty) {
+                setBState(() => isProcessingGps = true);
+                final coord = await fetchCurrentGps();
+                setBState(() {
+                  for (var item in pickedList) {
+                    if (uploadedPhotos.length < 7) {
+                      uploadedPhotos.add(item.path);
+                    }
+                  }
+                  liveGpsCoord = coord;
+                  isProcessingGps = false;
+                });
+              }
+            } catch (e) {
+              setBState(() => isProcessingGps = false);
+            }
+          }
+
           return Padding(
             padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
             child: SingleChildScrollView(
@@ -1075,7 +1111,7 @@ class _DashScreenState extends State<DashScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text("नई खेप लिस्ट करें (विशिष्ट टैग व वजन)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                  const Text("नई खेप लिस्ट करें (5 से 7 फोटो अपलोड)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
                   const Divider(),
                   const Text("1. प्रकार चुनें (Type):", style: TextStyle(fontWeight: FontWeight.bold)),
                   Row(
@@ -1138,7 +1174,7 @@ class _DashScreenState extends State<DashScreen> {
                     const SizedBox(height: 8),
                     TextField(
                       controller: tagPrefixCtl,
-                      decoration: const InputDecoration(labelText: "टैग सीरीज / कोड (उदा. D, K, B - हर पक्षी को D-101, D-102 मिलेगा)", border: OutlineInputBorder(), isDense: true),
+                      decoration: const InputDecoration(labelText: "टैग सीरीज / कोड (उदा. D, K, B - पक्षियों को D-101, D-102 मिलेगा)", border: OutlineInputBorder(), isDense: true),
                     ),
                     const SizedBox(height: 10),
                     TextField(
@@ -1206,70 +1242,103 @@ class _DashScreenState extends State<DashScreen> {
                     ),
                   ],
                   const SizedBox(height: 12),
-                  InkWell(
-                    onTap: () {
-                      showModalBottomSheet(
-                        context: context,
-                        builder: (_) => SafeArea(
-                          child: Wrap(
+
+                  // 5 से 7 फोटो अपलोडर कार्ड (1 कंबाइन + कांटे पर अलग-अलग पक्षी)
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: uploadedPhotos.isNotEmpty ? const Color(0xFFECFDF5) : Colors.grey.shade50,
+                      border: Border.all(color: uploadedPhotos.isNotEmpty ? const Color(0xFF15803D) : Colors.grey.shade400, width: 1.5),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              "📸 फोटो अपलोड (${uploadedPhotos.length}/7):",
+                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF15803D)),
+                            ),
+                            Text(
+                              uploadedPhotos.isEmpty ? "पहला फोटो कंबाइन लॉट का लें" : "GPS: $liveGpsCoord",
+                              style: const TextStyle(fontSize: 10, color: Colors.blueGrey, fontWeight: FontWeight.w600),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          "पहला फोटो पूरे लॉट का संयुक्त (कंबाइन) और बाकी कांटे पर वजन व टैग के साथ लें।",
+                          style: TextStyle(fontSize: 11, color: Colors.black87),
+                        ),
+                        const SizedBox(height: 10),
+
+                        // फोटो थंबनेल स्क्रॉल
+                        if (uploadedPhotos.isNotEmpty) ...[
+                          SizedBox(
+                            height: 75,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: uploadedPhotos.length,
+                              itemBuilder: (context, pIdx) {
+                                return Stack(
+                                  children: [
+                                    Container(
+                                      margin: const EdgeInsets.only(right: 8),
+                                      child: buildProductThumbnail(
+                                        selectedItem,
+                                        imagePath: uploadedPhotos[pIdx],
+                                        gpsStamp: liveGpsCoord,
+                                        width: 75,
+                                        height: 75,
+                                        tagOrWeightInfo: pIdx == 0 ? "कंबाइन" : "#${pIdx}",
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 2,
+                                      right: 10,
+                                      child: GestureDetector(
+                                        onTap: () => setBState(() => uploadedPhotos.removeAt(pIdx)),
+                                        child: Container(
+                                          decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                                          padding: const EdgeInsets.all(2),
+                                          child: const Icon(Icons.close, size: 14, color: Colors.white),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              },
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                        ],
+
+                        // फोटो जोड़ने के बटन
+                        if (uploadedPhotos.length < 7)
+                          Row(
                             children: [
-                              ListTile(
-                                leading: const Icon(Icons.camera_alt, color: Color(0xFF15803D)),
-                                title: const Text("कैमरा से कांटे पर वजन व टैग के साथ फोटो लें 📷"),
-                                subtitle: const Text("GPS व समय स्टैम्प के साथ"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  pickPhoto(ImageSource.camera);
-                                },
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFF15803D), side: const BorderSide(color: Color(0xFF15803D))),
+                                  icon: const Icon(Icons.camera_alt, size: 16),
+                                  label: Text(uploadedPhotos.isEmpty ? "1. कंबाइन फोटो 📷" : "कांटे का फोटो 📷"),
+                                  onPressed: () => pickSinglePhoto(ImageSource.camera),
+                                ),
                               ),
-                              ListTile(
-                                leading: const Icon(Icons.photo_library, color: Color(0xFF9F2089)),
-                                title: const Text("गैलरी से फोटो चुनें 🖼️"),
-                                onTap: () {
-                                  Navigator.pop(context);
-                                  pickPhoto(ImageSource.gallery);
-                                },
+                              const SizedBox(width: 8),
+                              Expanded(
+                                child: OutlinedButton.icon(
+                                  style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFF9F2089), side: const BorderSide(color: Color(0xFF9F2089))),
+                                  icon: const Icon(Icons.photo_library, size: 16),
+                                  label: const Text("गैलरी से चुनें 🖼️"),
+                                  onPressed: pickMultipleGalleryPhotos,
+                                ),
                               ),
                             ],
                           ),
-                        ),
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: localPhotoPath != null ? const Color(0xFFECFDF5) : Colors.grey.shade50,
-                        border: Border.all(color: localPhotoPath != null ? const Color(0xFF15803D) : Colors.grey.shade400, width: 1.5),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Row(
-                        children: [
-                          if (isProcessingGps)
-                            const SizedBox(width: 48, height: 48, child: Center(child: CircularProgressIndicator(color: Color(0xFF15803D))))
-                          else if (localPhotoPath != null)
-                            buildProductThumbnail(selectedItem, imagePath: localPhotoPath, gpsStamp: liveGpsCoord, width: 62, height: 62)
-                          else
-                            const Icon(Icons.add_a_photo, size: 36, color: Color(0xFF15803D)),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  isProcessingGps
-                                      ? "GPS लोकेशन फेच हो रही है..."
-                                      : (localPhotoPath != null ? "कांटे पर वजन व टैग फोटो तैयार ✅" : "कांटे व टैग के साथ लाइव फोटो लें 📷"),
-                                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
-                                ),
-                                Text(
-                                  localPhotoPath != null ? "GPS: $liveGpsCoord (स्टैम्प लगा)" : "टैप करें - कांटे पर वजन व टैग दिखेगा",
-                                  style: const TextStyle(fontSize: 11, color: Colors.blueGrey),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 12),
@@ -1333,7 +1402,8 @@ class _DashScreenState extends State<DashScreen> {
                           "farm": "मेरा फार्म (+91 ${widget.phone})",
                           "farmAddress": addressCtl.text.trim(),
                           "grade": isEgg ? "तारीख मुद्रित • 30 Days Fresh" : "प्रत्येक पक्षी टैग युक्त",
-                          "image": localPhotoPath ?? "",
+                          "image": uploadedPhotos.isNotEmpty ? uploadedPhotos.first : "",
+                          "gallery": uploadedPhotos,
                           "gps": liveGpsCoord,
                         });
 
@@ -1353,11 +1423,11 @@ class _DashScreenState extends State<DashScreen> {
                           "dist": "0.8 किमी",
                           "grade": isEgg ? "खेत से ताज़ा • 30 दिन उपयोग" : "स्वस्थ लाइव • टैग्ड",
                           "farmerPhone": widget.phone,
-                          "gallery": [localPhotoPath ?? ""],
+                          "gallery": uploadedPhotos,
                           "gps": liveGpsCoord,
                         });
                       });
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप व्यक्तिगत टैग और कांटे के वजन के साथ जुड़ गई!")));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप 5-7 फोटो और अलग-अलग टैग्स के साथ जुड़ गई!")));
                     },
                     child: const Text("खेप तुरंत लाइव करें", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
@@ -1906,7 +1976,6 @@ class _DashScreenState extends State<DashScreen> {
                     const SizedBox(height: 6),
                     Text("📦 उत्पाद: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold)),
                     
-                    // कम्यूटर के लिए हर बर्ड का अलग टैग व वजन सत्यापन
                     if (ord['tags'] != null && ord['tags'].toString().isNotEmpty) ...[
                       const SizedBox(height: 4),
                       Container(
