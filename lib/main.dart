@@ -48,10 +48,10 @@ class _AndaRootState extends State<AndaRoot> {
         children: const [
           Text("👨‍🌾 किसान कार्य-गाइडलाइन व हर्जाना नीति:", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
           SizedBox(height: 6),
-          Text("1. अंडों पर तारीख व वजन: प्रत्येक अंडे/क्रेट पर उत्पादन तिथि स्टैम्प व औसत वजन दर्ज करें। (±10-15g मार्जिन मान्य)।", style: TextStyle(fontSize: 12)),
-          Text("2. पक्षी पहचान व वजन: जीवित पक्षियों के लिए नस्ल, लिंग, टैग नंबर व अनुमानित वजन दर्ज करें। (±200g मार्जिन मान्य)।", style: TextStyle(fontSize: 12)),
+          Text("1. प्रत्येक पक्षी का अलग टैग व वजन: हर पक्षी का अलग विशिष्ट टैग नंबर और कांटे पर वजन के साथ फोटो अपलोड करना अनिवार्य है।", style: TextStyle(fontSize: 12)),
+          Text("2. अंडों पर उत्पादन तारीख: प्रत्येक अंडे/क्रेट पर उत्पादन तिथि स्टैम्प व औसत वजन स्पष्ट होना चाहिए (±10-15g मार्जिन मान्य)।", style: TextStyle(fontSize: 12)),
           Text("3. प्रामाणिक माल की सुपुर्दगी: जो फोटो और विवरण ऐप पर दिखाया है, कम्यूटर को हूबहू वही माल सौंपना होगा।", style: TextStyle(fontSize: 12)),
-          Text("4. गलत माल पर दोनों तरफ का भाड़ा वसूली: यदि दिखाया हुआ माल नहीं दिया जाता, बासी अंडे या गलत पक्षी होने पर माल रिजेक्ट होता है, तो कम्यूटर फ़ीस और रिटर्न का दोनों तरफ का पूरा भाड़ा किसान के वॉलेट से काटा जाएगा।", style: TextStyle(fontSize: 12, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold)),
+          Text("4. गलत माल पर दोनों तरफ का भाड़ा वसूली: यदि दिखाया हुआ माल नहीं दिया जाता या टैग मेल नहीं खाता, तो कम्यूटर फ़ीस और रिटर्न का दोनों तरफ का पूरा भाड़ा किसान के वॉलेट से काटा जाएगा।", style: TextStyle(fontSize: 12, color: Color(0xFFB91C1C), fontWeight: FontWeight.bold)),
         ],
       );
     } else if (_role == "buyer") {
@@ -70,9 +70,9 @@ class _AndaRootState extends State<AndaRoot> {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          Text("🚚 कम्यूटर कार्य-गाइडलाइन (पारदर्शी परिवहन व सुरक्षा):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
+          Text("🚚 कम्यूटर कार्य-गाइडलाइन (फार्म पर सत्यापन व सुरक्षा):", style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D), fontSize: 13)),
           SizedBox(height: 6),
-          Text("1. सुरक्षित परिवहन: किसान से जाँचा हुआ माल लेकर बिना देरी सीधे ग्राहक के डिलीवरी पॉइंट/बस स्टॉप पर पहुँचें।", style: TextStyle(fontSize: 12)),
+          Text("1. फार्म पर टैग व वजन मिलान: फार्म पर हर पक्षी का टैग नंबर व वजन स्क्रीन से जांचकर ही पिकअप स्वीकार करें।", style: TextStyle(fontSize: 12)),
           Text("2. 15-Min WhatsApp अलर्ट: बस स्टैंड पहुँचने से 15 मिनट पूर्व ग्राहक को ऐप के माध्यम से WhatsApp चेतावनी ज़रूर भेजें।", style: TextStyle(fontSize: 12)),
           Text("3. वापसी बस हैंडओवर: ग्राहक के न आने पर 10 मिनट बाद लोकल बस कंडक्टर को माल सौंपकर बस नंबर व फ़ोटो ऐप में दर्ज करें; आपकी डिलीवरी फ़ीस 100% सुरक्षित रहेगी।", style: TextStyle(fontSize: 12)),
         ],
@@ -145,7 +145,6 @@ class _AndaRootState extends State<AndaRoot> {
             ],
             const SizedBox(height: 14),
 
-            // हिस्सा 1: कार्य-गाइडलाइन व हर्जाना नियम कार्ड
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -172,7 +171,7 @@ class _AndaRootState extends State<AndaRoot> {
                           child: Padding(
                             padding: EdgeInsets.only(top: 8),
                             child: Text(
-                              "मैंने अंडों पर तारीख, पक्षी पहचान/वजन, समय पर हाजिरी और दोनों तरफ का किराया कटने की शर्तों को पढ़ लिया है और मैं सहमत हूँ।",
+                              "मैंने हर पक्षी के अलग टैग, अंडों पर तारीख, समय पर हाजिरी और दोनों तरफ का किराया कटने की शर्तों को पढ़ लिया है और मैं सहमत हूँ।",
                               style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87),
                             ),
                           ),
@@ -185,7 +184,6 @@ class _AndaRootState extends State<AndaRoot> {
             ),
             const SizedBox(height: 12),
 
-            // हिस्सा 2: कड़ा कानूनी अस्वीकरण व कोर्ट मुक्ति
             Container(
               padding: const EdgeInsets.all(12),
               decoration: BoxDecoration(
@@ -200,8 +198,8 @@ class _AndaRootState extends State<AndaRoot> {
                   const SizedBox(height: 6),
                   const Text(
                     "1. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है।\n"
-                    "2. धोखाधड़ी व विवाद: किसी भी पक्ष द्वारा गलत जानकारी, टूटने-फूटने, नुकसान या धोखाधड़ी के लिए ऐप अथवा इसके संचालक उत्तरदायी नहीं होंगे। यह क्रेता, विक्रेता व कम्यूटर के मध्य का आपसी मामला है।\n"
-                    "3. न्यायालय/पुलिस विवाद से मुक्ति: किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार (Party) नहीं बनाया जाएगा। सभी पक्ष अपने विवाद आपसी स्तर पर सुलझाएंगे।\n"
+                    "2. धोखाधड़ी व विवाद: किसी भी पक्ष द्वारा गलत जानकारी, टूटने-फूटने, नुकसान या धोखाधड़ी के लिए ऐप अथवा इसके संचालक उत्तरदायी नहीं होंगे।\n"
+                    "3. न्यायालय/पुलिस विवाद से मुक्ति: किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार (Party) नहीं बनाया जाएगा।\n"
                     "4. एस्क्रो व टोकन सीमा: एस्क्रो केवल OTP आधारित फंड सुरक्षा व किराया कटौती प्रबंधन करता है, यह माल की भौतिक गारंटी नहीं लेता।",
                     style: TextStyle(fontSize: 11, color: Colors.black87, height: 1.3),
                   ),
@@ -371,13 +369,11 @@ class _DashScreenState extends State<DashScreen> {
       return Text("🦤", style: TextStyle(fontSize: size));
     } else if (n.contains("बॉयलर")) {
       return Text("🐔", style: TextStyle(fontSize: size));
-    } else if (n.contains("अन्य") || n == "✨") {
-      return Text("✨", style: TextStyle(fontSize: size));
     }
     return Text("🐓", style: TextStyle(fontSize: size));
   }
 
-  static Widget buildProductThumbnail(String name, {String? imagePath, String? gpsStamp, double? width, double height = 75, bool isDetailView = false}) {
+  static Widget buildProductThumbnail(String name, {String? imagePath, String? gpsStamp, double? width, double height = 75, bool isDetailView = false, String? tagOrWeightInfo}) {
     Widget imageWidget;
 
     if (imagePath != null && imagePath.trim().isNotEmpty) {
@@ -411,13 +407,20 @@ class _DashScreenState extends State<DashScreen> {
               gradient: LinearGradient(
                 begin: Alignment.bottomCenter,
                 end: Alignment.topCenter,
-                colors: [Colors.black.withOpacity(0.9), Colors.black.withOpacity(0.6), Colors.transparent],
+                colors: [Colors.black.withOpacity(0.92), Colors.black.withOpacity(0.6), Colors.transparent],
               ),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (tagOrWeightInfo != null && tagOrWeightInfo.isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 2),
+                    padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
+                    decoration: BoxDecoration(color: const Color(0xFFDC2626), borderRadius: BorderRadius.circular(4)),
+                    child: Text(tagOrWeightInfo, style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                  ),
                 Row(
                   children: [
                     Icon(Icons.location_on, color: const Color(0xFFFACC15), size: isDetailView ? 14 : 10),
@@ -441,7 +444,7 @@ class _DashScreenState extends State<DashScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 1),
                         decoration: BoxDecoration(color: const Color(0xFF15803D), borderRadius: BorderRadius.circular(4)),
-                        child: const Text("VERIFIED FARM", style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
+                        child: const Text("FARM & SCALE VERIFIED", style: TextStyle(color: Colors.white, fontSize: 8, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -462,12 +465,39 @@ class _DashScreenState extends State<DashScreen> {
     );
   }
 
+  // सभी श्रेणियों और उपश्रेणियों का संपूर्ण कैटलॉग (ताकि कोई भी श्रेणी खाली न दिखे)
   final List<Map<String, dynamic>> _allProducts = [
-    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 190.0, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "आज का उत्पादन", "bestBefore": "30 दिन तक ताज़ा", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "ताज़ा • तारीख मुहर सहित", "farmerPhone": "9876543210", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gps": "20.7011° N, 77.0094° E"},
-    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 20, "price": 240.0, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "आज का उत्पादन", "bestBefore": "30 दिन तक ताज़ा", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+", "farmerPhone": "9876543211", "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gps": "20.6985° N, 77.0120° E"},
-    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "piecesPerCrate": 30, "price": 155.0, "weight": "55-60g/अंडा (±10g मार्जिन)", "prodDate": "आज का उत्पादन", "bestBefore": "30 दिन तक ताज़ा", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh", "farmerPhone": "9876543212", "image": "https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=800&q=80", "gps": "20.7050° N, 77.0180° E"},
-    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️ टैग #D-101)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.8kg (±200g प्राकृतिक मार्जिन)", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "image": "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80", "gps": "20.7020° N, 77.0110° E"},
-    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️ टैग #K-501)", "unitType": "Bird", "piecesPerCrate": 1, "price": 700.0, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.6985° N, 77.0120° E"},
+    // 1. अंडे (Eggs) - सभी 6 उपश्रेणियाँ
+    {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 190.0, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "ताज़ा • तारीख मुहर सहित", "farmerPhone": "9876543210", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0094° E"},
+    {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 20, "price": 240.0, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
+    {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "piecesPerCrate": 30, "price": 155.0, "weight": "55-60g/अंडा (±10g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh", "farmerPhone": "9876543212", "gallery": ["https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=800&q=80"], "gps": "20.7050° N, 77.0180° E"},
+    {"cat": "अंडे", "sub": "बतख के अंडे", "item": "ऑर्गेनिक बतख अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 210.0, "weight": "65-70g/अंडा (±15g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Large Organic Size", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1498654896293-37aacf113fd9?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
+    {"cat": "अंडे", "sub": "बटेर अंडे", "item": "बटेर (Quail) औषधीय अंडे", "unitType": "Crate", "piecesPerCrate": 24, "price": 120.0, "weight": "12-15g/अंडा (±5g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "ग्रीन वैली पोल्ट्री", "farmAddress": "एमआईडीसी गेट क्र. 2", "dist": "4.0 किमी", "grade": "चितकबरे स्पॉट Nutrient Rich", "farmerPhone": "9876543214", "gallery": ["https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"], "gps": "20.6950° N, 77.0040° E"},
+    {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू जंबो औषधीय अंडे", "unitType": "Piece", "piecesPerCrate": 1, "price": 450.0, "weight": "550-600g/अंडा (±50g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 45 दिन", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Dark Green Shell", "farmerPhone": "9876543215", "gallery": ["https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"], "gps": "20.6800° N, 77.0300° E"},
+
+    // 2. देसी चिकन (Desi Chicken)
+    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.8kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "D", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": ["https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80"], "gps": "20.7020° N, 77.0110° E"},
+    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (मादा ♀️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 270.0, "weight": "1.4kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DF", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": ["https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80"], "gps": "20.7020° N, 77.0110° E"},
+
+    // 3. बॉयलर चिकन (Broiler Chicken)
+    {"cat": "बॉयलर चिकन", "sub": "बॉयलर", "item": "कमर्शियल व्हाइट बॉयलर (लाइव)", "unitType": "Bird", "piecesPerCrate": 1, "price": 135.0, "weight": "2.2kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "B", "farm": "स्टार पोल्ट्री", "farmAddress": "शेड नंबर 3, बस स्टैंड बैकसाइड", "dist": "3.0 किमी", "grade": "Standard Fresh Live", "farmerPhone": "9876543217", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"], "gps": "20.6990° N, 77.0090° E"},
+
+    // 4. कड़कनाथ (Kadaknath)
+    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 700.0, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "K", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
+    {"cat": "कड़कनाथ", "sub": "कड़कनाथ", "item": "कड़कनाथ ब्लैक लाइव (मादा ♀️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 600.0, "weight": "1.2kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "KF", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "Pure Black Aseel", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
+
+    // 5. बतख (Ducks)
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (नर ♂️ Drake)", "unitType": "Bird", "piecesPerCrate": 1, "price": 350.0, "weight": "2.0kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DK", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Healthy Live Duck", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
+    {"cat": "बतख", "sub": "बतख", "item": "देसी / फार्म बतख (मादा ♀️ Duck)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.7kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "DKF", "farm": "रिवरसाइड डक फार्म", "farmAddress": "नहर पुलिया के पास, अकोला", "dist": "7.0 किमी", "grade": "Healthy Live Duck", "farmerPhone": "9876543213", "gallery": ["https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80"], "gps": "20.7100° N, 77.0250° E"},
+
+    // 6. बटेर (Quail)
+    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 70.0, "weight": "220g (±30g प्राकृतिक मार्जिन)", "tagPrefix": "Q", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214", "gallery": ["https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"], "gps": "20.6950° N, 77.0040° E"},
+
+    // 7. ईमू (Emu)
+    {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क पक्षी", "unitType": "Bird", "piecesPerCrate": 1, "price": 3800.0, "weight": "35kg (±2kg मार्जिन)", "tagPrefix": "EM", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215", "gallery": ["https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"], "gps": "20.6800° N, 77.0300° E"},
+
+    // 8. अन्य (Other)
+    {"cat": "अन्य", "sub": "अन्य", "item": "वनराजा / ग्रामप्रिया लाइव देसी", "unitType": "Bird", "piecesPerCrate": 1, "price": 320.0, "weight": "1.9kg (±200g मार्जिन)", "tagPrefix": "V", "farm": "किसान स्पेशल फार्म", "dist": "5.0 किमी", "farmAddress": "ग्रामीण शेड नंबर 2", "grade": "देसी फ्री-रेंज", "farmerPhone": "9876543216", "gallery": ["https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"], "gps": "20.7020° N, 77.0110° E"},
   ];
 
   late List<Map<String, dynamic>> _sellerListings;
@@ -478,7 +508,7 @@ class _DashScreenState extends State<DashScreen> {
     _sellerListings = [
       {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
       {"item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "10 Crates", "price": 240.0, "pieces": 20, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "26-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम", "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
-      {"item": "कड़कनाथ ब्लैक लाइव (नर ♂️ टैग #K-501)", "type": "पक्षी/बर्ड्स", "qty": "15 Birds", "price": 700.0, "pieces": 1, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्योर ब्लैक", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
+      {"item": "कड़कनाथ ब्लैक लाइव (नर ♂️)", "type": "पक्षी/बर्ड्स", "qty": "15 Birds", "price": 700.0, "pieces": 1, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्योर ब्लैक", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
     ];
   }
     void _showProductDetails(Map<String, dynamic> product) {
@@ -489,6 +519,7 @@ class _DashScreenState extends State<DashScreen> {
     final weight = product["weight"] ?? (isEgg ? "50-55g/अंडा (±15g मार्जिन)" : "1.8kg (±200g मार्जिन)");
     final prodDate = product["prodDate"] ?? DateFormat('dd-MMM-yyyy').format(DateTime.now());
     final bestBefore = product["bestBefore"] ?? "उत्पादन से 30 दिन";
+    final List<String> gallery = (product["gallery"] as List<String>?) ?? [product["image"] ?? ""];
 
     showModalBottomSheet(
       context: context,
@@ -506,15 +537,38 @@ class _DashScreenState extends State<DashScreen> {
                 child: Container(width: 45, height: 5, decoration: BoxDecoration(color: Colors.grey.shade300, borderRadius: BorderRadius.circular(10))),
               ),
               const SizedBox(height: 14),
-              buildProductThumbnail(
-                product["item"] as String,
-                imagePath: product["image"] as String?,
-                gpsStamp: product["gps"] as String?,
-                width: double.infinity,
-                height: 240,
-                isDetailView: true,
+              
+              // फ्लिपकार्ट स्टाइल लेफ्ट-राइट स्वाइप फोटो स्लाइडर (हर बर्ड का अलग फोटो + टैग व वजन)
+              SizedBox(
+                height: 250,
+                child: PageView.builder(
+                  itemCount: max(1, gallery.length),
+                  itemBuilder: (pCtx, pageIdx) {
+                    final img = gallery.isNotEmpty ? gallery[pageIdx] : "";
+                    final tagOverlay = !isEgg ? "पक्षी #${pageIdx + 1} • टैग #${product['tagPrefix'] ?? 'B'}-${101 + pageIdx} • वजन: $weight" : "अंडे • मुद्रित तिथि: $prodDate";
+
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4),
+                      child: buildProductThumbnail(
+                        product["item"] as String,
+                        imagePath: img,
+                        gpsStamp: product["gps"] as String?,
+                        width: double.infinity,
+                        height: 250,
+                        isDetailView: true,
+                        tagOrWeightInfo: tagOverlay,
+                      ),
+                    );
+                  },
+                ),
               ),
-              const SizedBox(height: 16),
+              const SizedBox(height: 6),
+              if (gallery.length > 1)
+                const Center(
+                  child: Text("👈 अलग-अलग पक्षियों के टैग व वजन देखने के लिए स्वाइप करें 👉", style: TextStyle(fontSize: 11, color: Colors.blueGrey, fontWeight: FontWeight.bold)),
+                ),
+              const SizedBox(height: 12),
+
               Text(product["item"] as String, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
               const SizedBox(height: 4),
               if (isEgg) ...[
@@ -530,7 +584,7 @@ class _DashScreenState extends State<DashScreen> {
               ],
               const SizedBox(height: 12),
               
-              // वजन, मार्जिन व ताज़गी का पारदर्शी कार्ड
+              // वजन व ताज़गी गारंटी बॉक्स
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(color: const Color(0xFFF0FDF4), borderRadius: BorderRadius.circular(10), border: Border.all(color: const Color(0xFFBBF7D0))),
@@ -607,139 +661,135 @@ class _DashScreenState extends State<DashScreen> {
     );
   }
 
-  void _modal(String title, List<Widget> body, String btnText, VoidCallback onAct) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
-      builder: (_) => StatefulBuilder(
-        builder: (ctx, setMState) => Padding(
-          padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-              const Divider(),
-              ...body,
-              const SizedBox(height: 16),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
-                onPressed: () {
-                  Navigator.pop(ctx);
-                  onAct();
-                },
-                child: Text(btnText, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
+  // मात्रा चुनने और अलग-अलग टैग नंबर तैयार करने का सिस्टम
   void _addToCartWithQty(Map<String, dynamic> product) {
     int qty = 1;
     final isEgg = product["unitType"] == "Crate" || (product["item"] as String).contains("अंडे");
     final pcs = (product["piecesPerCrate"] as int?) ?? 30;
-    final unit = isEgg ? "क्रेट / ट्रे" : (product["unitType"] == "Bird" ? "पंछी / नग" : "पीस");
+    final unit = isEgg ? "क्रेट / ट्रे" : "पंछी / नग";
     final price = (product["price"] as double?) ?? 0.0;
     final perPiece = isEgg && pcs > 0 ? (price / pcs).toStringAsFixed(2) : null;
+    final prefix = (product["tagPrefix"] ?? "B").toString();
 
     showDialog(
       context: context,
       builder: (dCtx) => StatefulBuilder(
-        builder: (context, setDState) => AlertDialog(
-          title: Text(product["item"] as String, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("फार्म पता: ${product['farmAddress']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
-              const SizedBox(height: 8),
-              Text("रेट: ₹${price.toStringAsFixed(0)} / $unit", style: const TextStyle(color: Color(0xFF15803D), fontWeight: FontWeight.bold)),
-              if (isEgg) ...[
-                const SizedBox(height: 4),
-                Text("1 क्रेट = $pcs अंडे (₹$perPiece/अंडा)", style: const TextStyle(color: Color(0xFFB45309), fontSize: 12, fontWeight: FontWeight.bold)),
-              ],
-              const SizedBox(height: 16),
-              Text("ज़रूरी मात्रा ($unit):", style: const TextStyle(fontWeight: FontWeight.w500)),
-              const SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.remove_circle_outline, size: 30, color: Colors.red),
-                    onPressed: () {
-                      if (qty > 1) setDState(() => qty--);
-                    },
-                  ),
+        builder: (context, setDState) {
+          // हर पक्षी के लिए अलग विशिष्ट टैग नंबर बनाना (उदा. #D-101, #D-102, #D-103)
+          List<String> birdTags = [];
+          if (!isEgg) {
+            for (int k = 1; k <= qty; k++) {
+              birdTags.add("#$prefix-${100 + k}");
+            }
+          }
+
+          return AlertDialog(
+            title: Text(product["item"] as String, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text("फार्म: ${product['farm']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
+                const SizedBox(height: 8),
+                Text("रेट: ₹${price.toStringAsFixed(0)} / $unit", style: const TextStyle(color: Color(0xFF15803D), fontWeight: FontWeight.bold)),
+                if (isEgg) ...[
+                  const SizedBox(height: 4),
+                  Text("1 क्रेट = $pcs अंडे (₹$perPiece/अंडा)", style: const TextStyle(color: Color(0xFFB45309), fontSize: 12, fontWeight: FontWeight.bold)),
+                ],
+                const SizedBox(height: 16),
+                Text("ज़रूरी मात्रा ($unit):", style: const TextStyle(fontWeight: FontWeight.w500)),
+                const SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                      icon: const Icon(Icons.remove_circle_outline, size: 30, color: Colors.red),
+                      onPressed: () {
+                        if (qty > 1) setDState(() => qty--);
+                      },
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(8)),
+                      child: Text("$qty $unit", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.add_circle_outline, size: 30, color: Color(0xFF15803D)),
+                      onPressed: () => setDState(() => qty++),
+                    ),
+                  ],
+                ),
+                if (!isEgg) ...[
+                  const SizedBox(height: 10),
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade400), borderRadius: BorderRadius.circular(8)),
-                    child: Text("$qty $unit", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.add_circle_outline, size: 30, color: Color(0xFF15803D)),
-                    onPressed: () => setDState(() => qty++),
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.blue.shade200)),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("आवंटित अलग-अलग टैग नंबर ($qty पक्षी):", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue)),
+                        const SizedBox(height: 4),
+                        Text(birdTags.join(", "), style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.black87)),
+                      ],
+                    ),
                   ),
                 ],
-              ),
-              if (isEgg) ...[
-                const SizedBox(height: 6),
-                Text("कुल अंडे: ${qty * pcs} नग", style: const TextStyle(fontSize: 13, color: Colors.blueGrey, fontWeight: FontWeight.w500)),
+                const SizedBox(height: 12),
+                Text("कुल मूल्य: ₹${(price * qty).toStringAsFixed(0)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF9F2089))),
               ],
-              const SizedBox(height: 12),
-              Text("कुल मूल्य: ₹${(price * qty).toStringAsFixed(0)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF9F2089))),
+            ),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text("रद्द करें")),
+              OutlinedButton(
+                onPressed: () {
+                  setState(() {
+                    _cartItems.add({
+                      "item": product["item"],
+                      "farm": product["farm"],
+                      "farmAddress": product["farmAddress"],
+                      "farmerPhone": product["farmerPhone"] ?? "9876543210",
+                      "dist": product["dist"],
+                      "unitPrice": price,
+                      "unitType": product["unitType"],
+                      "piecesPerCrate": pcs,
+                      "qty": qty,
+                      "weight": product["weight"],
+                      "allocatedTags": birdTags.join(", "),
+                      "total": price * qty,
+                    });
+                  });
+                  Navigator.pop(dCtx);
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$qty $unit कार्ट में जोड़ा गया!"), duration: const Duration(seconds: 1)));
+                },
+                child: const Text("कार्ट में जोड़ें"),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    _cartItems.clear();
+                    _cartItems.add({
+                      "item": product["item"],
+                      "farm": product["farm"],
+                      "farmAddress": product["farmAddress"],
+                      "farmerPhone": product["farmerPhone"] ?? "9876543210",
+                      "dist": product["dist"],
+                      "unitPrice": price,
+                      "unitType": product["unitType"],
+                      "piecesPerCrate": pcs,
+                      "qty": qty,
+                      "weight": product["weight"],
+                      "allocatedTags": birdTags.join(", "),
+                      "total": price * qty,
+                    });
+                  });
+                  Navigator.pop(dCtx);
+                  _showCheckout();
+                },
+                child: const Text("अभी खरीदें"),
+              ),
             ],
-          ),
-          actions: [
-            TextButton(onPressed: () => Navigator.pop(dCtx), child: const Text("रद्द करें")),
-            OutlinedButton(
-              onPressed: () {
-                setState(() {
-                  _cartItems.add({
-                    "item": product["item"],
-                    "farm": product["farm"],
-                    "farmAddress": product["farmAddress"],
-                    "farmerPhone": product["farmerPhone"] ?? "9876543210",
-                    "dist": product["dist"],
-                    "unitPrice": price,
-                    "unitType": product["unitType"],
-                    "piecesPerCrate": pcs,
-                    "qty": qty,
-                    "total": price * qty,
-                  });
-                });
-                Navigator.pop(dCtx);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$qty $unit कार्ट में जोड़ा गया!"), duration: const Duration(seconds: 1)));
-              },
-              child: const Text("कार्ट में जोड़ें"),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white),
-              onPressed: () {
-                setState(() {
-                  _cartItems.clear();
-                  _cartItems.add({
-                    "item": product["item"],
-                    "farm": product["farm"],
-                    "farmAddress": product["farmAddress"],
-                    "farmerPhone": product["farmerPhone"] ?? "9876543210",
-                    "dist": product["dist"],
-                    "unitPrice": price,
-                    "unitType": product["unitType"],
-                    "piecesPerCrate": pcs,
-                    "qty": qty,
-                    "total": price * qty,
-                  });
-                });
-                Navigator.pop(dCtx);
-                _showCheckout();
-              },
-              child: const Text("अभी खरीदें"),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -782,8 +832,15 @@ class _DashScreenState extends State<DashScreen> {
                   const Divider(),
                   Text("कुल सामग्री: ${_cartItems.length} प्रकार (कुल $totalQuantityUnits नग/क्रेट)", style: const TextStyle(fontWeight: FontWeight.bold)),
                   ..._cartItems.map((ci) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Text("• ${ci['item']}: ${ci['qty']} ${ci['unitType']} = ₹${ci['total']}", style: const TextStyle(fontSize: 13)),
+                    padding: const EdgeInsets.symmetric(vertical: 4),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("• ${ci['item']}: ${ci['qty']} ${ci['unitType']} = ₹${ci['total']}", style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        if (ci['allocatedTags'] != null && ci['allocatedTags'].toString().isNotEmpty)
+                          Text("   🏷️ अलग-अलग टैग: ${ci['allocatedTags']}", style: const TextStyle(fontSize: 11, color: Colors.blue, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
                   )),
                   const SizedBox(height: 10),
                   Text("📍 स्रोत फार्म: ${_cartItems.first['farm']}\nपता: ${_cartItems.first['farmAddress']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
@@ -885,6 +942,8 @@ class _DashScreenState extends State<DashScreen> {
                       final firstFarmAddress = _cartItems.first["farmAddress"] as String;
                       final farmerPhone = _cartItems.first["farmerPhone"] as String;
                       final dist = _cartItems.first["dist"] as String;
+                      final allTags = _cartItems.map((e) => e["allocatedTags"] ?? "").where((t) => t.toString().isNotEmpty).join(" | ");
+                      final allWeights = _cartItems.map((e) => e["weight"] ?? "").join(", ");
                       final dropAddress = _selectedDeliveryMode == "self" ? "स्वयं पिकअप (फार्म से)" : (_buyerAddressCtl.text.trim().isEmpty ? "बस स्टॉप लैंडमार्क" : _buyerAddressCtl.text.trim());
 
                       setState(() {
@@ -910,6 +969,8 @@ class _DashScreenState extends State<DashScreen> {
                           "farm": firstFarm,
                           "farmAddress": firstFarmAddress,
                           "dist": dist,
+                          "tags": allTags,
+                          "weights": allWeights,
                           "dropAddress": dropAddress,
                           "mode": _selectedDeliveryMode,
                           "amount": subtotal,
@@ -947,13 +1008,12 @@ class _DashScreenState extends State<DashScreen> {
     String liveGpsCoord = "20.7002° N, 77.0082° E";
     bool isProcessingGps = false;
     final customNameCtl = TextEditingController();
-    final tagNumberCtl = TextEditingController(text: "#TAG-01");
+    final tagPrefixCtl = TextEditingController(text: "D");
     final qtyCtl = TextEditingController(text: "15");
     final rateCtl = TextEditingController(text: "190");
     final piecesCtl = TextEditingController(text: "30");
     final addressCtl = TextEditingController(text: "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1");
     
-    // नए वजन व तारीख वाले कंट्रोलर
     final todayDate = DateFormat('dd-MMM-yyyy').format(DateTime.now());
     final prodDateCtl = TextEditingController(text: todayDate);
     final eggWeightCtl = TextEditingController(text: "50-55");
@@ -1015,7 +1075,7 @@ class _DashScreenState extends State<DashScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text("नई खेप लिस्ट करें (वजन व तारीख विवरण)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                  const Text("नई खेप लिस्ट करें (विशिष्ट टैग व वजन)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
                   const Divider(),
                   const Text("1. प्रकार चुनें (Type):", style: TextStyle(fontWeight: FontWeight.bold)),
                   Row(
@@ -1077,8 +1137,8 @@ class _DashScreenState extends State<DashScreen> {
                     ),
                     const SizedBox(height: 8),
                     TextField(
-                      controller: tagNumberCtl,
-                      decoration: const InputDecoration(labelText: "पक्षी पहचान टैग/नंबर (उदा. #TAG-01)", border: OutlineInputBorder(), isDense: true),
+                      controller: tagPrefixCtl,
+                      decoration: const InputDecoration(labelText: "टैग सीरीज / कोड (उदा. D, K, B - हर पक्षी को D-101, D-102 मिलेगा)", border: OutlineInputBorder(), isDense: true),
                     ),
                     const SizedBox(height: 10),
                     TextField(
@@ -1155,8 +1215,8 @@ class _DashScreenState extends State<DashScreen> {
                             children: [
                               ListTile(
                                 leading: const Icon(Icons.camera_alt, color: Color(0xFF15803D)),
-                                title: const Text("कैमरा से लाइव GPS फोटो खींचें 📷"),
-                                subtitle: const Text("ऑटोमैटिक दिनांक व लोकेशन स्टैम्प"),
+                                title: const Text("कैमरा से कांटे पर वजन व टैग के साथ फोटो लें 📷"),
+                                subtitle: const Text("GPS व समय स्टैम्प के साथ"),
                                 onTap: () {
                                   Navigator.pop(context);
                                   pickPhoto(ImageSource.camera);
@@ -1198,11 +1258,11 @@ class _DashScreenState extends State<DashScreen> {
                                 Text(
                                   isProcessingGps
                                       ? "GPS लोकेशन फेच हो रही है..."
-                                      : (localPhotoPath != null ? "GPS वाटरमार्क फोटो तैयार ✅" : "लाइव GPS फोटो खींचें 📷"),
+                                      : (localPhotoPath != null ? "कांटे पर वजन व टैग फोटो तैयार ✅" : "कांटे व टैग के साथ लाइव फोटो लें 📷"),
                                   style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
                                 ),
                                 Text(
-                                  localPhotoPath != null ? "GPS: $liveGpsCoord (स्टैम्प लगा)" : "टैप करें - लाइव GPS व समय की मुहर लगेगी",
+                                  localPhotoPath != null ? "GPS: $liveGpsCoord (स्टैम्प लगा)" : "टैप करें - कांटे पर वजन व टैग दिखेगा",
                                   style: const TextStyle(fontSize: 11, color: Colors.blueGrey),
                                 ),
                               ],
@@ -1255,8 +1315,9 @@ class _DashScreenState extends State<DashScreen> {
                       final eggCount = isEgg ? (int.tryParse(piecesCtl.text.trim()) ?? 30) : 1;
 
                       String baseName = isOther && customNameCtl.text.trim().isNotEmpty ? customNameCtl.text.trim() : selectedItem;
-                      final finalTitle = isEgg ? "$baseName (तारीख: ${prodDateCtl.text.trim()})" : "$baseName ($selectedGender • ${tagNumberCtl.text.trim()})";
+                      final finalTitle = isEgg ? "$baseName (तारीख: ${prodDateCtl.text.trim()})" : "$baseName ($selectedGender)";
                       final weightDesc = isEgg ? "${eggWeightCtl.text.trim()}g/अंडा (±15g मार्जिन)" : "${birdWeightCtl.text.trim()}kg (±200g मार्जिन)";
+                      final prefix = tagPrefixCtl.text.trim().isEmpty ? "D" : tagPrefixCtl.text.trim();
 
                       setState(() {
                         _sellerListings.insert(0, {
@@ -1266,22 +1327,24 @@ class _DashScreenState extends State<DashScreen> {
                           "price": parsedPrice,
                           "pieces": eggCount,
                           "weight": weightDesc,
+                          "tagPrefix": prefix,
                           "prodDate": isEgg ? prodDateCtl.text.trim() : null,
                           "bestBefore": isEgg ? "उत्पादन से 30 दिन" : null,
                           "farm": "मेरा फार्म (+91 ${widget.phone})",
                           "farmAddress": addressCtl.text.trim(),
-                          "grade": isEgg ? "तारीख मुद्रित • 30 Days Fresh" : "टैग नंबर सत्यापित",
+                          "grade": isEgg ? "तारीख मुद्रित • 30 Days Fresh" : "प्रत्येक पक्षी टैग युक्त",
                           "image": localPhotoPath ?? "",
                           "gps": liveGpsCoord,
                         });
 
                         _allProducts.insert(0, {
                           "cat": selectedType == "अंडे" ? "अंडे" : (selectedItem.contains("अन्य") ? "अन्य" : selectedItem.split(" ").first),
-                          "sub": isEgg ? "देसी अंडे" : "देसी",
+                          "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("अन्य") ? "अन्य" : selectedItem.split(" ").first),
                           "item": finalTitle,
                           "unitType": isEgg ? "Crate" : "Bird",
                           "piecesPerCrate": eggCount,
                           "weight": weightDesc,
+                          "tagPrefix": prefix,
                           "prodDate": isEgg ? prodDateCtl.text.trim() : null,
                           "bestBefore": isEgg ? "उत्पादन से 30 दिन" : null,
                           "price": parsedPrice,
@@ -1290,11 +1353,11 @@ class _DashScreenState extends State<DashScreen> {
                           "dist": "0.8 किमी",
                           "grade": isEgg ? "खेत से ताज़ा • 30 दिन उपयोग" : "स्वस्थ लाइव • टैग्ड",
                           "farmerPhone": widget.phone,
-                          "image": localPhotoPath ?? "",
+                          "gallery": [localPhotoPath ?? ""],
                           "gps": liveGpsCoord,
                         });
                       });
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप वजन व तारीख के संपूर्ण विवरण के साथ जुड़ गई!")));
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप व्यक्तिगत टैग और कांटे के वजन के साथ जुड़ गई!")));
                     },
                     child: const Text("खेप तुरंत लाइव करें", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
@@ -1341,6 +1404,37 @@ class _DashScreenState extends State<DashScreen> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("लॉट की जानकारी अपडेट हो गई!")));
     });
   }
+
+  void _modal(String title, List<Widget> body, String btnText, VoidCallback onAct) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+      builder: (_) => StatefulBuilder(
+        builder: (ctx, setMState) => Padding(
+          padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Text(title, style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+              const Divider(),
+              ...body,
+              const SizedBox(height: 16),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  onAct();
+                },
+                child: Text(btnText, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
     @override
   Widget build(BuildContext context) {
     String heading = widget.role == "seller" ? "किसान डैशबोर्ड" : (widget.role == "commuter" ? "कम्यूटर डिलीवरी" : "ग्राहक बाज़ार (Anda Express)");
@@ -1378,7 +1472,7 @@ class _DashScreenState extends State<DashScreen> {
       children: [
         if (myOrders.isNotEmpty)
           Container(
-            constraints: const BoxConstraints(maxHeight: 200),
+            constraints: const BoxConstraints(maxHeight: 220),
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             color: const Color(0xFFECFDF5),
             child: ListView(
@@ -1425,6 +1519,10 @@ class _DashScreenState extends State<DashScreen> {
                               ),
                             ],
                           ),
+                          if (ord['tags'] != null && ord['tags'].toString().isNotEmpty) ...[
+                            const SizedBox(height: 3),
+                            Text("🏷️ आपके पक्षियों के टैग: ${ord['tags']}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue)),
+                          ],
                           const SizedBox(height: 3),
                           Text("स्थिति: $stText", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: (st == "returned_bus" || st == "rejected_by_buyer") ? Colors.red : const Color(0xFF15803D))),
                           if (st == "returned_bus") ...[
@@ -1548,6 +1646,7 @@ class _DashScreenState extends State<DashScreen> {
                     final pcs = (item["piecesPerCrate"] as int?) ?? 30;
                     final price = (item["price"] as double?) ?? 0.0;
                     final perEgg = isEgg && pcs > 0 ? (price / pcs).toStringAsFixed(2) : null;
+                    final thumbImg = (item["gallery"] as List<String>?)?.isNotEmpty == true ? (item["gallery"] as List<String>).first : (item["image"] as String?);
 
                     return Card(
                       elevation: 2,
@@ -1560,7 +1659,7 @@ class _DashScreenState extends State<DashScreen> {
                           child: Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              buildProductThumbnail(item["item"] as String, imagePath: item["image"] as String?, gpsStamp: item["gps"] as String?, width: 85, height: 85),
+                              buildProductThumbnail(item["item"] as String, imagePath: thumbImg, gpsStamp: item["gps"] as String?, width: 85, height: 85),
                               const SizedBox(width: 12),
                               Expanded(
                                 child: Column(
@@ -1571,6 +1670,8 @@ class _DashScreenState extends State<DashScreen> {
                                     Text("दर: ₹${price.toStringAsFixed(0)} / ${item['unitType']}", style: const TextStyle(color: Color(0xFF15803D), fontWeight: FontWeight.bold, fontSize: 13)),
                                     if (isEgg) ...[
                                       Text("1 क्रेट = $pcs अंडे (₹$perEgg/अंडा • तारीख मुद्रित)", style: const TextStyle(color: Color(0xFFB45309), fontSize: 11, fontWeight: FontWeight.bold)),
+                                    ] else ...[
+                                      Text("औसत वजन: ${item['weight'] ?? '1.8kg'}", style: const TextStyle(color: Color(0xFFB45309), fontSize: 11, fontWeight: FontWeight.bold)),
                                     ],
                                     Text("${item['farm']} (${item['dist']})", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
                                     Text("पता: ${item['farmAddress']}", style: const TextStyle(fontSize: 10, color: Colors.grey)),
@@ -1657,6 +1758,8 @@ class _DashScreenState extends State<DashScreen> {
                       ],
                     ),
                     Text("माल: ${ord['product']}"),
+                    if (ord['tags'] != null && ord['tags'].toString().isNotEmpty)
+                      Text("अलग-अलग टैग्स: ${ord['tags']}", style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.blue)),
                     Text("मोड: $modeStr", style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFFB45309))),
                     Text("पिकअप फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
                     Text("ड्रॉप लोकेशन: ${ord['dropAddress']}", style: const TextStyle(fontSize: 12, color: Colors.black87, fontWeight: FontWeight.w500)),
@@ -1668,12 +1771,12 @@ class _DashScreenState extends State<DashScreen> {
                         child: ElevatedButton.icon(
                           style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
                           icon: const Icon(Icons.inventory_2, size: 18),
-                          label: const Text("माल पैक हो गया (तारीख व वजन सत्यापित)"),
+                          label: const Text("माल पैक हो गया (तारीख व अलग-अलग टैग सत्यापित)"),
                           onPressed: () {
                             setState(() {
                               ord["status"] = "packed_ready";
                             });
-                            final buyerMsg = "हेलो! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} किसान द्वारा तारीख मुहर/वजन सत्यापन के साथ पैक कर दिया गया है। कम्यूटर जल्द पिकअप करके निकलेगा। कृपया समय पर तैयार रहें।";
+                            final buyerMsg = "हेलो! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक हो गया है। आवंटित पक्षी टैग: ${ord['tags']}। कम्यूटर जल्द पिकअप करके निकलेगा। कृपया समय पर तैयार रहें।";
                             launchWhatsApp(ord["buyerPhone"] as String, buyerMsg);
                             ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("पैकिंग मार्क हुई और ग्राहक को WhatsApp अलर्ट भेजा गया!")));
                           },
@@ -1763,7 +1866,7 @@ class _DashScreenState extends State<DashScreen> {
               Text("कम्यूटर एक्सप्रेस पार्टनर", style: TextStyle(color: Colors.white70)),
               Text("सक्रिय डिलीवरी कार्य", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 4),
-              Text("सत्यापित माल उठाएं। 15 मिनट पूर्व अलर्ट भेजें। विवाद पर निष्पक्ष रिटर्न करें।", style: TextStyle(color: Colors.white60, fontSize: 12)),
+              Text("फार्म पर प्रत्येक पक्षी का अलग टैग व वजन देखकर ही पिकअप करें।", style: TextStyle(color: Colors.white60, fontSize: 12)),
             ]),
           ),
         ),
@@ -1802,6 +1905,26 @@ class _DashScreenState extends State<DashScreen> {
                     ),
                     const SizedBox(height: 6),
                     Text("📦 उत्पाद: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                    
+                    // कम्यूटर के लिए हर बर्ड का अलग टैग व वजन सत्यापन
+                    if (ord['tags'] != null && ord['tags'].toString().isNotEmpty) ...[
+                      const SizedBox(height: 4),
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(color: const Color(0xFFEFF6FF), borderRadius: BorderRadius.circular(8), border: Border.all(color: Colors.blue.shade200)),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text("🔍 फार्म पर भौतिक मिलान करें (अलग-अलग टैग्स):", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Colors.blue)),
+                            const SizedBox(height: 2),
+                            Text("टैग नंबर: ${ord['tags']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Colors.black87)),
+                            Text("औसत वजन: ${ord['weights'] ?? 'जाँचें'}", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                          ],
+                        ),
+                      ),
+                    ],
+                    
+                    const SizedBox(height: 4),
                     Text("📍 फार्म नाम: ${ord['farm']} (${ord['dist']})"),
                     Text("🏠 पिकअप फार्म पता: ${ord['farmAddress']}", style: const TextStyle(fontWeight: FontWeight.w600, color: Color(0xFF15803D))),
                     const SizedBox(height: 4),
@@ -1837,7 +1960,7 @@ class _DashScreenState extends State<DashScreen> {
                                 setState(() {
                                   ord["status"] = "in_transit";
                                 });
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("माल पिकअप कर लिया गया!")));
+                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("माल के सभी टैग सत्यापित कर पिकअप कर लिया गया!")));
                               } else {
                                 final otpCtl = TextEditingController();
                                 showDialog(
@@ -1876,7 +1999,7 @@ class _DashScreenState extends State<DashScreen> {
                                 );
                               }
                             },
-                            child: Text(isInTransit ? "OTP सत्यापन व डिलीवरी पूरी करें" : "पिकअप स्वीकार करें"),
+                            child: Text(isInTransit ? "OTP सत्यापन व डिलीवरी पूरी करें" : "टैग सत्यापित करें व पिकअप लें"),
                           ),
                         ),
                       ],
@@ -1884,7 +2007,6 @@ class _DashScreenState extends State<DashScreen> {
 
                     if (isInTransit) ...[
                       const SizedBox(height: 8),
-                      // विकल्प A: ग्राहक अनुपस्थित (ग्राहक से दोनों तरफ का किराया कटौती)
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
@@ -1937,20 +2059,19 @@ class _DashScreenState extends State<DashScreen> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      // विकल्प B: किसान ने गलत माल दिया (किसान के वॉलेट से दोनों तरफ का किराया कटौती)
                       SizedBox(
                         width: double.infinity,
                         child: OutlinedButton.icon(
                           style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFFB91C1C), side: const BorderSide(color: Color(0xFFB91C1C))),
                           icon: const Icon(Icons.report_problem, size: 18),
-                          label: const Text("गलत माल/बिना तारीख 👉 किसान से दोनों तरफ भाड़ा वसूली"),
+                          label: const Text("गलत माल/टैग मिसमैच 👉 किसान से दोनों तरफ भाड़ा वसूली"),
                           onPressed: () {
                             showDialog(
                               context: context,
                               builder: (rCtx) => AlertDialog(
                                 title: const Text("गलत माल रिजेक्शन (किसान हर्जाना)", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold, color: Color(0xFFB91C1C))),
                                 content: const Text(
-                                  "यदि किसान ने तारीख के बिना अंडे दिए हैं, गलत पक्षी/नस्ल दी है या लिस्टिंग अनुसार माल नहीं है:\n\n"
+                                  "यदि किसान ने तारीख के बिना अंडे दिए हैं, पक्षी का टैग नंबर मेल नहीं खाता या लिस्टिंग अनुसार माल नहीं है:\n\n"
                                   "• ग्राहक को पूरा रिफंड मिलेगा।\n"
                                   "• कम्यूटर की डिलीवरी फ़ीस व रिटर्न का दोनों तरफ का भाड़ा सीधे किसान के वॉलेट से काटा जाएगा।",
                                   style: TextStyle(fontSize: 12),
@@ -1967,7 +2088,7 @@ class _DashScreenState extends State<DashScreen> {
                                         AppState.sellerWallet -= penalty;
                                         AppState.escrowHold -= (ord["paidAdvance"] as double);
                                       });
-                                      final farmerPenaltyMsg = "चेतावनी: आपके द्वारा लिस्टिंग अनुसार सही माल/तारीख न देने के कारण ऑर्डर #${ord['id']} रिजेक्ट हुआ है। नियम अनुसार दोनों तरफ का डिलीवरी भाड़ा आपके किसान वॉलेट से काट लिया गया है।";
+                                      final farmerPenaltyMsg = "चेतावनी: आपके द्वारा लिस्टिंग अनुसार सही माल/टैग न देने के कारण ऑर्डर #${ord['id']} रिजेक्ट हुआ है। नियम अनुसार दोनों तरफ का डिलीवरी भाड़ा आपके किसान वॉलेट से काट लिया गया है।";
                                       launchWhatsApp(ord["farmerPhone"] as String, farmerPenaltyMsg);
                                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("गलत माल रिजेक्ट! किसान वॉलेट से दोनों तरफ का भाड़ा काटा गया।")));
                                     },
