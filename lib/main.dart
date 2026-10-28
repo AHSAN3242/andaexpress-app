@@ -344,6 +344,8 @@ class _DashScreenState extends State<DashScreen> {
       return Text("🦤", style: TextStyle(fontSize: size));
     } else if (n.contains("बॉयलर")) {
       return Text("🐔", style: TextStyle(fontSize: size));
+    } else if (n.contains("अन्य") || n == "✨") {
+      return Text("✨", style: TextStyle(fontSize: size));
     }
     return Text("🐓", style: TextStyle(fontSize: size));
   }
@@ -438,8 +440,7 @@ class _DashScreenState extends State<DashScreen> {
       child: Center(child: getItemIcon(name, size: 36)),
     );
   }
-
-  final List<Map<String, dynamic>> _allProducts = [
+    final List<Map<String, dynamic>> _allProducts = [
     {"cat": "अंडे", "sub": "देसी अंडे", "item": "शुद्ध देसी अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 30, "price": 190.0, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "कृष्णा पोल्ट्री फार्म", "farmAddress": "गेट नं. 4, पारस रोड, अकोला", "dist": "2.1 किमी", "grade": "ताज़ा • तारीख मुहर सहित", "farmerPhone": "9876543210", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0094° E"},
     {"cat": "अंडे", "sub": "कड़कनाथ अंडे", "item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "unitType": "Crate", "piecesPerCrate": 20, "price": 240.0, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "आनंद पोल्ट्री फार्म", "farmAddress": "शिव मंदिर के पीछे, हाईवे नाका", "dist": "3.5 किमी", "grade": "High Protein A+", "farmerPhone": "9876543211", "gallery": ["https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E"},
     {"cat": "अंडे", "sub": "टेबल एग्स", "item": "व्हाइट टेबल एग्स (ब्रायलर)", "unitType": "Crate", "piecesPerCrate": 30, "price": 155.0, "weight": "55-60g/अंडा (±10g मार्जिन)", "prodDate": "27-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "पाटिल पोल्ट्री हब", "dist": "5.0 किमी", "farmAddress": "पाटिल वाड़ी, बायपास रोड", "grade": "Commercial Fresh", "farmerPhone": "9876543212", "gallery": ["https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=800&q=80"], "gps": "20.7050° N, 77.0180° E"},
@@ -613,8 +614,6 @@ class _DashScreenState extends State<DashScreen> {
                     const SizedBox(height: 3),
                     Text("🏠 पिकअप पता: ${product['farmAddress']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
                     const SizedBox(height: 3),
-                    Text("📞 किसान मोबाइल: +91 ${product['farmerPhone'] ?? '9876543210'}", style: const TextStyle(fontSize: 12, color: Color(0xFF15803D), fontWeight: FontWeight.bold)),
-                    const SizedBox(height: 3),
                     Text("✨ ताज़गी व ग्रेड: ${product['grade']}", style: const TextStyle(fontSize: 12, color: Color(0xFF9F2089), fontWeight: FontWeight.bold)),
                   ],
                 ),
@@ -661,7 +660,6 @@ class _DashScreenState extends State<DashScreen> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text("फार्म: ${product['farm']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
-                Text("किसान फोन: +91 $fPhone", style: const TextStyle(fontSize: 12, color: Color(0xFF15803D), fontWeight: FontWeight.bold)),
                 const SizedBox(height: 8),
                 Text("रेट: ₹${price.toStringAsFixed(0)} / $unit", style: const TextStyle(color: Color(0xFF15803D), fontWeight: FontWeight.bold)),
                 if (isEgg) ...[
@@ -817,7 +815,7 @@ class _DashScreenState extends State<DashScreen> {
                     ),
                   )),
                   const SizedBox(height: 10),
-                  Text("📍 स्रोत फार्म: ${_cartItems.first['farm']}\nपता: ${_cartItems.first['farmAddress']}\n📞 किसान संपर्क: +91 ${_cartItems.first['farmerPhone']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
+                  Text("📍 स्रोत फार्म: ${_cartItems.first['farm']}\nपता: ${_cartItems.first['farmAddress']}", style: const TextStyle(fontSize: 12, color: Colors.blueGrey)),
                   const SizedBox(height: 12),
                   const Text("डिलीवरी का तरीका चुनें:", style: TextStyle(fontWeight: FontWeight.bold)),
                   RadioListTile<String>(
@@ -1573,35 +1571,39 @@ class _DashScreenState extends State<DashScreen> {
                           ],
                           const SizedBox(height: 3),
                           Text("📍 फार्म: ${ord['farm']} • ${ord['farmAddress']}", style: const TextStyle(fontSize: 10, color: Colors.blueGrey)),
-                          const SizedBox(height: 4),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                            decoration: BoxDecoration(color: const Color(0xFFF0FDF4), borderRadius: BorderRadius.circular(6), border: Border.all(color: const Color(0xFFBBF7D0))),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.phone, size: 14, color: Color(0xFF15803D)),
-                                const SizedBox(width: 4),
-                                Expanded(child: Text("किसान मोबाइल: +91 $fPhone", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF15803D)))),
-                                GestureDetector(
-                                  onTap: () => makePhoneCall(fPhone),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(color: const Color(0xFF15803D), borderRadius: BorderRadius.circular(4)),
-                                    child: const Text("कॉल 📞", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                          
+                          // किसान संपर्क बॉक्स: केवल फार्म से स्वयं पिकअप पर ही दिखेगा
+                          if (isSelfPickup) ...[
+                            const SizedBox(height: 4),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: BoxDecoration(color: const Color(0xFFF0FDF4), borderRadius: BorderRadius.circular(6), border: Border.all(color: const Color(0xFFBBF7D0))),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.phone, size: 14, color: Color(0xFF15803D)),
+                                  const SizedBox(width: 4),
+                                  Expanded(child: Text("किसान मोबाइल: +91 $fPhone", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF15803D)))),
+                                  GestureDetector(
+                                    onTap: () => makePhoneCall(fPhone),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(color: const Color(0xFF15803D), borderRadius: BorderRadius.circular(4)),
+                                      child: const Text("कॉल 📞", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 6),
-                                GestureDetector(
-                                  onTap: () => launchWhatsApp(fPhone, "नमस्ते! मैं आपके फार्म पर ऑर्डर #${ord['id']} पिकअप करने आ रहा हूँ। कृपया फार्म पर उपस्थित रहें।"),
-                                  child: Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                    decoration: BoxDecoration(color: const Color(0xFF25D366), borderRadius: BorderRadius.circular(4)),
-                                    child: const Text("चैट 💬", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                                  const SizedBox(width: 6),
+                                  GestureDetector(
+                                    onTap: () => launchWhatsApp(fPhone, "नमस्ते! मैं आपके फार्म पर ऑर्डर #${ord['id']} पिकअप करने आ रहा हूँ। कृपया फार्म पर उपस्थित रहें।"),
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(color: const Color(0xFF25D366), borderRadius: BorderRadius.circular(4)),
+                                      child: const Text("चैट 💬", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold)),
+                                    ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                           const SizedBox(height: 4),
                           Text("🎯 डिलीवरी: ${ord['dropAddress']}", style: const TextStyle(fontSize: 10, color: Colors.black87, fontWeight: FontWeight.w500)),
                         ],
