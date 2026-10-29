@@ -44,26 +44,27 @@ class _AndaRootState extends State<AndaRoot> {
   Widget _buildUnifiedGuidelines() {
     String roleRespTitle = "ग्राहक की जिम्मेदारी (Zero-Risk COD)";
     List<String> rolePoints = [
-      "1. अग्रिम सुरक्षा भाड़ा: बुकिंग के समय केवल आने-जाने का सुरक्षित भाड़ा (₹150) + फ़ीस (₹20) = ₹170 ऐप में जमा होगा।",
-      "2. डिलीवरी पर माल का भुगतान (COD): माल देखकर पूरे ₹1,000 सीधे किसान को देने होंगे। न इस्तेमाल हुआ ₹75 वापसी भाड़ा आपके वॉलेट में तुरंत वापस आ जाएगा।",
+      "1. अग्रिम सुरक्षा भाड़ा: सामान्य ऑर्डर पर 2-तरफा सुरक्षित भाड़ा + फ़ीस ऐप पूल में जमा होगी। सफल डिलीवरी पर वापसी भाड़ा आपके वॉलेट में तुरंत रिफंड होगा।",
+      "2. मिनी-बल्क ऑर्डर (21-100 यूनिट): 21 से 100 बर्ड्स/क्रेट्स पर ऑटो का किराया ऐप द्वारा ₹500 (30km तक) फिक्स है। किसान या कोई भी आपसे ₹1 भी अतिरिक्त नहीं मांग सकता।",
       "3. 0% प्लेटफ़ॉर्म फ़ीस गारंटी: ऑर्डर कैंसिल होने पर प्लेटफ़ॉर्म फ़ीस ₹0 रहेगी, ऐप कोई चार्ज नहीं काटेगा।",
-      "4. अनुपस्थिति हर्जाना: 10 मिनट में डिलीवरी पॉइंट पर न आने पर माल वापस गाँव जाएगा और दोनों तरफ का भाड़ा (₹150) कम्यूटर को देय होगा।",
+      "4. अनुपस्थिति हर्जाना: 10 मिनट में डिलीवरी पॉइंट पर न आने पर माल वापस गाँव जाएगा और दोनों तरफ का भाड़ा कम्यूटर/ऑटो को देय होगा।",
     ];
 
     if (_role == "seller") {
-      roleRespTitle = "किसान की जिम्मेदारी (सुरक्षित वॉलेट)";
+      roleRespTitle = "किसान की जिम्मेदारी (सुरक्षित वॉलेट व ऑटो नियम)";
       rolePoints = [
-        "1. ₹500 वॉलेट सुरक्षा: खेप लाइव रखने के लिए वॉलेट में ₹500 अनिवार्य हैं। यह केवल गलत माल/बिना टैग माल देने पर हर्जाने हेतु उपयोग होगा।",
-        "2. 100% माल का सीधा भुगतान: कम्यूटर द्वारा माल सत्यापन के बाद डिलीवरी पॉइंट पर ग्राहक से पूरे 100% पैसे सीधे आपके हाथ/UPI में मिलेंगे।",
-        "3. अनिवार्य लिंग व टैग: हर जीवित पक्षी का नर/मादा चयन, टैग और कांटे पर वजन के साथ फोटो अनिवार्य है।",
-        "4. कैंसिलेशन पर 0% फ़ीस: ऑर्डर कैंसिल होने पर प्लेटफ़ॉर्म आपसे कोई कमीशन या फ़ीस नहीं काटेगा।",
+        "1. ₹500 वॉलेट सुरक्षा: खेप लाइव रखने के लिए वॉलेट में ₹500 अनिवार्य हैं। गलत माल या अतिरिक्त किराया मांगने पर इसी से हर्जाना कटेगा।",
+        "2. मिनी-बल्क ऑटो बुकिंग: 21 से 100 बर्ड्स/क्रेट्स के मिनी-बल्क पर ऑटो तय करना किसान की प्राथमिक ज़िम्मेदारी है। ऐप में ऑटो नंबर व ड्राइवर का फ़ोन दर्ज करना अनिवार्य है।",
+        "3. फिक्स्ड किराया कैप (Anti-Fraud): 30km तक ऑटो का किराया अधिकतम ₹500 तय है। ग्राहक से किसी भी प्रकार की अतिरिक्त मांग सख्त वर्जित है।",
+        "4. अनिवार्य लिंग व वजन: हर जीवित पक्षी का नर/मादा चयन, टैग और कांटे पर वजन के साथ फोटो अनिवार्य है।",
       ];
     } else if (_role == "commuter") {
-      roleRespTitle = "कम्यूटर की जिम्मेदारी (100% सुरक्षित भाड़ा)";
+      roleRespTitle = "कम्यूटर की जिम्मेदारी (100% सुरक्षित मेहनताना)";
       rolePoints = [
-        "1. फार्म पर भौतिक सत्यापन: किसान से माल लेते समय स्क्रीन से टैग और कांटे के वजन का मिलान ज़रूर करें।",
-        "2. COD रसीद सत्यापन: डिलीवरी पर ग्राहक से किसान का भुगतान करवाएं और OTP से ₹75 की डिलीवरी फ़ीस अपने खाते में पाएं।",
-        "3. 15-Min WhatsApp अलर्ट: बस स्टैंड पहुँचने से 15 मिनट पूर्व ग्राहक को अलर्ट भेजें। ग्राहक के न आने पर वापसी बस हैंडओवर करें; दोनों तरफ का भाड़ा (₹150) आपको मिलेगा।",
+        "1. मिनी-बल्क एस्कॉर्ट मेहनताना: 21 से 100 बर्ड्स के मिनी-बल्क ऑर्डर पर आपको सुरक्षित माल निगरानी, रेवेन्यू हैंडलिंग व लोकल ट्रैवल के लिए फिक्स ₹230 मिलेंगे।",
+        "2. ऑटो ड्राइवर सीधा भुगतान: ऑटो का ₹500 किराया किसान के हाथ में न जाकर डिलीवरी पूर्ण होने पर आपके द्वारा सीधे ऑटो ड्राइवर को दिया जाएगा।",
+        "3. फार्म पर भौतिक सत्यापन: किसान से माल लेते समय स्क्रीन से टैग, वजन और ऑटो ड्राइवर के नंबर का मिलान अवश्य करें।",
+        "4. 15-Min WhatsApp अलर्ट: बस स्टैंड/ड्रॉप पॉइंट पहुँचने से 15 मिनट पूर्व ग्राहक को अलर्ट भेजें।",
       ];
     }
 
@@ -82,13 +83,13 @@ class _AndaRootState extends State<AndaRoot> {
           child: Text(pt, style: const TextStyle(fontSize: 12, color: Color(0xFF14532D))),
         )),
         const Divider(color: Color(0xFFBBF7D0), height: 16),
-        const Text("⚖️ लीगल प्रक्रिया व सख्त फ्रॉड अस्वीकरण:", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF166534), fontSize: 13)),
+        const Text("⚖️ लीगल प्रक्रिया, मिनी-बल्क नीति व सख्त फ्रॉड अस्वीकरण:", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF166534), fontSize: 13)),
         const SizedBox(height: 4),
         const Text(
           "1. सख्त फ्रॉड अस्वीकरण: यह प्लेटफ़ॉर्म किसी भी तरह के फ्रॉड या धोखाधड़ी को कतई मान्य एवं सपोर्ट नहीं करता। अगर आप ऐसी किसी भी गतिविधि में पाए गए तो इसके खुद पूर्ण ज़िम्मेदार होंगे; हमारा इससे किसी भी तरह का कोई लेना-देना नहीं होगा।\n"
-          "2. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है।\n"
-          "3. न्यायालय/पुलिस विवाद से मुक्ति: किसी भी पक्ष द्वारा गलत जानकारी या नुकसान के लिए ऐप अथवा इसके संचालक उत्तरदायी नहीं होंगे। ऐप व इसके स्वामियों को किसी भी विवाद में पक्षकार नहीं बनाया जाएगा।\n"
-          "4. नो कैंसिलेशन फ़ीस: कैंसिलेशन की स्थिति में ऐप कोई प्लेटफ़ॉर्म फ़ीस नहीं लेता, केवल वास्तविक परिवहन भाड़ा लागू होता है।",
+          "2. मिनी-बल्क फिक्स्ड किराया: 21 से 100 यूनिट के ऑर्डर पर ऑटो भाड़ा ₹500 व कम्यूटर मेहनताना ₹230 ऐप द्वारा तय है। कोई भी पक्ष मनमाना रेट नहीं लगा सकता।\n"
+          "3. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है। किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार नहीं बनाया जाएगा।\n"
+          "4. नो कैंसिलेशन फ़ीस: ऑर्डर कैंसिल होने की स्थिति में ऐप कोई प्लेटफ़ॉर्म फ़ीस नहीं लेता, केवल वास्तविक परिवहन भाड़ा लागू होता है।",
           style: TextStyle(fontSize: 11, color: Color(0xFF14532D), height: 1.3),
         ),
       ],
@@ -186,7 +187,7 @@ class _AndaRootState extends State<AndaRoot> {
                           child: Padding(
                             padding: EdgeInsets.only(top: 8),
                             child: Text(
-                              "मैंने फ्रॉड अस्वीकरण, हाइब्रिड COD, अग्रिम सुरक्षा भाड़ा और कानूनी शर्तों को समझ लिया है और मैं शत-प्रतिशत सहमत हूँ।",
+                              "मैंने मिनी-बल्क फिक्स्ड किराया कैप, फ्रॉड अस्वीकरण और कानूनी शर्तों को समझ लिया है और मैं शत-प्रतिशत सहमत हूँ।",
                               style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF14532D)),
                             ),
                           ),
@@ -244,6 +245,7 @@ class _AndaRootState extends State<AndaRoot> {
     );
   }
 }
+
 class DashScreen extends StatefulWidget {
   final String role, phone, lang;
   const DashScreen({super.key, required this.role, required this.phone, required this.lang});
@@ -653,7 +655,7 @@ class _DashScreenState extends State<DashScreen> {
       ),
     );
     }
-    void _addToCartWithQty(Map<String, dynamic> product) {
+      void _addToCartWithQty(Map<String, dynamic> product) {
     int qty = 1;
     final isEgg = product["unitType"] == "Crate" || (product["item"] as String).contains("अंडे");
     final pcs = (product["piecesPerCrate"] as int?) ?? 30;
@@ -790,10 +792,27 @@ class _DashScreenState extends State<DashScreen> {
 
     double goodsTotal = 0;
     int totalUnits = 0;
+    bool hasEggs = false;
+    bool hasQuail = false;
+    double maxDistanceKm = 0.0;
+
     for (var itm in _cartItems) {
       goodsTotal += (itm["total"] as double);
-      totalUnits += (itm["qty"] as int);
+      int q = (itm["qty"] as int);
+      totalUnits += q;
+      String itemName = itm["item"].toString().toLowerCase();
+      if (itemName.contains("अंडे") || itm["unitType"] == "Crate") {
+        hasEggs = true;
+      }
+      if (itemName.contains("बटेर") || itemName.contains("quail")) {
+        hasQuail = true;
+      }
+      String dStr = itm["dist"].toString().replaceAll(RegExp(r'[^0-9.]'), '');
+      double d = double.tryParse(dStr) ?? 5.0;
+      if (d > maxDistanceKm) maxDistanceKm = d;
     }
+
+    bool isMiniBulk = (totalUnits >= 21 && totalUnits <= 100);
 
     showModalBottomSheet(
       context: context,
@@ -801,12 +820,76 @@ class _DashScreenState extends State<DashScreen> {
       shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
       builder: (ctx) => StatefulBuilder(
         builder: (context, setMState) {
-          // रिवर्स कैलकुलेशन मॉडल (₹1000 माल ➡️ ₹150 भाड़ा ➡️ ₹20 फ़ीस = ₹1170)
-          double oneWayFare = _selectedDeliveryMode == "self" ? 0.0 : max(40.0, totalUnits * 15.0);
-          double twoWayFare = _selectedDeliveryMode == "self" ? 0.0 : (oneWayFare * 2);
-          double platformFee = 20.0;
-          double advancePayNow = _selectedDeliveryMode == "self" ? 0.0 : (twoWayFare + platformFee);
-          double totalOrderBill = goodsTotal + twoWayFare + (_selectedDeliveryMode == "self" ? 0.0 : platformFee);
+          // 1. प्लेटफ़ॉर्म सेवा शुल्क गणना
+          double platformFee = 0.0;
+          if (_selectedDeliveryMode == "self") {
+            if (totalUnits <= 5) platformFee = totalUnits * 5.0;
+            else if (totalUnits <= 10) platformFee = totalUnits * 2.0;
+            else if (totalUnits <= 100) platformFee = totalUnits * 1.0;
+            else if (totalUnits <= 500) platformFee = totalUnits * 0.50;
+            else platformFee = totalUnits * 0.25;
+          } else if (isMiniBulk) {
+            // मिनी-बल्क फ़्लैट डिस्काउंट स्लैब
+            if (totalUnits <= 30) platformFee = 100.0;
+            else if (totalUnits <= 50) platformFee = 150.0;
+            else platformFee = 200.0;
+          } else {
+            // 1-20 यूनिट सामान्य स्लैब
+            if (hasEggs) {
+              if (totalUnits <= 5) platformFee = totalUnits * 20.0;
+              else if (totalUnits <= 10) platformFee = totalUnits * 15.0;
+              else platformFee = totalUnits * 10.0;
+            } else if (hasQuail) {
+              if (totalUnits <= 10) platformFee = totalUnits * 10.0;
+              else platformFee = totalUnits * 5.0;
+            } else {
+              if (totalUnits <= 4) platformFee = totalUnits * 20.0;
+              else if (totalUnits <= 7) platformFee = totalUnits * 15.0;
+              else if (totalUnits <= 10) platformFee = totalUnits * 10.0;
+              else if (totalUnits <= 20) platformFee = totalUnits * 7.0;
+              else platformFee = totalUnits * 5.0;
+            }
+          }
+
+          // 2. कम्यूटर व ऑटो भाड़ा गणना
+          double baseOneWayFare = 0.0;
+          double extraDistanceFare = 0.0;
+
+          if (_selectedDeliveryMode != "self") {
+            if (isMiniBulk) {
+              // मिनी-बल्क ऑटो ₹500 + कम्यूटर मेहनताना ₹230 = ₹730
+              baseOneWayFare = 730.0;
+              if (maxDistanceKm > 30.0) {
+                double extraKm = maxDistanceKm - 30.0;
+                int chunks = (extraKm / 10.0).ceil();
+                extraDistanceFare = chunks * 100.0; // प्रति 10km पर ₹100 अतिरिक्त
+              }
+            } else {
+              if (hasEggs) {
+                if (totalUnits <= 10) baseOneWayFare = totalUnits * 30.0;
+                else if (totalUnits <= 15) baseOneWayFare = totalUnits * 25.0;
+                else baseOneWayFare = totalUnits * 20.0;
+              } else {
+                if (totalUnits <= 5) baseOneWayFare = totalUnits * 50.0;
+                else if (totalUnits <= 10) baseOneWayFare = totalUnits * 40.0;
+                else if (totalUnits <= 15) baseOneWayFare = totalUnits * 35.0;
+                else baseOneWayFare = totalUnits * 30.0;
+              }
+              if (_selectedDeliveryMode == "home") {
+                baseOneWayFare += 30.0;
+              }
+              if (maxDistanceKm > 30.0) {
+                double extraKm = maxDistanceKm - 30.0;
+                int chunks = (extraKm / 10.0).ceil();
+                extraDistanceFare = chunks * (totalUnits * 10.0);
+              }
+            }
+          }
+
+          double finalOneWayFare = baseOneWayFare + extraDistanceFare;
+          double twoWayFare = _selectedDeliveryMode == "self" ? 0.0 : (finalOneWayFare * 2);
+          double advancePayNow = _selectedDeliveryMode == "self" ? platformFee : (twoWayFare + platformFee);
+          double totalOrderBill = goodsTotal + twoWayFare + platformFee;
           double codPayToFarmer = goodsTotal;
 
           return Padding(
@@ -816,37 +899,48 @@ class _DashScreenState extends State<DashScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  const Text("सुरक्षित ऑर्डर ब्रेकअप (Zero-Risk COD)", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text("सुरक्षित चेकआउट (Zero-Risk COD)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                      if (isMiniBulk)
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                          decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6), border: Border.all(color: const Color(0xFFF59E0B))),
+                          child: const Text("🛺 मिनी-बल्क (ऑटो ₹500 + कम्यूटर ₹230)", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFB45309))),
+                        ),
+                    ],
+                  ),
                   const Divider(),
                   Text("कुल सामग्री: ${_cartItems.length} प्रकार (कुल $totalUnits नग/क्रेट)", style: const TextStyle(fontWeight: FontWeight.bold)),
                   ..._cartItems.map((ci) => Padding(
                     padding: const EdgeInsets.symmetric(vertical: 2),
                     child: Text("• ${ci['item']}: ${ci['qty']} ${ci['unitType']} = ₹${ci['total']}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
                   )),
-                  const SizedBox(height: 8),
-                  Text("📍 फार्म: ${_cartItems.first['farm']}\nपता: ${_cartItems.first['farmAddress']}", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+                  const SizedBox(height: 6),
+                  Text("📍 स्रोत फार्म: ${_cartItems.first['farm']} (${maxDistanceKm.toStringAsFixed(1)} किमी)", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
                   const SizedBox(height: 10),
                   const Text("डिलीवरी मोड चुनें:", style: TextStyle(fontWeight: FontWeight.bold)),
                   RadioListTile<String>(
                     dense: true,
                     title: const Text("फार्म से स्वयं पिकअप (Self Pickup)"),
-                    subtitle: const Text("शुल्क: ₹0 (सीधे फार्म पर जाकर किसान को दें)"),
+                    subtitle: Text("प्लेटफ़ॉर्म फ़ीस: ₹${platformFee.toStringAsFixed(1)} (₹0 भाड़ा)"),
                     value: "self",
                     groupValue: _selectedDeliveryMode,
                     onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
                   ),
                   RadioListTile<String>(
                     dense: true,
-                    title: const Text("बस स्टॉप / मुख्य सड़क (कम्यूटर COD)"),
-                    subtitle: Text("अग्रिम सुरक्षा भाड़ा: ₹${(max(40.0, totalUnits * 15.0) * 2).toStringAsFixed(0)} (आना+जाना) + ₹20 फ़ीस"),
+                    title: Text(isMiniBulk ? "मिनी-बल्क बस स्टॉप (ऑटो ट्रांसफर COD)" : "बस स्टॉप / मुख्य सड़क (कम्यूटर COD)"),
+                    subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ) • छूट फ़ीस: ₹${platformFee.toStringAsFixed(0)}" : "1-तरफ भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                     value: "bus_stop",
                     groupValue: _selectedDeliveryMode,
                     onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
                   ),
                   RadioListTile<String>(
                     dense: true,
-                    title: const Text("घर / दुकान डिलीवरी (कम्यूटर COD)"),
-                    subtitle: Text("अग्रिम सुरक्षा भाड़ा: ₹${(max(60.0, totalUnits * 25.0) * 2).toStringAsFixed(0)} (आना+जाना) + ₹20 फ़ीस"),
+                    title: Text(isMiniBulk ? "मिनी-बल्क घर तक (सीधा ऑटो COD)" : "घर / दुकान डिलीवरी (कम्यूटर COD)"),
+                    subtitle: Text(isMiniBulk ? "सीधा ऑटो ड्रॉप (ऑटो ₹500 + कम्यूटर ₹230 = ₹730) • फ़ीस: ₹${platformFee.toStringAsFixed(0)}" : "1-तरफ भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                     value: "home",
                     groupValue: _selectedDeliveryMode,
                     onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
@@ -876,19 +970,24 @@ class _DashScreenState extends State<DashScreen> {
                         if (_selectedDeliveryMode != "self") ...[
                           const SizedBox(height: 4),
                           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            Text("2. सुरक्षा भाड़ा (आना ₹${oneWayFare.toStringAsFixed(0)} + जाना ₹${oneWayFare.toStringAsFixed(0)}):"),
+                            Text(isMiniBulk ? "2. सुरक्षा भाड़ा (ऑटो ₹500 + कम्यूटर ₹230 x 2):" : "2. सुरक्षा भाड़ा (आना+जाना • 2 x ₹${finalOneWayFare.toStringAsFixed(0)}):"),
                             Text("₹${twoWayFare.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFFB45309))),
                           ]),
-                          const SizedBox(height: 4),
-                          Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                            const Text("3. प्लेटफ़ॉर्म सेवा शुल्क:"),
-                            const Text("₹20", style: TextStyle(fontWeight: FontWeight.bold)),
-                          ]),
+                          if (extraDistanceFare > 0)
+                            Padding(
+                              padding: const EdgeInsets.only(top: 2),
+                              child: Text("ℹ️ 30km से अधिक दूरी (+₹${extraDistanceFare.toStringAsFixed(0)}) भाड़े में शामिल", style: const TextStyle(fontSize: 10, color: Colors.blueGrey)),
+                            ),
                         ],
+                        const SizedBox(height: 4),
+                        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+                          Text(isMiniBulk ? "3. प्लेटफ़ॉर्म सेवा शुल्क ($totalUnits यूनिट फ्लैट छूट):" : "3. प्लेटफ़ॉर्म सेवा शुल्क ($totalUnits यूनिट स्लैब):"),
+                          Text("₹${platformFee.toStringAsFixed(1)}", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF9F2089))),
+                        ]),
                         const Divider(height: 12),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                           const Text("कुल ऑर्डर मूल्य (Gross Bill):", style: TextStyle(fontWeight: FontWeight.bold)),
-                          Text("₹${totalOrderBill.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF15803D))),
+                          Text("₹${totalOrderBill.toStringAsFixed(1)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: Color(0xFF15803D))),
                         ]),
                       ],
                     ),
@@ -900,19 +999,19 @@ class _DashScreenState extends State<DashScreen> {
                     child: Column(
                       children: [
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          const Text("अभी ऑनलाइन जमा (सुरक्षा पूल):", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
-                          Text("₹${advancePayNow.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blue)),
+                          const Text("अभी ऑनलाइन अग्रिम जमा (सुरक्षा पूल):", style: TextStyle(color: Colors.blue, fontWeight: FontWeight.bold)),
+                          Text("₹${advancePayNow.toStringAsFixed(1)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.blue)),
                         ]),
                         const SizedBox(height: 4),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          const Text("डिलीवरी पर देय (COD किसान को):", style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                          Text(_selectedDeliveryMode == "self" ? "फार्म पर किसान को नकद/UPI देय:" : "डिलीवरी पर देय (COD किसान को):", style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                           Text("₹${codPayToFarmer.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87)),
                         ]),
                         if (_selectedDeliveryMode != "self") ...[
                           const SizedBox(height: 4),
                           Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
                             const Text("✅ सफल डिलीवरी पर वॉलेट में रिफंड:", style: TextStyle(color: Color(0xFF15803D), fontSize: 11, fontWeight: FontWeight.bold)),
-                            Text("₹${oneWayFare.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF15803D))),
+                            Text("₹${finalOneWayFare.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 11, color: Color(0xFF15803D))),
                           ]),
                         ],
                       ],
@@ -958,11 +1057,13 @@ class _DashScreenState extends State<DashScreen> {
                           "dropAddress": dropAddress,
                           "mode": _selectedDeliveryMode,
                           "goodsTotal": goodsTotal,
-                          "oneWayFare": oneWayFare,
+                          "oneWayFare": finalOneWayFare,
                           "twoWayFare": twoWayFare,
                           "platformFee": platformFee,
                           "advancePaid": advancePayNow,
                           "codToFarmer": codPayToFarmer,
+                          "isMiniBulk": isMiniBulk,
+                          "autoArranger": "farmer",
                           "status": "pending_seller",
                           "returnBus": null,
                         });
@@ -971,11 +1072,11 @@ class _DashScreenState extends State<DashScreen> {
                       });
 
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                        content: Text("ऑर्डर $orderId बुक! डिलीवरी पर किसान को ₹${codPayToFarmer.toStringAsFixed(0)} दें। OTP: $otp"),
+                        content: Text("ऑर्डर $orderId बुक! किसान को ₹${codPayToFarmer.toStringAsFixed(0)} देय। OTP: $otp"),
                         duration: const Duration(seconds: 4),
                       ));
                     },
-                    child: Text(_selectedDeliveryMode == "self" ? "फार्म पिकअप बुक करें (₹0 अग्रिम)" : "₹${advancePayNow.toStringAsFixed(0)} अग्रिम जमा कर COD बुक करें", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    child: Text(_selectedDeliveryMode == "self" ? "₹${advancePayNow.toStringAsFixed(1)} शुल्क जमा कर फार्म पिकअप बुक करें" : "₹${advancePayNow.toStringAsFixed(0)} अग्रिम जमा कर COD बुक करें", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
                 ],
               ),
