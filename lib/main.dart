@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppState {
-  static List> orders = [];
+  static dynamic orders = [];
   static double sellerWallet = 500.0;
   static double buyerWallet = 0.0;
   static double commuterWallet = 0.0;
@@ -246,6 +246,7 @@ class _AndaRootState extends State<AndaRoot> {
     );
   }
 }
+
 
 class DashScreen extends StatefulWidget {
   final String role, phone, lang;
