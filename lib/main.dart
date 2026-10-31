@@ -1177,7 +1177,7 @@ class _DashScreenState extends State<DashScreen> {
             }
           }
 
-          return Padding(
+                    return Padding(
             padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(ctx).viewInsets.bottom + 20),
             child: SingleChildScrollView(
               child: Column(
@@ -1253,13 +1253,13 @@ class _DashScreenState extends State<DashScreen> {
                     const SizedBox(height: 8),
                     TextField(
                       controller: tagPrefixCtl,
-                      decoration: const InputDecoration(labelText: "टैग कोड * (उदा. D, K, B)", border: OutlineInputBorder(), isDense: true, prefixIcon: Icon(Icons.tag, color: Colors.blue)),
+                      decoration: const InputDecoration(labelText: "टैग कोड * (उदा. D, K, B, Q)", border: OutlineInputBorder(), isDense: true, prefixIcon: Icon(Icons.tag, color: Colors.blue)),
                     ),
                     const SizedBox(height: 10),
                     TextField(
                       controller: birdWeightCtl,
                       keyboardType: const TextInputType.numberWithOptions(decimal: true),
-                      decoration: const InputDecoration(labelText: "पक्षी का औसत वजन (kg) * (उदा. 1.8)", hintText: "1.8", border: OutlineInputBorder(), isDense: true, prefixIcon: Icon(Icons.scale, color: Color(0xFF15803D))),
+                      decoration: const InputDecoration(labelText: "पक्षी का औसत वजन (kg) *", hintText: "उदा. 0.25 या 1.8", border: OutlineInputBorder(), isDense: true, prefixIcon: Icon(Icons.scale, color: Color(0xFF15803D))),
                     ),
                   ] else ...[
                     const SizedBox(height: 6),
@@ -1267,7 +1267,7 @@ class _DashScreenState extends State<DashScreen> {
                       children: [
                         Expanded(child: TextField(controller: prodDateCtl, decoration: const InputDecoration(labelText: "उत्पादन तिथि *", border: OutlineInputBorder(), isDense: true))),
                         const SizedBox(width: 10),
-                        Expanded(child: TextField(controller: eggWeightCtl, decoration: const InputDecoration(labelText: "अंडे का वजन (g) *", hintText: "उदा. 50-55", border: OutlineInputBorder(), isDense: true))),
+                        Expanded(child: TextField(controller: eggWeightCtl, decoration: const InputDecoration(labelText: "अंडे का वजन (g) *", hintText: "उदा. 12 या 50-55", border: OutlineInputBorder(), isDense: true))),
                       ],
                     ),
                   ],
@@ -1413,8 +1413,19 @@ class _DashScreenState extends State<DashScreen> {
                       final eggCount = isEgg ? (int.tryParse(piecesCtl.text.trim()) ?? 30) : 1;
                       String baseName = isOther && customNameCtl.text.trim().isNotEmpty ? customNameCtl.text.trim() : selectedItem;
                       final finalTitle = isEgg ? "$baseName (तारीख: ${prodDateCtl.text.trim()})" : "$baseName ($selectedGender)";
-                      final weightDesc = isEgg ? "${eggWeightCtl.text.trim()}g/अंडा (±10g मार्जिन)" : "${birdWeightCtl.text.trim()}kg (±150g मार्जिन)";
-                      final prefix = tagPrefixCtl.text.trim().isEmpty ? "D" : tagPrefixCtl.text.trim();
+
+                      // बटेर / क्वॉइल के लिए सटीक मार्जिन लॉजिक
+                      final bool isQuail = baseName.toLowerCase().contains("बटेर") || baseName.toLowerCase().contains("quail");
+                      String weightDesc;
+                      if (isEgg) {
+                        final marginStr = isQuail ? "±5g" : "±10g";
+                        weightDesc = "${eggWeightCtl.text.trim()}g/अंडा ($marginStr मार्जिन)";
+                      } else {
+                        final marginStr = isQuail ? "±60g" : "±150g";
+                        weightDesc = "${birdWeightCtl.text.trim()}kg ($marginStr मार्जिन)";
+                      }
+
+                      final prefix = tagPrefixCtl.text.trim().isEmpty ? (isQuail ? "Q" : "D") : tagPrefixCtl.text.trim();
 
                       setState(() {
                         _sellerListings.insert(0, {
