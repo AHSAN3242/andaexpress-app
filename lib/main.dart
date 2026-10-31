@@ -7,7 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class AppState {
-  static List<Map<String, dynamic>> orders = [];
+  static List> orders = [];
   static double sellerWallet = 500.0; // किसान अनिवार्य न्यूनतम सुरक्षा बैलेंस
   static double buyerWallet = 0.0;   // ग्राहक ऑटो वॉलेट
   static double commuterWallet = 0.0; // कम्यूटर वॉलेट
@@ -45,26 +45,27 @@ class _AndaRootState extends State<AndaRoot> {
     String roleRespTitle = "ग्राहक की जिम्मेदारी (Zero-Risk COD)";
     List<String> rolePoints = [
       "1. अग्रिम सुरक्षा भाड़ा: सामान्य ऑर्डर पर 2-तरफा सुरक्षित भाड़ा + फ़ीस ऐप पूल में जमा होगी। सफल डिलीवरी पर वापसी भाड़ा आपके वॉलेट में तुरंत रिफंड होगा।",
-      "2. मिनी-बल्क ऑर्डर (21-100 यूनिट): 21 से 100 बर्ड्स/क्रेट्स पर ऑटो का किराया ऐप द्वारा ₹500 (30km तक) फिक्स है। किसान या कोई भी आपसे ₹1 भी अतिरिक्त नहीं मांग सकता।",
-      "3. 0% प्लेटफ़ॉर्म फ़ीस गारंटी: ऑर्डर कैंसिल होने पर प्लेटफ़ॉर्म फ़ीस ₹0 रहेगी, ऐप कोई चार्ज नहीं काटेगा।",
-      "4. अनुपस्थिति हर्जाना: 10 मिनट में डिलीवरी पॉइंट पर न आने पर माल वापस गाँव जाएगा और दोनों तरफ का भाड़ा कम्यूटर/ऑटो को देय होगा।",
+      "2. मिनी-बल्क ऑर्डर (21-100 यूनिट): ऑटो का एकल भाड़ा ₹500 (30km तक) फिक्स है। किसान या कोई भी आपसे अतिरिक्त नहीं मांग सकता।",
+      "3. शेयर्ड ऑटो किराया विभाजन: यदि एक ही ऑटो में दो ऑर्डर (उदा. 50-50) क्लब होते हैं, तो प्रत्येक ऑर्डर से ऑटो भाड़ा मात्र ₹350 और कम्यूटर ₹150 ही लिया जाएगा।",
+      "4. 0% प्लेटफ़ॉर्म फ़ीस गारंटी: ऑर्डर कैंसिल होने पर प्लेटफ़ॉर्म फ़ीस ₹0 रहेगी, ऐप कोई चार्ज नहीं काटेगा।",
+      "5. अनुपस्थिति हर्जाना: 10 मिनट में डिलीवरी पॉइंट पर न आने पर माल वापस गाँव जाएगा और दोनों तरफ का भाड़ा कम्यूटर/ऑटो को देय होगा।",
     ];
 
     if (_role == "seller") {
       roleRespTitle = "किसान की जिम्मेदारी (सुरक्षित वॉलेट व ऑटो नियम)";
       rolePoints = [
         "1. ₹500 वॉलेट सुरक्षा: खेप लाइव रखने के लिए वॉलेट में ₹500 अनिवार्य हैं। गलत माल या अतिरिक्त किराया मांगने पर इसी से हर्जाना कटेगा।",
-        "2. मिनी-बल्क ऑटो बुकिंग: 21 से 100 बर्ड्स/क्रेट्स के मिनी-बल्क पर ऑटो तय करना किसान की प्राथमिक ज़िम्मेदारी है। ऐप में ऑटो नंबर व ड्राइवर का फ़ोन दर्ज करना अनिवार्य है।",
-        "3. फिक्स्ड किराया कैप (Anti-Fraud): 30km तक ऑटो का किराया अधिकतम ₹500 तय है। ग्राहक से किसी भी प्रकार की अतिरिक्त मांग सख्त वर्जित है।",
-        "4. अनिवार्य लिंग व वजन: हर जीवित पक्षी का नर/मादा चयन, टैग और कांटे पर वजन के साथ फोटो अनिवार्य है।",
+        "2. अनिवार्य वजन व टैग: बिना सटीक कांटे के वजन (Weight) और पक्षी के लिंग के कोई भी खेप लाइव नहीं होगी।",
+        "3. शेयर्ड ऑटो ईमानदारी: एक ही ऑटो में दो ऑर्डर जाने पर किसान/कम्यूटर दोनों पार्टियों से पूरा ₹500 नहीं वसूल सकते; यह ₹350-₹350 में विभाजित होगा।",
+        "4. फिक्स्ड किराया कैप (Anti-Fraud): ऑटो का किराया ऐप द्वारा तय है। ग्राहक से किसी भी प्रकार की अतिरिक्त मांग सख्त वर्जित है।",
       ];
     } else if (_role == "commuter") {
       roleRespTitle = "कम्यूटर की जिम्मेदारी (100% सुरक्षित मेहनताना)";
       rolePoints = [
-        "1. मिनी-बल्क एस्कॉर्ट मेहनताना: 21 से 100 बर्ड्स के मिनी-बल्क ऑर्डर पर आपको सुरक्षित माल निगरानी, रेवेन्यू हैंडलिंग व लोकल ट्रैवल के लिए फिक्स ₹230 मिलेंगे।",
-        "2. ऑटो ड्राइवर सीधा भुगतान: ऑटो का ₹500 किराया किसान के हाथ में न जाकर डिलीवरी पूर्ण होने पर आपके द्वारा सीधे ऑटो ड्राइवर को दिया जाएगा।",
-        "3. फार्म पर भौतिक सत्यापन: किसान से माल लेते समय स्क्रीन से टैग, वजन और ऑटो ड्राइवर के नंबर का मिलान अवश्य करें।",
-        "4. 15-Min WhatsApp अलर्ट: बस स्टैंड/ड्रॉप पॉइंट पहुँचने से 15 मिनट पूर्व ग्राहक को अलर्ट भेजें।",
+        "1. मिनी-बल्क एस्कॉर्ट मेहनताना: एकल मिनी-बल्क ऑर्डर पर ₹230 मेहनताना तय है।",
+        "2. शेयर्ड ऑटो बोनस: यदि दो 50-50 ऑर्डर एक साथ ले जाते हैं, तो आपको कुल ₹300 (प्रत्येक पार्टी से ₹150 + ₹150) मिलेंगे और ऑटो चालक को कुल ₹700 (₹350 + ₹350) मिलेंगे।",
+        "3. ऑटो ड्राइवर सीधा भुगतान: ऑटो का किराया डिलीवरी पूर्ण होने पर आपके द्वारा सीधे ऑटो ड्राइवर को दिया जाएगा।",
+        "4. फार्म पर भौतिक सत्यापन: किसान से माल लेते समय स्क्रीन से टैग, वजन और ऑटो नंबर का मिलान अवश्य करें।",
       ];
     }
 
@@ -87,7 +88,7 @@ class _AndaRootState extends State<AndaRoot> {
         const SizedBox(height: 4),
         const Text(
           "1. सख्त फ्रॉड अस्वीकरण: यह प्लेटफ़ॉर्म किसी भी तरह के फ्रॉड या धोखाधड़ी को कतई मान्य एवं सपोर्ट नहीं करता। अगर आप ऐसी किसी भी गतिविधि में पाए गए तो इसके खुद पूर्ण ज़िम्मेदार होंगे; हमारा इससे किसी भी तरह का कोई लेना-देना नहीं होगा।\n"
-          "2. मिनी-बल्क फिक्स्ड किराया: 21 से 100 यूनिट के ऑर्डर पर ऑटो भाड़ा ₹500 व कम्यूटर मेहनताना ₹230 ऐप द्वारा तय है। कोई भी पक्ष मनमाना रेट नहीं लगा सकता।\n"
+          "2. शेयर्ड ऑटो फेयर स्प्लिट: दो ऑर्डर एक ऑटो में जाने पर ऑटो चालक को कुल ₹700 (₹350+₹350) और कम्यूटर को कुल ₹300 (₹150+₹150) मिलेंगे। दोहरा पूरा भाड़ा वसूलना प्रतिबंधित है।\n"
           "3. मध्यस्थता मात्र: 'अंडा एक्सप्रेस' केवल किसान, ग्राहक और कम्यूटर को आपस में जोड़ने वाला एक स्वतंत्र डिजिटल माध्यम है। किसी भी विवाद में ऐप व इसके स्वामियों को पक्षकार नहीं बनाया जाएगा।\n"
           "4. नो कैंसिलेशन फ़ीस: ऑर्डर कैंसिल होने की स्थिति में ऐप कोई प्लेटफ़ॉर्म फ़ीस नहीं लेता, केवल वास्तविक परिवहन भाड़ा लागू होता है।",
           style: TextStyle(fontSize: 11, color: Color(0xFF14532D), height: 1.3),
@@ -187,8 +188,8 @@ class _AndaRootState extends State<AndaRoot> {
                           child: Padding(
                             padding: EdgeInsets.only(top: 8),
                             child: Text(
-                              "मैंने मिनी-बल्क फिक्स्ड किराया कैप, फ्रॉड अस्वीकरण और कानूनी शर्तों को समझ लिया है और मैं शत-प्रतिशत सहमत हूँ।",
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFF14532D)),
+                              "मुझे ऊपर लिखे हुए सभी नियम मान्य है।",
+                              style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF14532D)),
                             ),
                           ),
                         ),
@@ -1086,7 +1087,7 @@ class _DashScreenState extends State<DashScreen> {
       ),
     );
   }
-    void _addBatchDialog() {
+      void _addBatchDialog() {
     String selectedType = "अंडे";
     String? selectedGender;
     String selectedItem = "देसी पोल्ट्री अंडे";
@@ -1256,8 +1257,8 @@ class _DashScreenState extends State<DashScreen> {
                     const SizedBox(height: 10),
                     TextField(
                       controller: birdWeightCtl,
-                      keyboardType: TextInputType.number,
-                      decoration: const InputDecoration(labelText: "पक्षी का औसत वजन (kg) *", hintText: "उदा. 1.8", border: OutlineInputBorder(), isDense: true, prefixIcon: Icon(Icons.scale, color: Color(0xFF15803D))),
+                      keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                      decoration: const InputDecoration(labelText: "पक्षी का औसत वजन (kg) * (उदा. 1.8)", hintText: "1.8", border: OutlineInputBorder(), isDense: true, prefixIcon: Icon(Icons.scale, color: Color(0xFF15803D))),
                     ),
                   ] else ...[
                     const SizedBox(height: 6),
@@ -1265,7 +1266,7 @@ class _DashScreenState extends State<DashScreen> {
                       children: [
                         Expanded(child: TextField(controller: prodDateCtl, decoration: const InputDecoration(labelText: "उत्पादन तिथि *", border: OutlineInputBorder(), isDense: true))),
                         const SizedBox(width: 10),
-                        Expanded(child: TextField(controller: eggWeightCtl, decoration: const InputDecoration(labelText: "अंडे का वजन (g) *", hintText: "उदा. 50-55g", border: OutlineInputBorder(), isDense: true))),
+                        Expanded(child: TextField(controller: eggWeightCtl, decoration: const InputDecoration(labelText: "अंडे का वजन (g) *", hintText: "उदा. 50-55", border: OutlineInputBorder(), isDense: true))),
                       ],
                     ),
                   ],
@@ -1383,6 +1384,14 @@ class _DashScreenState extends State<DashScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("⚠️ कृपया पक्षी का लिंग (नर ♂️ या मादा ♀️) अवश्य चुनें!"), backgroundColor: Colors.red));
                         return;
                       }
+                      if (!isEgg && birdWeightCtl.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("⚠️ पक्षी का कांटे पर वजन (kg) दर्ज करना अनिवार्य है!"), backgroundColor: Colors.red));
+                        return;
+                      }
+                      if (isEgg && eggWeightCtl.text.trim().isEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("⚠️ अंडे का वजन (ग्राम) दर्ज करना अनिवार्य है!"), backgroundColor: Colors.red));
+                        return;
+                      }
                       if (uploadedPhotos.isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("⚠️ कम से कम 1 फोटो अपलोड करना अनिवार्य है!"), backgroundColor: Colors.red));
                         return;
@@ -1457,8 +1466,8 @@ class _DashScreenState extends State<DashScreen> {
         },
       ),
     );
-  }
-
+      }
+                        
   void _editBatchDialog(int index) {
     final lot = _sellerListings[index];
     final isEgg = lot["type"] == "अंडे" || lot["item"].toString().contains("अंडे");
