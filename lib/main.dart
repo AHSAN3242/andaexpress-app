@@ -8,10 +8,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 class AppState {
   static List> orders = [];
-  static double sellerWallet = 500.0; // किसान अनिवार्य न्यूनतम सुरक्षा बैलेंस
-  static double buyerWallet = 0.0;   // ग्राहक ऑटो वॉलेट
-  static double commuterWallet = 0.0; // कम्यूटर वॉलेट
-  static double escrowHold = 0.0;    // ट्रांजिट डिलीवरी पूल
+  static double sellerWallet = 500.0;
+  static double buyerWallet = 0.0;
+  static double commuterWallet = 0.0;
+  static double escrowHold = 0.0;
 }
 
 void main() {
