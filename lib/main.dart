@@ -1032,7 +1032,7 @@ class _DashScreenState extends State<DashScreen> {
                         ]),
                         const SizedBox(height: 4),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text(_selectedDeliveryMode == "self" ? "फार्म पर किसान को नकद/UPI देय:" : "डिलीवरी पर देय (UPI Pay After Delivery किसान को):", style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                          Text(_selectedDeliveryMode == "self" ? "फार्म पर किसान को नकद/UPI देय:" : "डिलीवरी पर देय (UPI किसान को):", style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                           Text("₹${codPayToFarmer.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87)),
                         ]),
                         if (_selectedDeliveryMode != "self") ...[
