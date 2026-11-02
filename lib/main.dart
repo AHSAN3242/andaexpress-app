@@ -930,7 +930,7 @@ class _DashScreenState extends State<DashScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("सुरक्षित चेकआउट (Zero-Risk COD)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                      const Text("सुरक्षित चेकआउट (UPI Pay After Delivery)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
                       if (isMiniBulk)
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
@@ -959,7 +959,7 @@ class _DashScreenState extends State<DashScreen> {
                   ),
                   RadioListTile<String>(
                     dense: true,
-                    title: Text(isMiniBulk ? "मिनी-बल्क बस स्टॉप (ऑटो ट्रांसफर COD)" : "बस स्टॉप / मुख्य सड़क (कम्यूटर COD)"),
+                    title: Text(isMiniBulk ? "मिनी-बल्क बस स्टॉप (ऑटो ट्रांसफर UPI Pay After Delivery)" : "बस स्टॉप / मुख्य सड़क (कम्यूटर UPI Pay After Delivery)"),
                     subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ) • छूट फ़ीस: ₹${platformFee.toStringAsFixed(0)}" : "1-तरफ भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                     value: "bus_stop",
                     groupValue: _selectedDeliveryMode,
@@ -967,7 +967,7 @@ class _DashScreenState extends State<DashScreen> {
                   ),
                   RadioListTile<String>(
                     dense: true,
-                    title: Text(isMiniBulk ? "मिनी-बल्क घर तक (सीधा ऑटो COD)" : "घर / दुकान डिलीवरी (कम्यूटर COD)"),
+                    title: Text(isMiniBulk ? "मिनी-बल्क घर तक (सीधा ऑटो UPI Pay After Delivery)" : "घर / दुकान डिलीवरी (कम्यूटर UPI Pay After Delivery)"),
                     subtitle: Text(isMiniBulk ? "सीधा ऑटो ड्रॉप (ऑटो ₹500 + कम्यूटर ₹230 = ₹730) • फ़ीस: ₹${platformFee.toStringAsFixed(0)}" : "1-तरफ भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                     value: "home",
                     groupValue: _selectedDeliveryMode,
@@ -1032,7 +1032,7 @@ class _DashScreenState extends State<DashScreen> {
                         ]),
                         const SizedBox(height: 4),
                         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-                          Text(_selectedDeliveryMode == "self" ? "फार्म पर किसान को नकद/UPI देय:" : "डिलीवरी पर देय (COD किसान को):", style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
+                          Text(_selectedDeliveryMode == "self" ? "फार्म पर किसान को नकद/UPI देय:" : "डिलीवरी पर देय (UPI Pay After Delivery किसान को):", style: const TextStyle(color: Colors.black87, fontWeight: FontWeight.bold)),
                           Text("₹${codPayToFarmer.toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: Colors.black87)),
                         ]),
                         if (_selectedDeliveryMode != "self") ...[
@@ -1104,7 +1104,7 @@ class _DashScreenState extends State<DashScreen> {
                         duration: const Duration(seconds: 4),
                       ));
                     },
-                    child: Text(_selectedDeliveryMode == "self" ? "₹${advancePayNow.toStringAsFixed(1)} शुल्क जमा कर फार्म पिकअप बुक करें" : "₹${advancePayNow.toStringAsFixed(0)} अग्रिम जमा कर COD बुक करें", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
+                    child: Text(_selectedDeliveryMode == "self" ? "₹${advancePayNow.toStringAsFixed(1)} शुल्क जमा कर फार्म पिकअप बुक करें" : "₹${advancePayNow.toStringAsFixed(0)} अग्रिम जमा कर ऑर्डर बुक करें", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
                   ),
                 ],
               ),
