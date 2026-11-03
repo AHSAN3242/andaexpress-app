@@ -2081,28 +2081,124 @@ class _DashScreenState extends State<DashScreen> {
                       const SizedBox(height: 8),
                     ],
 
-                    Row(
-                      children: [
-                        Expanded(
-                          child: ElevatedButton(
-                            style: ElevatedButton.styleFrom(backgroundColor: isInTransit ? const Color(0xFF15803D) : const Color(0xFF9F2089), foregroundColor: Colors.white),
-                            onPressed: () {
-                              if (!isInTransit) {
-                                setState(() {
-                                  ord["status"] = "in_transit";
-                                });
-                                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("माल के सभी टैग सत्यापित कर पिकअप कर लिया गया!")));
-                                                    } else {
-                        // 🔒 Part 8: किसान का सुरक्षित UPI QR और डिलीवरी कोड सत्यापन
-                        _showFarmerQrDialog(context, ord);
-                      }
-                    },
-                    child: Text(isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें"),
-                  ),
-                          
-                      ],
-                    ),
+                                  Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isInTransit ? const Color(0xFF15803D) : const Color(0xFF2563EB),
+                      ),
+                      onPressed: () {
+                        if (!isInTransit) {
+                          setState(() {
+                            ord["status"] = "in_transit";
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text("माल ले जाने के लिए निकल पड़े!")),
+                          );
+                        } else {
+                          final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
+                          final String fName = ord['farmerName'] ?? "सत्यापित किसान";
+                          final double amt = (ord['farmerPayAmount'] ?? ord['codToFarmer'] ?? 0.0).toDouble();
+                          final String vCode = (ord['deliveryCode'] ?? ord['otp'] ?? "").toString();
+                          final cCtrl = TextEditingController();
 
+                          showDialog(
+                            context: context,
+                            barrierDismissible: false,
+                            builder: (ctx) => AlertDialog(
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                              title: Row(
+                                children: const [
+                                  Icon(Icons.verified_user, color: Colors.green),
+                                  SizedBox(width: 8),
+                                  Text("सत्यापित किसान भुगतान", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                ],
+                              ),
+                              content: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
+                                      child: const Text(
+                                        "🛡️ 100% Cash-Free Policy: केवल किसान के खाते में ही UPI करें। नकद देना सख्त मना है।",
+                                        style: TextStyle(fontSize: 11, color: Color(0xFF166534), fontWeight: FontWeight.bold),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 12),
+                                    Text("किसान का नाम: $fName", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                    Text("UPI ID: $fUpi", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                    const SizedBox(height: 8),
+                                    Text("देय शुद्ध रकम: ₹${amt.toInt()}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                                    const SizedBox(height: 12),
+                                    Container(
+                                      padding: const EdgeInsets.all(12),
+                                      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(10)),
+                                      child: Column(
+                                        children: [
+                                          const Icon(Icons.qr_code_2, size: 130, color: Colors.black87),
+                                          const SizedBox(height: 4),
+                                          Text("GPay / PhonePe / Paytm से स्कैन करें", style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                                        ],
+                                      ),
+                                    ),
+                                    const SizedBox(height: 14),
+                                    const Divider(),
+                                    const Text("डिलीवरी हैंडओवर कोड (ग्राहक से प्राप्त करें):", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                    const SizedBox(height: 6),
+                                    TextField(
+                                      controller: cCtrl,
+                                      keyboardType: TextInputType.number,
+                                      maxLength: 4,
+                                      textAlign: TextAlign.center,
+                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 8),
+                                      decoration: const InputDecoration(
+                                        hintText: "••••",
+                                        border: OutlineInputBorder(),
+                                        contentPadding: EdgeInsets.symmetric(vertical: 8),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(ctx),
+                                  child: const Text("रद्द करें"),
+                                ),
+                                ElevatedButton(
+                                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                                  onPressed: () {
+                                    if (cCtrl.text.trim() == vCode) {
+                                      Navigator.pop(ctx);
+                                      setState(() {
+                                        ord['status'] = 'delivered';
+                                      });
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text("✅ डिलीवरी सफलतापूर्वक सत्यापित और पूरी हुई!")),
+                                      );
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(content: Text("❌ गलत कोड! ग्राहक द्वारा किसान को UPI भुगतान के बाद ही कोड मिलेगा।"), backgroundColor: Colors.red),
+                                      );
+                                    }
+                                  },
+                                  child: const Text("डिलीवरी पूर्ण करें"),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
+                      },
+                      child: Text(isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें"),
+                    ),
+                  ),
+                ],
+              ),
+                    
                     if (isInTransit) ...[
                       const SizedBox(height: 8),
                       // विकल्प A: ग्राहक अनुपस्थित (0% प्लेटफ़ॉर्म फ़ीस • दोनों तरफ का भाड़ा कम्यूटर को)
