@@ -1094,7 +1094,7 @@ class _DashScreenState extends State<DashScreen> {
         "dropAddress": dropAddress,
         "mode": _selectedDeliveryMode,
         "goodsTotal": goodsTotal,
-        "onewayFare": finalOnewayFare,
+        "onewayFare": baseOnewayFare,
         "twowayFare": twoWayFare,
         "platformFee": platformFee,
         "advancePaid": advancePayNow,
