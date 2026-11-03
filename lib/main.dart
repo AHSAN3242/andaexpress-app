@@ -1057,47 +1057,56 @@ class _DashScreenState extends State<DashScreen> {
                         return;
                       }
 
-                      Navigator.pop(ctx);
-                      final orderId = "AND-${DateTime.now().millisecondsSinceEpoch.toString().substring(8)}";
-                      final otp = (1000 + Random().nextInt(9000)).toString();
-                      final productSummary = _cartItems.map((e) => "${e['item']} (${e['qty']} ${e['unitType']})").join(", ");
-                      final firstFarm = _cartItems.first["farm"] as String;
-                      final firstFarmAddress = _cartItems.first["farmAddress"] as String;
-                      final farmerPhone = _cartItems.first["farmerPhone"] as String;
-                      final dist = _cartItems.first["dist"] as String;
-                      final allTags = _cartItems.map((e) => e["allocatedTags"] ?? "").where((t) => t.toString().isNotEmpty).join(" | ");
-                      final allWeights = _cartItems.map((e) => e["weight"] ?? "").join(", ");
-                      final dropAddress = _selectedDeliveryMode == "self" ? "स्वयं पिकअप (फार्म से)" : _buyerAddressCtl.text.trim();
+                          Navigator.pop(ctx);
+    final orderId = 'AND-${DateTime.now().millisecondsSinceEpoch.toString().substring(5)}';
+    final otp = (1000 + Random().nextInt(9000)).toString();
+    final productSummary = _cartItems.map((e) => "${e['item']} (${e['qty']} ${e['unitType']})").join(", ");
+    final firstFarm = _cartItems.first['farm'] as String;
+    final firstFarmAddress = _cartItems.first['farmAddress'] as String;
+    final farmerPhone = _cartItems.first['farmerPhone'] as String;
+    final dist = _cartItems.first['dist'] as String;
+    final allTags = _cartItems.map((e) => e['allocatedTags'] ?? "").where((t) => t.toString().isNotEmpty).join(" | ");
+    final allWeights = _cartItems.map((e) => e['weight'] ?? "").join(", ");
+    final dropAddress = _selectedDeliveryMode == "self" ? "फार्म पिकअप (स्वयं लें)" : _buyerAddressCtl.text.trim();
 
-                      setState(() {
-                        AppState.escrowHold += advancePayNow;
-                        AppState.orders.insert(0, {
-                          "id": orderId,
-                          "otp": otp,
-                          "buyerPhone": widget.phone,
-                          "farmerPhone": farmerPhone,
-                          "product": productSummary,
-                          "farm": firstFarm,
-                          "farmAddress": firstFarmAddress,
-                          "dist": dist,
-                          "tags": allTags,
-                          "weights": allWeights,
-                          "dropAddress": dropAddress,
-                          "mode": _selectedDeliveryMode,
-                          "goodsTotal": goodsTotal,
-                          "oneWayFare": finalOneWayFare,
-                          "twoWayFare": twoWayFare,
-                          "platformFee": platformFee,
-                          "advancePaid": advancePayNow,
-                          "codToFarmer": codPayToFarmer,
-                          "isMiniBulk": isMiniBulk,
-                          "autoArranger": "farmer",
-                          "status": "pending_seller",
-                          "returnBus": null,
-                        });
-                        _cartItems.clear();
-                        _buyerAddressCtl.clear();
-                      });
+    // 🔒 किसान का बैंक नाम और UPI सुरक्षित लॉक
+    final farmerName = _cartItems.first['farmerName'] ?? firstFarm;
+    final farmerUpi = _cartItems.first['farmerUpi'] ?? "$farmerPhone@upi";
+
+    setState(() {
+      AppState.escrowHold += advancePayNow;
+      AppState.orders.insert(0, {
+        "id": orderId,
+        "otp": otp,
+        "deliveryCode": otp,
+        "buyerPhone": widget.phone,
+        "farmerPhone": farmerPhone,
+        "farmerName": farmerName,
+        "farmerUpi": farmerUpi,
+        "farmerPayAmount": codPayToFarmer,
+        "paymentMode": "Pay After Delivery via UPI",
+        "product": productSummary,
+        "farm": firstFarm,
+        "farmAddress": firstFarmAddress,
+        "dist": dist,
+        "tags": allTags,
+        "weights": allWeights,
+        "dropAddress": dropAddress,
+        "mode": _selectedDeliveryMode,
+        "goodsTotal": goodsTotal,
+        "onewayFare": finalOnewayFare,
+        "twowayFare": twoWayFare,
+        "platformFee": platformFee,
+        "advancePaid": advancePayNow,
+        "codToFarmer": codPayToFarmer,
+        "isMiniBulk": isMiniBulk,
+        "autoArranger": "farmer",
+        "status": "pending_seller",
+        "returnBus": null,
+      });
+      _cartItems.clear();
+      _buyerAddressCtl.clear();
+    });
 
                       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                         content: Text("ऑर्डर $orderId बुक! किसान को ₹${codPayToFarmer.toStringAsFixed(0)} देय। OTP: $otp"),
