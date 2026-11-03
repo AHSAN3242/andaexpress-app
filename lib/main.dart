@@ -2092,53 +2092,14 @@ class _DashScreenState extends State<DashScreen> {
                                   ord["status"] = "in_transit";
                                 });
                                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("माल के सभी टैग सत्यापित कर पिकअप कर लिया गया!")));
-                              } else {
-                                final otpCtl = TextEditingController();
-                                showDialog(
-                                  context: context,
-                                  builder: (oCtx) => AlertDialog(
-                                    title: const Text("ग्राहक OTP सत्यापन (COD पूर्ण)"),
-                                    content: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        Text("1. ग्राहक से किसान को ₹${codAmt.toStringAsFixed(0)} का सीधा भुगतान (Cash/UPI) करवाएं।"),
-                                        const SizedBox(height: 6),
-                                        const Text("2. भुगतान होने के बाद ग्राहक से 4 अंकों का OTP लें:"),
-                                        const SizedBox(height: 10),
-                                        TextField(controller: otpCtl, keyboardType: TextInputType.number, decoration: const InputDecoration(labelText: "4-Digit OTP", border: OutlineInputBorder())),
-                                      ],
-                                    ),
-                                    actions: [
-                                      TextButton(onPressed: () => Navigator.pop(oCtx), child: const Text("रद्द करें")),
-                                      ElevatedButton(
-                                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
-                                        onPressed: () {
-                                          if (otpCtl.text.trim() == ord["otp"].toString()) {
-                                            Navigator.pop(oCtx);
-                                            setState(() {
-                                              ord["status"] = "delivered";
-                                              // कम्यूटर को ₹75 मेहनताना
-                                              AppState.commuterWallet += myFee;
-                                              // ग्राहक को ₹75 वापसी भाड़ा रिफंड
-                                              AppState.buyerWallet += refundAmt;
-                                              // एस्क्रो पूल से समायोजन
-                                              AppState.escrowHold -= (ord["advancePaid"] as double);
-                                            });
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("COD पूर्ण! डिलीवरी फ़ीस आपके वॉलेट में जुड़ी और ग्राहक को ₹75 रिफंड मिला।")));
-                                          } else {
-                                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("गलत OTP! कृपया सही OTP पूछें।")));
-                                          }
-                                        },
-                                        child: const Text("सत्यापित करें"),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }
-                            },
-                            child: Text(isInTransit ? "COD कराएं व OTP सत्यापित करें" : "टैग सत्यापित करें व पिकअप लें"),
-                          ),
-                        ),
+                                                    } else {
+                        // 🔒 Part 8: किसान का सुरक्षित UPI QR और डिलीवरी कोड सत्यापन
+                        _showFarmerQrDialog(context, ord);
+                      }
+                    },
+                    child: Text(isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें"),
+                  ),
+                          
                       ],
                     ),
 
