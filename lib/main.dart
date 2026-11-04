@@ -2086,14 +2086,17 @@ class _DashScreenState extends State<DashScreen> {
                 ),
                 const SizedBox(height: 8),
               ],
-              Row(
+                            Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isInTransit ? const Color(0xFF15803D) : const Color(0xFF4A148C),
-                        foregroundColor: Colors.black,
+                        backgroundColor: isInTransit 
+                            ? const Color(0xFF15803D) 
+                            : const Color(0xFF9C27B0),
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                         elevation: 2,
                       ),
                       onPressed: () {
@@ -2203,7 +2206,11 @@ class _DashScreenState extends State<DashScreen> {
                       },
                       child: Text(
                         isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें",
-                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
                       ),
                     ),
                   ),
