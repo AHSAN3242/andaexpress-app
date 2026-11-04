@@ -775,6 +775,7 @@ class _DashScreenState extends State<DashScreen> {
                       "qty": qty,
                       "weight": product["weight"],
                       "allocatedTags": birdTags.join(", "),
+                      "allowCod": product["allowCod"] == true,
                       "total": price * qty,
                     });
                   });
@@ -800,6 +801,7 @@ class _DashScreenState extends State<DashScreen> {
                       "qty": qty,
                       "weight": product["weight"],
                       "allocatedTags": birdTags.join(", "),
+                      "allowCod": product["allowCod"] == true,
                       "total": price * qty,
                     });
                   });
@@ -823,7 +825,9 @@ class _DashScreenState extends State<DashScreen> {
     bool hasEggs = false;
     bool hasQuail = false;
     double maxDistanceKm = 0.0;
-
+  bool isCodAllowed = _cartItems.every((itm) => itm['allowCod'] == true);
+  String selectedPayOption = "upi"; // डिफ़ॉल्ट हमेशा Pay After Delivery via UPI
+    
     for (var itm in _cartItems) {
       goodsTotal += (itm["total"] as double);
       int q = (itm["qty"] as int);
@@ -931,6 +935,46 @@ class _DashScreenState extends State<DashScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       const Text("सुरक्षित चेकआउट (UPI Pay After Delivery)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                       // 🔒 किसान की पसंद पर आधारित भुगतान विकल्प (UPI vs COD)
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E8FF),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF9F2089)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text("भुगतान का तरीका (Payment Mode):", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF9F2089))),
+                    const SizedBox(height: 6),
+                    RadioListTile<String>(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      activeColor: const Color(0xFF9F2089),
+                      title: const Text("📱 Pay After Delivery via UPI (अनुशंसित)", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                      subtitle: const Text("डिलीवरी पर किसान के QR पर सुरक्षित बैंक भुगतान", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                      value: "upi",
+                      groupValue: selectedPayOption,
+                      onChanged: (v) => setBState(() => selectedPayOption = v ?? "upi"),
+                    ),
+                    if (isCodAllowed) ...[
+                      const Divider(height: 1),
+                      RadioListTile<String>(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        activeColor: const Color(0xFF9F2089),
+                        title: const Text("💵 Cash on Delivery (किसान द्वारा स्वीकृत)", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                        subtitle: const Text("कम्यूटर को नकद दें (किसान व कम्यूटर का आपसी मामला)", style: TextStyle(fontSize: 10, color: Colors.grey)),
+                        value: "cod",
+                        groupValue: selectedPayOption,
+                        onChanged: (v) => setBState(() => selectedPayOption = v ?? "cod"),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
                       if (isMiniBulk)
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
