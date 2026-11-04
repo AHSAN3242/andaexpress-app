@@ -957,7 +957,7 @@ class _DashScreenState extends State<DashScreen> {
                       subtitle: const Text("डिलीवरी पर किसान के QR पर सुरक्षित बैंक भुगतान", style: TextStyle(fontSize: 10, color: Colors.grey)),
                       value: "upi",
                       groupValue: selectedPayOption,
-                      onChanged: (v) => setNState(() => selectedPayOption = v ?? "upi"),
+                      onChanged: (v) => setState(() => selectedPayOption = v ?? "upi"),
                     ),
                     if (isCodAllowed) ...[
                       const Divider(height: 1),
@@ -969,7 +969,7 @@ class _DashScreenState extends State<DashScreen> {
                         subtitle: const Text("कम्यूटर को नकद दें (किसान व कम्यूटर का आपसी मामला)", style: TextStyle(fontSize: 10, color: Colors.grey)),
                         value: "cod",
                         groupValue: selectedPayOption,
-                        onChanged: (v) => setNState(() => selectedPayOption = v ?? "cod"),
+                        onChanged: (v) => setState(() => selectedPayOption = v ?? "cod"),
                       ),
                     ],
                   ],
