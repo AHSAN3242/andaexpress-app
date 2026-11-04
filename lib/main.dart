@@ -2067,26 +2067,34 @@ class _DashScreenState extends State<DashScreen> {
                     Text("📞 ग्राहक फोन: +91 ${ord['buyerPhone']}"),
                     const SizedBox(height: 10),
 
-                    if (isInTransit) ...[
-                      OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(foregroundColor: const Color(0xFF15803D), side: const BorderSide(color: Color(0xFF15803D))),
-                        icon: const Icon(Icons.notification_important, size: 18),
-                        label: const Text("15 Min WhatsApp Alert भेजें"),
-                        onPressed: () {
-                          final warnMsg = "⚠️ हेलो! कम्यूटर 15 मिनट में डिलीवरी पॉइंट पहुँच रहा है। किसान को देय COD ₹${codAmt.toStringAsFixed(0)} तैयार रखें।";
-                          launchWhatsApp(ord["buyerPhone"] as String, warnMsg);
-                          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("ग्राहक को 15-मिनट WhatsApp चेतावनी भेज दी गई!")));
-                        },
-                      ),
-                      const SizedBox(height: 8),
-                    ],
-
-                                  Row(
+                                  if (isInTransit) ...[
+                OutlinedButton.icon(
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.black,
+                    side: const BorderSide(color: Color(0xFF15803D), width: 1.5),
+                  ),
+                  icon: const Icon(Icons.notification_important, size: 18, color: Colors.black),
+                  label: const Text(
+                    "15 Min WhatsApp Alert भेजें",
+                    style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  ),
+                  onPressed: () {
+                    final warnMsg = "⚠️ हैलो! कम्यूटर 15 मिनट में डिलीवरी पॉइंट पहुँच रहा है। किसान को देय राशि ₹${codAmt.toStringAsFixed(0)} तैयार रखें।";
+                    launchWhatsApp(ord['buyerPhone'] as String, warnMsg);
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("ग्राहक को 15-मिनट WhatsApp चेतावनी भेज दी गई!")));
+                  },
+                ),
+                const SizedBox(height: 8),
+              ],
+              Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isInTransit ? const Color(0xFF15803D) : const Color(0xFF2563EB),
+                        backgroundColor: isInTransit ? const Color(0xFF15803D) : const Color(0xFF4A148C),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        elevation: 2,
                       ),
                       onPressed: () {
                         if (!isInTransit) {
@@ -2193,7 +2201,10 @@ class _DashScreenState extends State<DashScreen> {
                           );
                         }
                       },
-                      child: Text(isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें"),
+                      child: Text(
+                        isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें",
+                        style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 13),
+                      ),
                     ),
                   ),
                 ],
