@@ -1432,7 +1432,7 @@ class _DashScreenState extends State<DashScreen> {
                           value: allowCodByFarmer,
                           activeColor: const Color(0xFF9F2089),
                           onChanged: (val) {
-                            setModalState(() {
+                            setBState(() {
                               allowCodByFarmer = val ?? false;
                             });
                           },
