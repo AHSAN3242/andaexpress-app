@@ -1130,6 +1130,7 @@ class _DashScreenState extends State<DashScreen> {
     List<String> uploadedPhotos = [];
     String liveGpsCoord = "20.7002° N, 77.0082° E";
     bool isProcessingGps = false;
+    bool allowCodByFarmer = false;
     final customNameCtl = TextEditingController();
     final tagPrefixCtl = TextEditingController();
     final qtyCtl = TextEditingController();
@@ -1413,6 +1414,47 @@ class _DashScreenState extends State<DashScreen> {
                   const SizedBox(height: 10),
                   TextField(controller: addressCtl, decoration: const InputDecoration(labelText: "फार्म का पूरा पिकअप पता *", border: OutlineInputBorder())),
                   const SizedBox(height: 16),
+                                // 🔒 किसान की पसंद पर आधारित COD चेकबॉक्स व कानूनी अस्वीकरण
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 8),
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF3E8FF),
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF9F2089)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: allowCodByFarmer,
+                          activeColor: const Color(0xFF9F2089),
+                          onChanged: (val) {
+                            setModalState(() {
+                              allowCodByFarmer = val ?? false;
+                            });
+                          },
+                        ),
+                        const Expanded(
+                          child: Text(
+                            "विश्वसनीय कम्यूटर हेतु नकद (COD) की अनुमति दें",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Colors.black87),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 12, right: 6, bottom: 4),
+                      child: Text(
+                        "⚠️ अस्वीकरण: यह सुविधा केवल आपके परिचित कम्यूटर के लिए है। नकद का लेन-देन पूर्णतः आपके व्यक्तिगत जोखिम पर होगा; ऐप की कोई वित्तीय/कानूनी जिम्मेदारी नहीं होगी।",
+                        style: TextStyle(fontSize: 10, color: Color(0xFF6B21A8), fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
                     onPressed: () {
@@ -1480,6 +1522,7 @@ class _DashScreenState extends State<DashScreen> {
                           "image": uploadedPhotos.first,
                           "gallery": uploadedPhotos,
                           "gps": liveGpsCoord,
+                          'allowCod': allowCodByFarmer,
                         });
 
                         _allProducts.insert(0, {
