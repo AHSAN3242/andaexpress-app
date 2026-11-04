@@ -2093,7 +2093,7 @@ class _DashScreenState extends State<DashScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: isInTransit 
                             ? const Color(0xFF15803D) 
-                            : const Color(0xFF9C27B0),
+                            : const Color(0xFF9F2089),
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 12),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
