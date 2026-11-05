@@ -934,10 +934,10 @@ class _DashScreenState extends State<DashScreen> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text("सुरक्षित चेकआउट (UPI Pay After Delivery)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-                       // 🔒 किसान की पसंद पर आधारित भुगतान विकल्प (UPI vs COD)
-              
+                  const Text("सुरक्षित चेकआउट (UPI Pay After Delivery)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                ],
               ),
+
                       if (isMiniBulk)
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
