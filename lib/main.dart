@@ -1618,9 +1618,7 @@ class _DashScreenState extends State<DashScreen> {
         _sellerListings.insert(0, newSellerItem);
         _allProducts.insert(0, newProductItem);
       });
-      AppState.sellerListings.insert(0, newSellerItem);
-      AppState.allProducts.insert(0, newProductItem);
-                      
+    
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप अनिवार्य सत्यापन के साथ लाइव हो गई!")));
                     },
                     child: const Text("खेप तुरंत लाइव करें", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
