@@ -931,68 +931,65 @@ class _DashScreenState extends State<DashScreen> {
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
+                                Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
                   const Text("सुरक्षित चेकआउट (UPI Pay After Delivery)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ],
               ),
-
-                      if (isMiniBulk)
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                          decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6), border: Border.all(color: const Color(0xFFF59E0B))),
-                          child: const Text("🛺 मिनी-बल्क (ऑटो ₹500 + कम्यूटर ₹230)", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFFB45309))),
-                        ),
-                    ],
+              if (isMiniBulk)
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  decoration: BoxDecoration(color: const Color(0xFFFFEFC7), borderRadius: BorderRadius.circular(6)),
+                  child: const Text("📦 मिनी-बल्क (ऑटो ₹500 + कम्यूटर ₹230)", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                ),
+              const Divider(),
+              Text("कुल सामग्री: ${_cartItems.length} प्रकार (कुल $totalUnits नग/क्रेट)", style: const TextStyle(fontWeight: FontWeight.bold)),
+              ..._cartItems.map((ci) => Padding(
+                padding: const EdgeInsets.symmetric(vertical: 2),
+                child: Text("• ${ci['item']}: ${ci['qty']} ${ci['unitType']} = ₹${ci['total']}", style: const TextStyle(fontSize: 12)),
+              )),
+              const SizedBox(height: 6),
+              Text("📍 स्रोत फार्म: ${_cartItems.first['farm']} (${maxDistanceKm.toStringAsFixed(1)} किमी)", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
+              const SizedBox(height: 10),
+              const Text("डिलीवरी मोड चुनें:", style: TextStyle(fontWeight: FontWeight.bold)),
+              RadioListTile<String>(
+                dense: true,
+                title: const Text("फार्म से स्वयं पिकअप (Self Pickup)"),
+                subtitle: Text("प्लेटफ़ॉर्म फ़ीस: ₹${platformFee.toStringAsFixed(1)} (₹0 भाड़ा)"),
+                value: "self",
+                groupValue: _selectedDeliveryMode,
+                onChanged: (v) => setNState(() => _selectedDeliveryMode = v!),
+              ),
+              RadioListTile<String>(
+                dense: true,
+                title: Text(isMiniBulk ? "मिनी-बल्क बस स्टॉप (ऑटो ड्राइवर UPI Pay After Delivery)" : "बस स्टॉप / मुख्य सड़क (कम्यूटर UPI Pay After Delivery)"),
+                subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ) • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
+                value: "bus_stop",
+                groupValue: _selectedDeliveryMode,
+                onChanged: (v) => setNState(() => _selectedDeliveryMode = v!),
+              ),
+              RadioListTile<String>(
+                dense: true,
+                title: Text(isMiniBulk ? "मिनी-बल्क घर तक (ऑटो ड्राइवर UPI Pay After Delivery)" : "घर / दुकान डिलीवरी (कम्यूटर UPI Pay After Delivery)"),
+                subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
+                value: "home",
+                groupValue: _selectedDeliveryMode,
+                onChanged: (v) => setNState(() => _selectedDeliveryMode = v!),
+              ),
+              if (_selectedDeliveryMode != "self") ...[
+                const SizedBox(height: 6),
+                TextField(
+                  controller: _buyerAddressCtl,
+                  decoration: InputDecoration(
+                    labelText: _selectedDeliveryMode == "bus_stop" ? "नज़दीकी बस स्टॉप / लैंडमार्क (अनिवार्य *)" : "घर/दुकान का पूरा पता (अनिवार्य *)",
+                    border: const OutlineInputBorder(),
+                    isDense: true,
+                    prefixIcon: const Icon(Icons.location_on, color: Colors.red),
                   ),
-                  const Divider(),
-                  Text("कुल सामग्री: ${_cartItems.length} प्रकार (कुल $totalUnits नग/क्रेट)", style: const TextStyle(fontWeight: FontWeight.bold)),
-                  ..._cartItems.map((ci) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2),
-                    child: Text("• ${ci['item']}: ${ci['qty']} ${ci['unitType']} = ₹${ci['total']}", style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600)),
-                  )),
-                  const SizedBox(height: 6),
-                  Text("📍 स्रोत फार्म: ${_cartItems.first['farm']} (${maxDistanceKm.toStringAsFixed(1)} किमी)", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
-                  const SizedBox(height: 10),
-                  const Text("डिलीवरी मोड चुनें:", style: TextStyle(fontWeight: FontWeight.bold)),
-                  RadioListTile<String>(
-                    dense: true,
-                    title: const Text("फार्म से स्वयं पिकअप (Self Pickup)"),
-                    subtitle: Text("प्लेटफ़ॉर्म फ़ीस: ₹${platformFee.toStringAsFixed(1)} (₹0 भाड़ा)"),
-                    value: "self",
-                    groupValue: _selectedDeliveryMode,
-                    onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
-                  ),
-                  RadioListTile<String>(
-                    dense: true,
-                    title: Text(isMiniBulk ? "मिनी-बल्क बस स्टॉप (ऑटो ट्रांसफर UPI Pay After Delivery)" : "बस स्टॉप / मुख्य सड़क (कम्यूटर UPI Pay After Delivery)"),
-                    subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ) • छूट फ़ीस: ₹${platformFee.toStringAsFixed(0)}" : "1-तरफ भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
-                    value: "bus_stop",
-                    groupValue: _selectedDeliveryMode,
-                    onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
-                  ),
-                  RadioListTile<String>(
-                    dense: true,
-                    title: Text(isMiniBulk ? "मिनी-बल्क घर तक (सीधा ऑटो UPI Pay After Delivery)" : "घर / दुकान डिलीवरी (कम्यूटर UPI Pay After Delivery)"),
-                    subtitle: Text(isMiniBulk ? "सीधा ऑटो ड्रॉप (ऑटो ₹500 + कम्यूटर ₹230 = ₹730) • फ़ीस: ₹${platformFee.toStringAsFixed(0)}" : "1-तरफ भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
-                    value: "home",
-                    groupValue: _selectedDeliveryMode,
-                    onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
-                  ),
-                  if (_selectedDeliveryMode != "self") ...[
-                    const SizedBox(height: 6),
-                    TextField(
-                      controller: _buyerAddressCtl,
-                      decoration: InputDecoration(
-                        labelText: _selectedDeliveryMode == "bus_stop" ? "नजदीकी बस स्टॉप / लैंडमार्क (अनिवार्य *)" : "घर/दुकान का पूरा पता (अनिवार्य *)",
-                        border: const OutlineInputBorder(),
-                        isDense: true,
-                        prefixIcon: const Icon(Icons.location_on, color: Colors.red),
-                      ),
-                    ),
-                  ],
-                                const SizedBox(height: 10),
+                ),
+              ],
+              const SizedBox(height: 10),
               // 💳 भुगतान का तरीका (Payment Mode)
               Container(
                 padding: const EdgeInsets.all(10),
@@ -1040,7 +1037,7 @@ class _DashScreenState extends State<DashScreen> {
                           style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
                         ),
                         subtitle: const Text(
-                          "कम्यूटर को नकद दें (किसान व कम्यूटर का आपसी लेनदेन)",
+                          "कम्यूटर को नकद दें (किसान व कम्यूटर का आपसी मामला)",
                           style: TextStyle(fontSize: 11, color: Colors.grey),
                         ),
                         value: "cod",
@@ -1055,6 +1052,7 @@ class _DashScreenState extends State<DashScreen> {
                   ],
                 ),
               ),
+                  
                   
                   const Divider(),
                   Container(
