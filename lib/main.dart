@@ -1573,47 +1573,54 @@ class _DashScreenState extends State<DashScreen> {
 
                       final prefix = tagPrefixCtl.text.trim().isEmpty ? (isQuail ? "Q" : "D") : tagPrefixCtl.text.trim();
 
-                      setState(() {
-                        _sellerListings.insert(0, {
-                          "item": finalTitle,
-                          "type": selectedType,
-                          "qty": "$parsedQty $finalUnit",
-                          "price": parsedPrice,
-                          "pieces": eggCount,
-                          "weight": weightDesc,
-                          "tagPrefix": prefix,
-                          "prodDate": isEgg ? prodDateCtl.text.trim() : null,
-                          "bestBefore": isEgg ? "उत्पादन से 30 दिन" : null,
-                          "farm": "मेरा फार्म (+91 ${widget.phone})",
-                          "farmAddress": addressCtl.text.trim(),
-                          "farmerPhone": widget.phone,
-                          "grade": isEgg ? "तारीख मुद्रित • 30 Days Fresh" : "प्रत्येक पक्षी टैग युक्त",
-                          "image": uploadedPhotos.first,
-                          "gallery": uploadedPhotos,
-                          "gps": liveGpsCoord,
-                          'allowCod': allowCodByFarmer,
-                        });
+                            final newSellerItem = {
+        "item": finalTitle,
+        "type": selectedType,
+        "qty": "$parsedQty $finalUnit",
+        "price": parsedPrice,
+        "pieces": eggCount,
+        "weight": weightDesc,
+        "tagPrefix": prefix,
+        "prodDate": isEgg ? prodDateCtl.text.trim() : null,
+        "bestBefore": isEgg ? "उत्पादन से 30 दिन" : null,
+        "farm": "मेरा फार्म (${widget.phone})",
+        "farmAddress": addressCtl.text.trim(),
+        "farmerPhone": widget.phone,
+        "grade": isEgg ? "तारीख मुद्रित • 30 Days Fresh" : "प्रत्येक पक्षी टैग युक्त",
+        "image": uploadedPhotos.isNotEmpty ? uploadedPhotos.first : "",
+        "gallery": uploadedPhotos,
+        "gps": liveGpsCoord,
+        "allowCod": allowCodByFarmer,
+      };
 
-                        _allProducts.insert(0, {
-                          "cat": selectedType == "अंडे" ? "अंडे" : (selectedItem.contains("अन्य") ? "अन्य" : selectedItem.split(" ").first),
-                          "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("अन्य") ? "अन्य" : selectedItem.split(" ").first),
-                          "item": finalTitle,
-                          "unitType": isEgg ? "Crate" : "Bird",
-                          "piecesPerCrate": eggCount,
-                          "weight": weightDesc,
-                          "tagPrefix": prefix,
-                          "prodDate": isEgg ? prodDateCtl.text.trim() : null,
-                          "bestBefore": isEgg ? "उत्पादन से 30 दिन" : null,
-                          "price": parsedPrice,
-                          "farm": "मेरा फार्म (+91 ${widget.phone})",
-                          "farmAddress": addressCtl.text.trim(),
-                          "farmerPhone": widget.phone,
-                          "dist": "0.8 किमी",
-                          "grade": isEgg ? "खेत से ताज़ा • 30 दिन उपयोग" : "स्वस्थ लाइव • टैग्ड",
-                          "gallery": uploadedPhotos,
-                          "gps": liveGpsCoord,
-                        });
-                      });
+      final newProductItem = {
+        "cat": selectedType == "अंडे" ? "अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
+        "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
+        "item": finalTitle,
+        "unitType": isEgg ? "Crate" : "Bird",
+        "piecesPerCrate": eggCount,
+        "weight": weightDesc,
+        "tagPrefix": prefix,
+        "prodDate": isEgg ? prodDateCtl.text.trim() : null,
+        "bestBefore": isEgg ? "उत्पादन से 30 दिन" : null,
+        "price": parsedPrice,
+        "farm": "मेरा फार्म (${widget.phone})",
+        "farmAddress": addressCtl.text.trim(),
+        "farmerPhone": widget.phone,
+        "dist": "0.0 किमी",
+        "grade": isEgg ? "ग्रेड A अंडा • 30 दिन अवधि" : "वजन समूह • टैग",
+        "gallery": uploadedPhotos,
+        "gps": liveGpsCoord,
+        "allowCod": allowCodByFarmer,
+      };
+
+      setState(() {
+        _sellerListings.insert(0, newSellerItem);
+        _allProducts.insert(0, newProductItem);
+      });
+      AppState.sellerListings.insert(0, newSellerItem);
+      AppState.allProducts.insert(0, newProductItem);
+                      
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप अनिवार्य सत्यापन के साथ लाइव हो गई!")));
                     },
                     child: const Text("खेप तुरंत लाइव करें", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15)),
