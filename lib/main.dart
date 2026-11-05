@@ -280,6 +280,8 @@ class DashScreen extends StatefulWidget {
   @override
   State<DashScreen> createState() => _DashScreenState();
 }
+List> globalSellerListings = [];
+List> globalAllProducts = [];
 
 class _DashScreenState extends State<DashScreen> {
   final List<Map<String, dynamic>> _cartItems = [];
@@ -527,11 +529,23 @@ class _DashScreenState extends State<DashScreen> {
   @override
   void initState() {
     super.initState();
-    _sellerListings = [
-      {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा (±15g मार्जिन)", "prodDate": "29-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "Grade A+ ताज़ा", "farmerPhone": widget.phone, "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
-      {"item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "10 Crates", "price": 240.0, "pieces": 20, "weight": "45-50g/अंडा (±10g मार्जिन)", "prodDate": "29-Oct-2026", "bestBefore": "उत्पादन से 30 दिन", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्रीमियम", "farmerPhone": widget.phone, "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
-      {"item": "कड़कनाथ ब्लैक लाइव (नर ♂️)", "type": "पक्षी/बर्ड्स", "qty": "15 Birds", "price": 700.0, "pieces": 1, "weight": "1.5kg (±200g प्राकृतिक मार्जिन)", "farm": "मेरा फार्म (+91 ${widget.phone})", "farmAddress": "पारस रेलवे क्रॉसिंग के पास, फार्म शेड #1", "grade": "प्योर ब्लैक", "farmerPhone": widget.phone, "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gps": "20.7002° N, 77.0082° E"},
-    ];
+    if (globalAllProducts.isEmpty) {
+      globalAllProducts = List>.from(_allProducts);
+    } else {
+      _allProducts = globalAllProducts;
+    }
+
+    if (globalSellerListings.isEmpty) {
+      _sellerListings = [
+        {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा", "tagPrefix": "D", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "तारीख मुद्रित • 30 Days Fresh", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0084° E", "allowCod": false},
+        {"item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "10 Crates", "price": 240.0, "pieces": 20, "weight": "45g/अंडा", "tagPrefix": "K", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "तारीख मुद्रित • 30 Days Fresh", "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E", "allowCod": true},
+        {"item": "कड़कनाथ ब्लैक लाइव (नर ♂)", "type": "पक्षी/मुर्गा", "qty": "15 Birds", "price": 700.0, "pieces": 1, "weight": "1.4kg", "tagPrefix": "KB", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "वजन समूह • टैग युक्त", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E", "allowCod": true},
+      ];
+      globalSellerListings = List>.from(_sellerListings);
+    } else {
+      _sellerListings = globalSellerListings;
+    }
+    
   }
     void _showProductDetails(Map<String, dynamic> product) {
     final isEgg = product["unitType"] == "Crate" || (product["item"] as String).contains("अंडे");
@@ -1614,10 +1628,13 @@ class _DashScreenState extends State<DashScreen> {
         "allowCod": allowCodByFarmer,
       };
 
-      setState(() {
+            setState(() {
         _sellerListings.insert(0, newSellerItem);
         _allProducts.insert(0, newProductItem);
       });
+      globalSellerListings.insert(0, newSellerItem);
+      globalAllProducts.insert(0, newProductItem);
+                      
     
                       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("खेप अनिवार्य सत्यापन के साथ लाइव हो गई!")));
                     },
