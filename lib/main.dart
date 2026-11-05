@@ -959,7 +959,7 @@ class _DashScreenState extends State<DashScreen> {
                 subtitle: Text("प्लेटफ़ॉर्म फ़ीस: ₹${platformFee.toStringAsFixed(1)} (₹0 भाड़ा)"),
                 value: "self",
                 groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setNState(() => _selectedDeliveryMode = v!),
+                onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
               ),
               RadioListTile<String>(
                 dense: true,
@@ -967,7 +967,7 @@ class _DashScreenState extends State<DashScreen> {
                 subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ) • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                 value: "bus_stop",
                 groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setNState(() => _selectedDeliveryMode = v!),
+                onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
               ),
               RadioListTile<String>(
                 dense: true,
@@ -975,7 +975,7 @@ class _DashScreenState extends State<DashScreen> {
                 subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                 value: "home",
                 groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setNState(() => _selectedDeliveryMode = v!),
+                onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
               ),
               if (_selectedDeliveryMode != "self") ...[
                 const SizedBox(height: 6),
@@ -1021,7 +1021,7 @@ class _DashScreenState extends State<DashScreen> {
                       value: "upi",
                       groupValue: selectedPayOption,
                       onChanged: (v) {
-                        setNState(() {
+                        setState(() {
                           selectedPayOption = v ?? "upi";
                         });
                       },
@@ -1043,7 +1043,7 @@ class _DashScreenState extends State<DashScreen> {
                         value: "cod",
                         groupValue: selectedPayOption,
                         onChanged: (v) {
-                          setNState(() {
+                          setState(() {
                             selectedPayOption = v ?? "cod";
                           });
                         },
