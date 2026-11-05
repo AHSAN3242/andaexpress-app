@@ -825,7 +825,7 @@ class _DashScreenState extends State<DashScreen> {
     bool hasEggs = false;
     bool hasQuail = false;
     double maxDistanceKm = 0.0;
-  bool isCodAllowed = _cartItems.every((itm) => itm['allowCod'] == true);
+  bool isCodAllowed = true;
   String selectedPayOption = "upi"; // डिफ़ॉल्ट हमेशा Pay After Delivery via UPI
     
     for (var itm in _cartItems) {
