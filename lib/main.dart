@@ -936,44 +936,7 @@ class _DashScreenState extends State<DashScreen> {
                     children: [
                       const Text("सुरक्षित चेकआउट (UPI Pay After Delivery)", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
                        // 🔒 किसान की पसंद पर आधारित भुगतान विकल्प (UPI vs COD)
-              Container(
-                margin: const EdgeInsets.symmetric(vertical: 8),
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: const Color(0xFFF3E8FF),
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: const Color(0xFF9F2089)),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("भुगतान का तरीका (Payment Mode):", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF9F2089))),
-                    const SizedBox(height: 6),
-                    RadioListTile<String>(
-                      dense: true,
-                      contentPadding: EdgeInsets.zero,
-                      activeColor: const Color(0xFF9F2089),
-                      title: const Text("📱 Pay After Delivery via UPI (अनुशंसित)", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                      subtitle: const Text("डिलीवरी पर किसान के QR पर सुरक्षित बैंक भुगतान", style: TextStyle(fontSize: 10, color: Colors.grey)),
-                      value: "upi",
-                      groupValue: selectedPayOption,
-                      onChanged: (v) => setState(() => selectedPayOption = v ?? "upi"),
-                    ),
-                    if (isCodAllowed) ...[
-                      const Divider(height: 1),
-                      RadioListTile<String>(
-                        dense: true,
-                        contentPadding: EdgeInsets.zero,
-                        activeColor: const Color(0xFF9F2089),
-                        title: const Text("💵 Cash on Delivery (किसान द्वारा स्वीकृत)", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                        subtitle: const Text("कम्यूटर को नकद दें (किसान व कम्यूटर का आपसी मामला)", style: TextStyle(fontSize: 10, color: Colors.grey)),
-                        value: "cod",
-                        groupValue: selectedPayOption,
-                        onChanged: (v) => setState(() => selectedPayOption = v ?? "cod"),
-                      ),
-                    ],
-                  ],
-                ),
+              
               ),
                       if (isMiniBulk)
                         Container(
@@ -1029,6 +992,70 @@ class _DashScreenState extends State<DashScreen> {
                       ),
                     ),
                   ],
+                                const SizedBox(height: 10),
+              // 💳 भुगतान का तरीका (Payment Mode)
+              Container(
+                padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: const Color(0xFF9F2089).withOpacity(0.3)),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      "भुगतान का तरीका (Payment Mode):",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFF9F2089)),
+                    ),
+                    const SizedBox(height: 6),
+                    RadioListTile<String>(
+                      dense: true,
+                      contentPadding: EdgeInsets.zero,
+                      activeColor: const Color(0xFF9F2089),
+                      title: const Text(
+                        "Pay After Delivery via UPI (अनुशंसित)",
+                        style: TextStyle(fontSize: 13, fontWeight: FontWeight.w600),
+                      ),
+                      subtitle: const Text(
+                        "माल मिलने पर किसान के QR पर सुरक्षित बैंक भुगतान",
+                        style: TextStyle(fontSize: 11, color: Colors.grey),
+                      ),
+                      value: "upi",
+                      groupValue: selectedPayOption,
+                      onChanged: (v) {
+                        setNState(() {
+                          selectedPayOption = v ?? "upi";
+                        });
+                      },
+                    ),
+                    if (isCodAllowed) ...[
+                      const Divider(height: 1),
+                      RadioListTile<String>(
+                        dense: true,
+                        contentPadding: EdgeInsets.zero,
+                        activeColor: const Color(0xFF9F2089),
+                        title: const Text(
+                          "Cash on Delivery (किसान द्वारा स्वीकृत)",
+                          style: TextStyle(fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: const Text(
+                          "कम्यूटर को नकद दें (किसान व कम्यूटर का आपसी लेनदेन)",
+                          style: TextStyle(fontSize: 11, color: Colors.grey),
+                        ),
+                        value: "cod",
+                        groupValue: selectedPayOption,
+                        onChanged: (v) {
+                          setNState(() {
+                            selectedPayOption = v ?? "cod";
+                          });
+                        },
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+                  
                   const Divider(),
                   Container(
                     padding: const EdgeInsets.all(10),
