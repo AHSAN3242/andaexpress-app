@@ -1736,7 +1736,7 @@ _sellerListings = [...globalSellerListings];
   }
 
   Widget _buildBuyer() {
-    final filtered = _allProducts.where((p) {
+    final filtered = globalAllProducts.where((p) {
       if (p["cat"] != _selectedCategory) return false;
       if (_selectedCategory == "अंडे" && _selectedEggSub != "सभी") {
         return p["sub"] == _selectedEggSub;
