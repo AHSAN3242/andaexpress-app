@@ -530,11 +530,21 @@ class _DashScreenState extends State<DashScreen> {
   void initState() {
     super.initState();
     if (globalAllProducts.isEmpty) {
-      globalAllProducts = List>.from(_allProducts);
-    } else {
-      _allProducts = globalAllProducts;
+      globalAllProducts.addAll(_allProducts);
     }
 
+    if (globalSellerListings.isEmpty) {
+      _sellerListings = [
+        {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा", "tagPrefix": "D", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "तारीख मुद्रित • 30 Days Fresh", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0084° E", "allowCod": false},
+        {"item": "कड़कनाथ ओरिजिनल अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "10 Crates", "price": 240.0, "pieces": 20, "weight": "45g/अंडा", "tagPrefix": "K", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "तारीख मुद्रित • 30 Days Fresh", "image": "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E", "allowCod": true},
+        {"item": "कड़कनाथ ब्लैक लाइव (नर ♂)", "type": "पक्षी/मुर्गा", "qty": "15 Birds", "price": 700.0, "pieces": 1, "weight": "1.4kg", "tagPrefix": "KB", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "वजन समूह • टैग युक्त", "image": "https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1589923188900-85dae523342b?auto=format&fit=crop&w=800&q=80"], "gps": "20.6985° N, 77.0120° E", "allowCod": true},
+      ];
+      globalSellerListings.addAll(_sellerListings);
+    } else {
+      _sellerListings = globalSellerListings;
+    }
+  }
+  
     if (globalSellerListings.isEmpty) {
       _sellerListings = [
         {"item": "देसी पोल्ट्री अंडे (तारीख मुद्रित)", "type": "अंडे", "qty": "20 Crates", "price": 190.0, "pieces": 30, "weight": "50-55g/अंडा", "tagPrefix": "D", "farm": "आनंद पोल्ट्री फार्म (3.5 किमी)", "farmerPhone": "9876543210", "grade": "तारीख मुद्रित • 30 Days Fresh", "image": "https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80", "gallery": ["https://images.unsplash.com/photo-1516467508483-a7212febe31a?auto=format&fit=crop&w=800&q=80"], "gps": "20.7011° N, 77.0084° E", "allowCod": false},
