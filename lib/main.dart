@@ -541,7 +541,8 @@ class _DashScreenState extends State<DashScreen> {
       ];
       globalSellerListings.addAll(_sellerListings);
     } else {
-      _sellerListings = globalSellerListings;
+      _sellerListings = List>.from(globalSellerListings);
+      
     }
   }
   
