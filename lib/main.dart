@@ -1736,10 +1736,17 @@ _sellerListings = [...globalSellerListings];
   }
 
   Widget _buildBuyer() {
-    final filtered = globalAllProducts.where((p) {
-      if (p["cat"] != _selectedCategory) return false;
-      if (_selectedCategory == "अंडे" && _selectedEggSub != "सभी") {
-        return p["sub"] == _selectedEggSub;
+        final filtered = globalAllProducts.where((p) {
+      final pCat = (p['cat'] ?? '').toString().trim();
+      final pSub = (p['sub'] ?? '').toString().trim();
+      final selCat = _selectedCategory.trim();
+      final selSub = _selectedEggSub.trim();
+
+      if (selCat.isNotEmpty && pCat != selCat) {
+        return false;
+      }
+      if (selCat == "अंडे" && selSub != "सभी" && selSub.isNotEmpty) {
+        return pSub.contains(selSub) || selSub.contains(pSub);
       }
       return true;
     }).toList();
