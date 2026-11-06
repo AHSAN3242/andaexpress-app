@@ -972,7 +972,7 @@ _sellerListings = [...globalSellerListings];
                 subtitle: Text("प्लेटफ़ॉर्म फ़ीस: ₹${platformFee.toStringAsFixed(1)} (₹0 भाड़ा)"),
                 value: "self",
                 groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
+                onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
               ),
               RadioListTile<String>(
                 dense: true,
@@ -980,7 +980,7 @@ _sellerListings = [...globalSellerListings];
                 subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ) • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                 value: "bus_stop",
                 groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
+                onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
               ),
               RadioListTile<String>(
                 dense: true,
@@ -988,7 +988,7 @@ _sellerListings = [...globalSellerListings];
                 subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
                 value: "home",
                 groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
+                onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
               ),
               if (_selectedDeliveryMode != "self") ...[
                 const SizedBox(height: 6),
@@ -1034,7 +1034,7 @@ _sellerListings = [...globalSellerListings];
                       value: "upi",
                       groupValue: selectedPayOption,
                       onChanged: (v) {
-                        setState(() {
+                        setMState(() {
                           selectedPayOption = v ?? "upi";
                         });
                       },
@@ -1056,7 +1056,7 @@ _sellerListings = [...globalSellerListings];
                         value: "cod",
                         groupValue: selectedPayOption,
                         onChanged: (v) {
-                          setState(() {
+                          setMState(() {
                             selectedPayOption = v ?? "cod";
                           });
                         },
