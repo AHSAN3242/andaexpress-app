@@ -2304,216 +2304,209 @@ _sellerListings = [...globalSellerListings];
                             Row(
                 children: [
                   Expanded(
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: isInTransit 
-                            ? const Color(0xFF15803D) 
-                            : const Color(0xFF9F2089),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
-                        elevation: 2,
-                      ),
-                      onPressed: () {
-                                        if (!isInTransit) {
-                  final vehCtl = TextEditingController();
-                  showDialog(
-                    context: context,
-                    barrierDismissible: false,
-                    builder: (vCtx) => AlertDialog(
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                      title: const Row(
-                        children: [
-                          Icon(Icons.directions_car, color: Color(0xFF15803D)),
-                          SizedBox(width: 8),
-                          Text("वाहन / ऑटो नंबर दर्ज करें", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        ],
-                      ),
-                      content: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text("ऑर्डर: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-                          const SizedBox(height: 8),
-                          const Text("शेयरिंग ऑटो सत्यापन और ग्राहक सुरक्षा के लिए गाड़ी का नंबर दर्ज करना अनिवार्य है:", style: TextStyle(fontSize: 12, color: Colors.grey)),
-                          const SizedBox(height: 12),
-                          TextField(
-                            controller: vehCtl,
-                            textCapitalization: TextCapitalization.characters,
-                            decoration: const InputDecoration(
-                              labelText: "वाहन नंबर (उदा. MH-30-AB-1234)",
-                              hintText: "MH30AB1234",
-                              border: OutlineInputBorder(),
-                              prefixIcon: Icon(Icons.pin),
+                    
+                                              child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: isInTransit
+                                  ? const Color(0xFF15803D)
+                                  : const Color(0xFFF59E0B),
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
+                              elevation: 2,
                             ),
-                          ),
-                        ],
-                      ),
-                      actions: [
-                        TextButton(
-                          onPressed: () => Navigator.pop(vCtx),
-                          child: const Text("रद्द करें", style: TextStyle(color: Colors.grey)),
-                        ),
-                        ElevatedButton(
-                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D)),
-                          onPressed: () {
-                            final vNum = vehCtl.text.trim().toUpperCase().replaceAll(" ", "").replaceAll("-", "");
-                            if (vNum.isEmpty || vNum.length < 5) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text("⚠️ कृपया सही वाहन/ऑटो नंबर दर्ज करें!")),
-                              );
-                              return;
-                            }
-                            Navigator.pop(vCtx);
-                            setState(() {
-                              ord['status'] = 'in_transit';
-                              ord['vehicleNo'] = vNum;
-                              ord['isVehicleVerified'] = false;
+                            child: Text(
+                              isInTransit ? "डिलीवरी पूर्ण करें" : "पिकअप कन्फ़र्म करें",
+                              style: const TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            onPressed: () {
+                              if (!isInTransit) {
+                                final vehCtl = TextEditingController();
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (vCtx) => AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    title: const Row(
+                                      children: [
+                                        Icon(Icons.directions_car, color: Color(0xFF15803D)),
+                                        SizedBox(width: 8),
+                                        Text("वाहन / ऑटो नंबर दर्ज करें", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                      ],
+                                    ),
+                                    content: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text("ऑर्डर: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                        const SizedBox(height: 8),
+                                        const Text("शेयरिंग ऑटो सत्यापन और ग्राहक सुरक्षा के लिए गाड़ी का नंबर दर्ज करना अनिवार्य है:", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                        const SizedBox(height: 12),
+                                        TextField(
+                                          controller: vehCtl,
+                                          textCapitalization: TextCapitalization.characters,
+                                          decoration: const InputDecoration(
+                                            labelText: "वाहन नंबर (उदा. MH-30-AB-1234)",
+                                            hintText: "MH30AB1234",
+                                            border: OutlineInputBorder(),
+                                            prefixIcon: Icon(Icons.pin),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(vCtx),
+                                        child: const Text("रद्द करें", style: TextStyle(color: Colors.grey)),
+                                      ),
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D)),
+                                        onPressed: () {
+                                          final vNum = vehCtl.text.trim().toUpperCase().replaceAll(" ", "").replaceAll("-", "");
+                                          if (vNum.isEmpty || vNum.length < 5) {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text("⚠️ कृपया सही वाहन/ऑटो नंबर दर्ज करें!")),
+                                            );
+                                            return;
+                                          }
+                                          Navigator.pop(vCtx);
+                                          setState(() {
+                                            ord['status'] = 'in_transit';
+                                            ord['vehicleNo'] = vNum;
+                                            ord['isVehicleVerified'] = false;
 
-                              final matchingOrders = AppState.orders.where((o) => 
-                                o['status'] == 'in_transit' && 
-                                (o['vehicleNo'] ?? '').toString().replaceAll(" ", "").replaceAll("-", "") == vNum
-                              ).toList();
+                                            final matchingOrders = AppState.orders.where((o) => 
+                                              o['status'] == 'in_transit' && 
+                                              (o['vehicleNo'] ?? '').toString().replaceAll(" ", "").replaceAll("-", "") == vNum
+                                            ).toList();
 
-                              if (matchingOrders.length >= 2) {
-                                for (var match in matchingOrders) {
-                                  match['isSharedAuto'] = true;
-                                  match['autoFare'] = 350.0;
-                                  match['myFee'] = 165.0;
-                                  match['totalDelivery'] = 515.0;
-                                }
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("🎉 शेयरिंग ऑटो डिटेक्ट हुआ! दोनों ग्राहकों को ₹350+₹165 (₹515) रेट लागू।")),
+                                            if (matchingOrders.length >= 2) {
+                                              for (var match in matchingOrders) {
+                                                match['isSharedAuto'] = true;
+                                                match['autoFare'] = 350.0;
+                                                match['myFee'] = 165.0;
+                                                match['totalDelivery'] = 515.0;
+                                              }
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text("🎉 शेयरिंग ऑटो डिटेक्ट हुआ! दोनों ग्राहकों को ₹350+₹165 (₹515) रेट लागू।")),
+                                              );
+                                            } else {
+                                              ord['isSharedAuto'] = false;
+                                              ord['autoFare'] = 500.0;
+                                              ord['myFee'] = 230.0;
+                                              ord['totalDelivery'] = 730.0;
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text("✅ वाहन नंबर दर्ज हुआ। माल लेकर फार्म से रवाना!")),
+                                              );
+                                            }
+                                          });
+                                        },
+                                        child: const Text("पिकअप कन्फ़र्म करें", style: TextStyle(color: Colors.white)),
+                                      ),
+                                    ],
+                                  ),
                                 );
                               } else {
-                                ord['isSharedAuto'] = false;
-                                ord['autoFare'] = 500.0;
-                                ord['myFee'] = 230.0;
-                                ord['totalDelivery'] = 730.0;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(content: Text("✅ वाहन नंबर दर्ज हुआ। माल लेकर फार्म से रवाना!")),
-                                );
-                              }
-                            });
-                          },
-                          child: const Text("पिकअप कन्फ़र्म करें", style: TextStyle(color: Colors.white)),
-                      
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
+                                final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
+                                final String fName = ord['farmerName'] ?? "सम्मानित किसान";
+                                final double amt = (ord['farmerPayAmount'] ?? ord['codToFarmer'] ?? 0.0).toDouble();
+                                final String vCode = (ord['deliveryCode'] ?? ord['otp'] ?? "").toString();
+                                final cCtrl = TextEditingController();
 
-                        } else {
-                          final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
-                          final String fName = ord['farmerName'] ?? "सत्यापित किसान";
-                          final double amt = (ord['farmerPayAmount'] ?? ord['codToFarmer'] ?? 0.0).toDouble();
-                          final String vCode = (ord['deliveryCode'] ?? ord['otp'] ?? "").toString();
-                          final cCtrl = TextEditingController();
-
-                          showDialog(
-                            context: context,
-                            barrierDismissible: false,
-                            builder: (ctx) => AlertDialog(
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                              title: Row(
-                                children: const [
-                                  Icon(Icons.verified_user, color: Colors.green),
-                                  SizedBox(width: 8),
-                                  Text("सत्यापित किसान भुगतान", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                                ],
-                              ),
-                              content: SingleChildScrollView(
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
-                                      child: const Text(
-                                        "🛡️ 100% Cash-Free Policy: केवल किसान के खाते में ही UPI करें। नकद देना सख्त मना है।",
-                                        style: TextStyle(fontSize: 11, color: Color(0xFF166534), fontWeight: FontWeight.bold),
-                                        textAlign: TextAlign.center,
-                                      ),
+                                showDialog(
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (cCtx) => AlertDialog(
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                    title: const Row(
+                                      children: [
+                                        Icon(Icons.verified_user, color: Colors.green),
+                                        SizedBox(width: 8),
+                                        Text("सत्यापित किसान भुगतान", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                      ],
                                     ),
-                                    const SizedBox(height: 12),
-                                    Text("किसान का नाम: $fName", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                                    Text("UPI ID: $fUpi", style: const TextStyle(fontSize: 12, color: Colors.grey)),
-                                    const SizedBox(height: 8),
-                                    Text("देय शुद्ध रकम: ₹${amt.toInt()}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-                                    const SizedBox(height: 12),
-                                    Container(
-                                      padding: const EdgeInsets.all(12),
-                                      decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(10)),
+                                    content: SingleChildScrollView(
                                       child: Column(
+                                        mainAxisSize: MainAxisSize.min,
                                         children: [
-                                          const Icon(Icons.qr_code_2, size: 130, color: Colors.black87),
-                                          const SizedBox(height: 4),
-                                          Text("GPay / PhonePe / Paytm से स्कैन करें", style: TextStyle(fontSize: 11, color: Colors.grey.shade600)),
+                                          Container(
+                                            padding: const EdgeInsets.all(8),
+                                            decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
+                                            child: const Text(
+                                              "🛡️ 100% Cash-Free Policy: केवल किसान के खाते में ही UPI करें! नकद देना सख्त मना है।",
+                                              style: TextStyle(fontSize: 11, color: Color(0xFF166534), fontWeight: FontWeight.bold),
+                                              textAlign: TextAlign.center,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 12),
+                                          Text("किसान का नाम: $fName", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                                          Text("UPI ID: $fUpi", style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                                          const SizedBox(height: 8),
+                                          Text("देय शुद्ध रकम: ₹${amt.toInt()}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green)),
+                                          const SizedBox(height: 12),
+                                          Container(
+                                            padding: const EdgeInsets.all(12),
+                                            decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300), borderRadius: BorderRadius.circular(12)),
+                                            child: Column(
+                                              children: [
+                                                const Icon(Icons.qr_code_2, size: 130, color: Colors.black87),
+                                                const SizedBox(height: 4),
+                                                const Text("GPay / PhonePe / Paytm से स्कैन करें", style: TextStyle(fontSize: 11, color: Colors.grey)),
+                                              ],
+                                            ),
+                                          ),
+                                          const SizedBox(height: 14),
+                                          const Divider(),
+                                          const Text("डिलीवरी डिलीवरी कोड (ग्राहक से प्राप्त करें):", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+                                          const SizedBox(height: 6),
+                                          TextField(
+                                            controller: cCtrl,
+                                            keyboardType: TextInputType.number,
+                                            maxLength: 4,
+                                            textAlign: TextAlign.center,
+                                            style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 8),
+                                            decoration: const InputDecoration(
+                                              hintText: "****",
+                                              border: OutlineInputBorder(),
+                                              contentPadding: EdgeInsets.symmetric(vertical: 8),
+                                            ),
+                                          ),
                                         ],
                                       ),
                                     ),
-                                    const SizedBox(height: 14),
-                                    const Divider(),
-                                    const Text("डिलीवरी हैंडओवर कोड (ग्राहक से प्राप्त करें):", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
-                                    const SizedBox(height: 6),
-                                    TextField(
-                                      controller: cCtrl,
-                                      keyboardType: TextInputType.number,
-                                      maxLength: 4,
-                                      textAlign: TextAlign.center,
-                                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold, letterSpacing: 8),
-                                      decoration: const InputDecoration(
-                                        hintText: "••••",
-                                        border: OutlineInputBorder(),
-                                        contentPadding: EdgeInsets.symmetric(vertical: 8),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.pop(cCtx),
+                                        child: const Text("रद्द करें"),
                                       ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(ctx),
-                                  child: const Text("रद्द करें"),
-                                ),
-                                ElevatedButton(
-                                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
-                                  onPressed: () {
-                                    if (cCtrl.text.trim() == vCode) {
-                                      Navigator.pop(ctx);
-                                      setState(() {
-                                        ord['status'] = 'delivered';
-                                      });
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text("✅ डिलीवरी सफलतापूर्वक सत्यापित और पूरी हुई!")),
-                                      );
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text("❌ गलत कोड! ग्राहक द्वारा किसान को UPI भुगतान के बाद ही कोड मिलेगा।"), backgroundColor: Colors.red),
-                                      );
-                                    }
-                                  },
-                                  child: const Text("डिलीवरी पूर्ण करें"),
-                                ),
-                              ],
-                            ),
-                          );
-                        }
-                      },
-                      child: Text(
-                        isInTransit ? "📱 किसान का QR दिखाएं व कोड भरें" : "ट्रेन सत्यापित करें व पिकअप लें",
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                                      ElevatedButton(
+                                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                                        onPressed: () {
+                                          if (cCtrl.text.trim() == vCode) {
+                                            Navigator.pop(cCtx);
+                                            setState(() {
+                                              ord['status'] = 'delivered';
+                                            });
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text("✅ डिलीवरी सफलतापूर्वक सत्यापित और पूरी हुई!")),
+                                            );
+                                          } else {
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text("❌ गलत कोड! ग्राहक द्वारा किसान को UPI भुगतान के बाद ही कोड मिलेगा।")),
+                                            );
+                                          }
+                                        },
+                                        child: const Text("डिलीवरी पूर्ण करें"),
+                                      ),
+                                    ],
+                                  ),
+                                );
+                              }
+                            },
+                          ),
                         ),
-                      ),
+                      ],
                     ),
-                  ),
-                ],
-              ),
                     
                     if (isInTransit) ...[
                       const SizedBox(height: 8),
