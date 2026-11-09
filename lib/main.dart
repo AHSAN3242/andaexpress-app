@@ -2068,14 +2068,79 @@ _sellerListings = [...globalSellerListings];
                           style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
                           icon: const Icon(Icons.inventory_2, size: 18),
                           label: const Text("माल पैक हो गया (टैग व कांटे का वजन सत्यापित)"),
-                          onPressed: () {
-                            setState(() {
-                              ord["status"] = "packed_ready";
-                            });
-                            final buyerMsg = "हेलो! अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक हो गया है। डिलीवरी पॉइंट पर किसान को ₹${codAmt.toStringAsFixed(0)} देय होंगे। कृपया तैयार रहें।";
-                            launchWhatsApp(ord["buyerPhone"] as String, buyerMsg);
-                            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("पैकिंग मार्क हुई और ग्राहक को अलर्ट भेजा गया!")));
-                          },
+                                                          onPressed: () {
+                                  String selectedMode = "commuter";
+                                  showDialog(
+                                    context: context,
+                                    barrierDismissible: false,
+                                    builder: (dCtx) {
+                                      return StatefulBuilder(
+                                        builder: (context, setDState) {
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                            title: const Row(
+                                              children: [
+                                                Icon(Icons.local_shipping, color: Color(0xFF15803D)),
+                                                SizedBox(width: 8),
+                                                Text("डिलीवरी का माध्यम चुनें", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
+                                              ],
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                Text("ऑर्डर: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                                                const SizedBox(height: 10),
+                                                RadioListTile<String>(
+                                                  dense: true,
+                                                  contentPadding: EdgeInsets.zero,
+                                                  activeColor: const Color(0xFF15803D),
+                                                  title: const Text("🛵 कम्यूटर द्वारा डिलीवरी", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                                                  subtitle: const Text("कम्यूटर फार्म से पिकअप करके ग्राहक तक पहुंचाएगा।", style: TextStyle(fontSize: 11)),
+                                                  value: "commuter",
+                                                  groupValue: selectedMode,
+                                                  onChanged: (val) => setDState(() => selectedMode = val!),
+                                                ),
+                                                RadioListTile<String>(
+                                                  dense: true,
+                                                  contentPadding: EdgeInsets.zero,
+                                                  activeColor: const Color(0xFF15803D),
+                                                  title: const Text("🚜 स्वयं डिलीवरी (Self Delivery)", style: TextStyle(fontWeight: FontWeight.w600, fontSize: 13)),
+                                                  subtitle: const Text("मैं खुद पहुंचाऊंगा। (यह कम्यूटर को नहीं दिखेगा)", style: TextStyle(fontSize: 11)),
+                                                  value: "farmer_self",
+                                                  groupValue: selectedMode,
+                                                  onChanged: (val) => setDState(() => selectedMode = val!),
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () => Navigator.pop(dCtx),
+                                                child: const Text("रद्द करें", style: TextStyle(color: Colors.grey)),
+                                              ),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D)),
+                                                onPressed: () {
+                                                  Navigator.pop(dCtx);
+                                                  setState(() {
+                                                    ord['status'] = 'packed_ready';
+                                                    ord['dispatchMode'] = selectedMode;
+                                                  });
+                                                  final buyerMsg = "नमस्ते! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक हो गया है। डिलीवरी माध्यम: ${selectedMode == 'farmer_self' ? 'किसान स्वयं' : 'कम्यूटर'}। डिलीवरी पॉइंट पर किसान को ₹${codAmt.toStringAsFixed(0)} दें।";
+                                                  launchWhatsApp(ord['buyerPhone'] as String, buyerMsg);
+                                                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                                    content: Text(selectedMode == 'farmer_self' ? "✅ स्वयं डिलीवरी चुनी गई। कम्यूटर को यह असाइन नहीं होगा।" : "✅ कम्यूटर पिकअप हेतु उपलब्ध करा दिया गया।"),
+                                                  ));
+                                                },
+                                                child: const Text("कन्फर्म करें", style: TextStyle(color: Colors.white)),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
                         ),
                       ),
                     ] else ...[
@@ -2136,8 +2201,8 @@ _sellerListings = [...globalSellerListings];
   }
 
   Widget _buildCommuter() {
-    final liveTrips = AppState.orders.where((o) => (o["status"] == "packed_ready" || o["status"] == "in_transit") && o["mode"] != "self").toList();
-
+    final liveTrips = AppState.orders.where((o) => (o['status'] == 'packed_ready' || o['status'] == 'in_transit') && o['dispatchMode'] != 'farmer_self' &&
+                                            
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
