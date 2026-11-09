@@ -2397,12 +2397,14 @@ _sellerListings = [...globalSellerListings];
                             });
                           },
                           child: const Text("पिकअप कन्फ़र्म करें", style: TextStyle(color: Colors.white)),
+                      
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      );
+                    },
                   );
-                }
-            
+
                         } else {
                           final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
                           final String fName = ord['farmerName'] ?? "सत्यापित किसान";
