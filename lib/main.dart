@@ -2315,13 +2315,94 @@ _sellerListings = [...globalSellerListings];
                         elevation: 2,
                       ),
                       onPressed: () {
-                        if (!isInTransit) {
-                          setState(() {
-                            ord["status"] = "in_transit";
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text("माल ले जाने के लिए निकल पड़े!")),
-                          );
+                                        if (!isInTransit) {
+                  final vehCtl = TextEditingController();
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder: (vCtx) => AlertDialog(
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                      title: const Row(
+                        children: [
+                          Icon(Icons.directions_car, color: Color(0xFF15803D)),
+                          SizedBox(width: 8),
+                          Text("वाहन / ऑटो नंबर दर्ज करें", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        ],
+                      ),
+                      content: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text("ऑर्डर: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
+                          const SizedBox(height: 8),
+                          const Text("शेयरिंग ऑटो सत्यापन और ग्राहक सुरक्षा के लिए गाड़ी का नंबर दर्ज करना अनिवार्य है:", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                          const SizedBox(height: 12),
+                          TextField(
+                            controller: vehCtl,
+                            textCapitalization: TextCapitalization.characters,
+                            decoration: const InputDecoration(
+                              labelText: "वाहन नंबर (उदा. MH-30-AB-1234)",
+                              hintText: "MH30AB1234",
+                              border: OutlineInputBorder(),
+                              prefixIcon: Icon(Icons.pin),
+                            ),
+                          ),
+                        ],
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(vCtx),
+                          child: const Text("रद्द करें", style: TextStyle(color: Colors.grey)),
+                        ),
+                        ElevatedButton(
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D)),
+                          onPressed: () {
+                            final vNum = vehCtl.text.trim().toUpperCase().replaceAll(" ", "").replaceAll("-", "");
+                            if (vNum.isEmpty || vNum.length < 5) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("⚠️ कृपया सही वाहन/ऑटो नंबर दर्ज करें!")),
+                              );
+                              return;
+                            }
+                            Navigator.pop(vCtx);
+                            setState(() {
+                              ord['status'] = 'in_transit';
+                              ord['vehicleNo'] = vNum;
+                              ord['isVehicleVerified'] = false;
+
+                              final matchingOrders = AppState.orders.where((o) => 
+                                o['status'] == 'in_transit' && 
+                                (o['vehicleNo'] ?? '').toString().replaceAll(" ", "").replaceAll("-", "") == vNum
+                              ).toList();
+
+                              if (matchingOrders.length >= 2) {
+                                for (var match in matchingOrders) {
+                                  match['isSharedAuto'] = true;
+                                  match['autoFare'] = 350.0;
+                                  match['myFee'] = 165.0;
+                                  match['totalDelivery'] = 515.0;
+                                }
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("🎉 शेयरिंग ऑटो डिटेक्ट हुआ! दोनों ग्राहकों को ₹350+₹165 (₹515) रेट लागू।")),
+                                );
+                              } else {
+                                ord['isSharedAuto'] = false;
+                                ord['autoFare'] = 500.0;
+                                ord['myFee'] = 230.0;
+                                ord['totalDelivery'] = 730.0;
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("✅ वाहन नंबर दर्ज हुआ। माल लेकर फार्म से रवाना!")),
+                                );
+                              }
+                            });
+                          },
+                          child: const Text("पिकअप कन्फ़र्म करें", style: TextStyle(color: Colors.white)),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+            
                         } else {
                           final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
                           final String fName = ord['farmerName'] ?? "सत्यापित किसान";
