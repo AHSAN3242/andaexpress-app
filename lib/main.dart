@@ -2201,8 +2201,8 @@ _sellerListings = [...globalSellerListings];
   }
 
   Widget _buildCommuter() {
-    final liveTrips = AppState.orders.where((o) => (o['status'] == 'packed_ready' || o['status'] == 'in_transit') && o['dispatchMode'] != 'farmer_self' &&
-                                            
+        final liveTrips = AppState.orders.where((o) => (o['status'] == 'packed_ready' || o['status'] == 'in_transit') && o['dispatchMode'] != 'farmer_self').toList();
+    
     return ListView(
       padding: const EdgeInsets.all(16),
       children: [
