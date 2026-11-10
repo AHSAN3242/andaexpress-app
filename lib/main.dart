@@ -2065,7 +2065,7 @@ _sellerListings = [...globalSellerListings];
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white),
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
                           icon: const Icon(Icons.inventory_2, size: 18),
                           label: const Text("माल पैक हो गया (टैग व कांटे का वजन सत्यापित)"),
                                                           onPressed: () {
@@ -2308,8 +2308,8 @@ _sellerListings = [...globalSellerListings];
                                               child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isInTransit
-                                  ? const Color(0xFF9F2089)
-                                  : const Color(0xFFF59E0B),
+                              ? const Color(0xFF15803D)
+                              : const Color(0xFF9F2089),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
