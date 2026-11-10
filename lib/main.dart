@@ -2065,7 +2065,7 @@ _sellerListings = [...globalSellerListings];
                       SizedBox(
                         width: double.infinity,
                         child: ElevatedButton.icon(
-                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                          style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white),
                           icon: const Icon(Icons.inventory_2, size: 18),
                           label: const Text("माल पैक हो गया (टैग व कांटे का वजन सत्यापित)"),
                                                           onPressed: () {
@@ -2308,7 +2308,7 @@ _sellerListings = [...globalSellerListings];
                                               child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: isInTransit
-                                  ? const Color(0xFF15803D)
+                                  ? const Color(0xFF9F2089)
                                   : const Color(0xFFF59E0B),
                               foregroundColor: Colors.white,
                               padding: const EdgeInsets.symmetric(vertical: 12),
@@ -2320,7 +2320,21 @@ _sellerListings = [...globalSellerListings];
                               style: const TextStyle(fontWeight: FontWeight.bold),
                             ),
                             onPressed: () {
-                              if (!isInTransit) {
+                                                            if (!isInTransit) {
+                                final bool isMiniBulk = (ord['isMiniBulk'] == true) || 
+                                                        (ord['type'] == 'bulk') || 
+                                                        ((ord['pieces'] ?? 0) >= 300);
+
+                                if (!isMiniBulk) {
+                                  setState(() {
+                                    ord['status'] = 'in_transit';
+                                  });
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text("✅ आर्डर पिकअप हुआ। माल लेकर रवाना!")),
+                                  );
+                                  return;
+                                }
+
                                 final vehCtl = TextEditingController();
                                 showDialog(
                                   context: context,
@@ -2331,7 +2345,7 @@ _sellerListings = [...globalSellerListings];
                                       children: [
                                         Icon(Icons.directions_car, color: Color(0xFF15803D)),
                                         SizedBox(width: 8),
-                                        Text("वाहन / ऑटो नंबर दर्ज करें", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                                        Text("मिनी-बल्क: ऑटो नंबर दर्ज करें", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold)),
                                       ],
                                     ),
                                     content: Column(
@@ -2340,13 +2354,13 @@ _sellerListings = [...globalSellerListings];
                                       children: [
                                         Text("ऑर्डर: ${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
                                         const SizedBox(height: 8),
-                                        const Text("शेयरिंग ऑटो सत्यापन और ग्राहक सुरक्षा के लिए गाड़ी का नंबर दर्ज करना अनिवार्य है:", style: TextStyle(fontSize: 12, color: Colors.grey)),
+                                        const Text("यह मिनी-बल्क ऑर्डर है। शेयरिंग फेयर छूट और सुरक्षा हेतु ऑटो नंबर अनिवार्य है:", style: TextStyle(fontSize: 12, color: Colors.grey)),
                                         const SizedBox(height: 12),
                                         TextField(
                                           controller: vehCtl,
                                           textCapitalization: TextCapitalization.characters,
                                           decoration: const InputDecoration(
-                                            labelText: "वाहन नंबर (उदा. MH-30-AB-1234)",
+                                            labelText: "ऑटो नंबर (उदा. MH-30-AB-1234)",
                                             hintText: "MH30AB1234",
                                             border: OutlineInputBorder(),
                                             prefixIcon: Icon(Icons.pin),
@@ -2365,7 +2379,7 @@ _sellerListings = [...globalSellerListings];
                                           final vNum = vehCtl.text.trim().toUpperCase().replaceAll(" ", "").replaceAll("-", "");
                                           if (vNum.isEmpty || vNum.length < 5) {
                                             ScaffoldMessenger.of(context).showSnackBar(
-                                              const SnackBar(content: Text("⚠️ कृपया सही वाहन/ऑटो नंबर दर्ज करें!")),
+                                              const SnackBar(content: Text("⚠️ कृपया सही ऑटो नंबर दर्ज करें!")),
                                             );
                                             return;
                                           }
@@ -2396,7 +2410,7 @@ _sellerListings = [...globalSellerListings];
                                               ord['myFee'] = 230.0;
                                               ord['totalDelivery'] = 730.0;
                                               ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text("✅ वाहन नंबर दर्ज हुआ। माल लेकर फार्म से रवाना!")),
+                                                const SnackBar(content: Text("✅ ऑटो नंबर दर्ज हुआ। माल लेकर फार्म से रवाना!")),
                                               );
                                             }
                                           });
@@ -2406,7 +2420,7 @@ _sellerListings = [...globalSellerListings];
                                     ],
                                   ),
                                 );
-                              } else {
+                              } else {     
                                 final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
                                 final String fName = ord['farmerName'] ?? "सम्मानित किसान";
                                 final double amt = (ord['farmerPayAmount'] ?? ord['codToFarmer'] ?? 0.0).toDouble();
