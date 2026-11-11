@@ -1994,17 +1994,96 @@ _sellerListings = [...globalSellerListings];
                                     if (isEgg)
                                       Text("1 क्रेट = $pcs अंडे (₹$perEgg/अंडा)", style: const TextStyle(color: Color(0xFFB45309), fontSize: 11, fontWeight: FontWeight.bold))
                                     else
-                                      Text("औसत वजन: ${item['weight'] ?? '1.8kg'}", style: const TextStyle(color: Color(0xFFB45309), fontSize: 11, fontWeight: FontWeight.bold)),
-                                    Text("${item['farm']} (${item['dist']})", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
-                                    Text("पता: ${item['farmAddress']}", style: const TextStyle(fontSize: 10, color: Colors.grey)),
-                                  ],
+                                                            Text("${item['farm']} (${item['dist']})", style: const TextStyle(fontSize: 11, color: Colors.grey)),
+                      Text("पता: ${item['farmAddress']}", style: const TextStyle(fontSize: 10, color: Colors.grey)),
+                      const SizedBox(height: 4),
+                      // --- उपलब्ध स्टॉक और Hurry-Up बैज ---
+                      Builder(
+                        builder: (context) {
+                          final int available = (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 0);
+                          final String unitName = isEgg ? 'Crate' : 'Bird';
+
+                          return Row(
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: available <= 5 ? Colors.red.shade50 : const Color(0xFFDCFCE7),
+                                  borderRadius: BorderRadius.circular(4),
+                                  border: Border.all(
+                                    color: available <= 5 ? Colors.red.shade300 : const Color(0xFF166534),
+                                  ),
+                                ),
+                                child: Text(
+                                  "स्टॉक: $available $unitName",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: available <= 5 ? Colors.red.shade700 : const Color(0xFF166534),
+                                  ),
                                 ),
                               ),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4), minimumSize: const Size(55, 28)),
-                                onPressed: () => _addToCartWithQty(item),
-                                child: const Text("मात्रा", style: TextStyle(fontSize: 11)),
-                              ),
+                              if (available <= 10 && available > 0) ...[
+                                const SizedBox(width: 6),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red.shade600,
+                                    borderRadius: BorderRadius.circular(4),
+                                  ),
+                                  child: Text(
+                                    "🔥 केवल $available शेष!",
+                                    style: const TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 1) <= 0
+                                  ? Colors.grey
+                                  : const Color(0xFF9F2089),
+                              foregroundColor: Colors.white,
+                            ),
+                            onPressed: () {
+                              final int currentStock = (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 0);
+                              
+                              if (currentStock <= 0) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text("⚠️ यह लॉट आउट ऑफ स्टॉक हो चुका है!")),
+                                );
+                                return;
+                              }
+
+                              // 1. ग्राहक के कार्ट/ऑर्डर फ्लो को कॉल करें
+                              _addToCartWithQty(item);
+
+                              // 2. खरीदारी पर 1 यूनिट (या सिलेक्टेड मात्रा) तुरंत स्टॉक से घटाएं
+                              setState(() {
+                                int stock = (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 1);
+                                stock = stock - 1; // डिफ़ॉल्ट 1 Crate / 1 Bird माइनस
+                                if (stock < 0) stock = 0;
+                                item['availableQty'] = stock;
+                              });
+                            },
+                            child: Text(
+                              (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 1) <= 0
+                                  ? "सोल्ड आउट"
+                                  : "खरीदें",
+                              style: const TextStyle(fontSize: 11),
+                            ),
+                          ),
+                              
                             ],
                           ),
                         ),
