@@ -1746,7 +1746,26 @@ _sellerListings = [...globalSellerListings];
   }
 
   Widget _buildBuyer() {
-        final filtered = globalAllProducts.where((p) {
+            final filtered = globalAllProducts.where((p) {
+      // 1. स्टॉक चेक: अगर स्टॉक 0 या उससे कम है तो विज्ञापन अपने आप छुप जाएगा
+      final int stock = (p['availableQty'] ?? p['crates'] ?? p['pieces'] ?? p['qty'] ?? 1);
+      if (stock <= 0) {
+        return false;
+      }
+
+      // 2. एक्सपायरी चेक: उत्पादन तिथि से 30 दिन (अंडे) या उत्पाद की तय अवधि
+      final String dateStr = (p['mfgDate'] ?? p['date'] ?? '').toString();
+      if (dateStr.isNotEmpty) {
+        final parsedDate = DateTime.tryParse(dateStr);
+        if (parsedDate != null) {
+          final expiryDate = parsedDate.add(const Duration(days: 30));
+          if (DateTime.now().isAfter(expiryDate)) {
+            return false; // तारीख पार होते ही विज्ञापन स्क्रीन से डिलीट/गायब
+          }
+        }
+      }
+
+      // 3. श्रेणी और सब-कैटेगरी फ़िल्टर
       final pCat = (p['cat'] ?? '').toString().trim();
       final pSub = (p['sub'] ?? '').toString().trim();
       final selCat = _selectedCategory.trim();
@@ -1755,7 +1774,7 @@ _sellerListings = [...globalSellerListings];
       if (selCat.isNotEmpty && pCat != selCat) {
         return false;
       }
-      if (selCat == "अंडे" && selSub != "सभी" && selSub.isNotEmpty) {
+      if (selCat == 'अंडे' && selSub != 'सभी' && selSub.isNotEmpty) {
         return pSub.contains(selSub) || selSub.contains(pSub);
       }
       return true;
