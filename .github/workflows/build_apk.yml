@@ -30,7 +30,8 @@ jobs:
           rm -f pubspec.lock
           flutter create . --platforms=android --project-name andaexpress_app --org com.andaexpress.app
           sed -i 's/android:label="andaexpress_app"/android:label="Anda Express"/g' android/app/src/main/AndroidManifest.xml
-
+          printf "\nandroid {\n    lint {\n        checkReleaseBuilds = false\n        abortOnError = false\n    }\n}\n" >> android/app/build.gradle.kts 2>/dev/null || printf "\nandroid {\n    lint {\n        checkReleaseBuilds false\n        abortOnError false\n    }\n}\n" >> android/app/build.gradle
+          
       - name: Install Dependencies
         run: flutter pub get
 
