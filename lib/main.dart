@@ -709,6 +709,7 @@ _sellerListings = [...globalSellerListings];
       void _addToCartWithQty(Map<String, dynamic> product) {
     int qty = 1;
     final isEgg = product["unitType"] == "Crate" || (product["item"] as String).contains("अंडे");
+    final int maxAvailable = (product['availableQty'] ?? product['qty'] ?? (isEgg ? 50 : 100));
     final pcs = (product["piecesPerCrate"] as int?) ?? 30;
     final unit = isEgg ? "क्रेट / ट्रे" : "पंछी / नग";
     final price = (product["price"] as double?) ?? 0.0;
@@ -758,7 +759,7 @@ _sellerListings = [...globalSellerListings];
                     ),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline, size: 30, color: Color(0xFF15803D)),
-                      onPressed: () => setDState(() => qty++),
+                      onPressed: () => setState(() { if (qty < maxAvailable) qty++; }),
                     ),
                   ],
                 ),
@@ -801,6 +802,11 @@ _sellerListings = [...globalSellerListings];
                       "allowCod": product["allowCod"] == true,
                       "total": price * qty,
                     });
+                    int updatedStock = maxAvailable - qty;
+if (updatedStock < 0) updatedStock = 0;
+product['availableQty'] = updatedStock;
+product['qty'] = updatedStock;
+            
                   });
                   Navigator.pop(dCtx);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$qty $unit कार्ट में जोड़ा गया!"), duration: const Duration(seconds: 1)));
@@ -827,6 +833,11 @@ _sellerListings = [...globalSellerListings];
                       "allowCod": product["allowCod"] == true,
                       "total": price * qty,
                     });
+                                          int updatedStock = maxAvailable - qty;
+                      if (updatedStock < 0) updatedStock = 0;
+                      product['availableQty'] = updatedStock;
+                      product['qty'] = updatedStock;
+                    
                   });
                   Navigator.pop(dCtx);
                   _showCheckout();
@@ -2069,13 +2080,7 @@ _sellerListings = [...globalSellerListings];
                               // 1. ग्राहक के कार्ट/ऑर्डर फ्लो को कॉल करें
                               _addToCartWithQty(item);
 
-                              // 2. खरीदारी पर 1 यूनिट (या सिलेक्टेड मात्रा) तुरंत स्टॉक से घटाएं
-                              setState(() {
-                                int stock = (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100));
-                                stock = stock - 1; // डिफ़ॉल्ट 1 Crate / 1 Bird माइनस
-                                if (stock < 0) stock = 0;
-                                item['availableQty'] = stock;
-                              });
+                              
                             },
                             child: Text(
                               (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100)) <= 0
