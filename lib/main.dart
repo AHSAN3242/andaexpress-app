@@ -2001,7 +2001,7 @@ _sellerListings = [...globalSellerListings];
                       // --- उपलब्ध स्टॉक और Hurry-Up बैज ---
                       Builder(
                         builder: (context) {
-                          final int available = (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 0);
+                          final int available = (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100));
                           final String unitName = isEgg ? 'Crate' : 'Bird';
 
                           return Row(
