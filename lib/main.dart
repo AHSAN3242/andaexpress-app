@@ -1621,7 +1621,10 @@ _sellerListings = [...globalSellerListings];
         "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
         "item": finalTitle,
         "unitType": isEgg ? "Crate" : "Bird",
-        "piecesPerCrate": eggCount,
+                "piecesPerCrate": eggCount,
+        "availableQty": parsedQty,
+        "qty": parsedQty,
+        "mfgDate": DateTime.now().toIso8601String(),        
         "weight": weightDesc,
         "tagPrefix": prefix,
         "prodDate": isEgg ? prodDateCtl.text.trim() : null,
@@ -1748,11 +1751,9 @@ _sellerListings = [...globalSellerListings];
   Widget _buildBuyer() {
             final filtered = globalAllProducts.where((p) {
       // 1. स्टॉक चेक: अगर स्टॉक 0 या उससे कम है तो विज्ञापन अपने आप छुप जाएगा
-      final int stock = (p['availableQty'] ?? p['crates'] ?? p['pieces'] ?? p['qty'] ?? 1);
-      if (stock <= 0) {
+            if (p.containsKey('availableQty') && (p['availableQty'] as int? ?? 0) <= 0) {
         return false;
-      }
-
+            }
       // 2. एक्सपायरी चेक: उत्पादन तिथि से 30 दिन (अंडे) या उत्पाद की तय अवधि
       final String dateStr = (p['mfgDate'] ?? p['date'] ?? '').toString();
       if (dateStr.isNotEmpty) {
@@ -2050,13 +2051,13 @@ _sellerListings = [...globalSellerListings];
                 ),
                                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 1) <= 0
+                              backgroundColor: (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100)) <= 0
                                   ? Colors.grey
                                   : const Color(0xFF9F2089),
                               foregroundColor: Colors.white,
                             ),
                             onPressed: () {
-                              final int currentStock = (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 0);
+                              final int currentStock = (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100));
                               
                               if (currentStock <= 0) {
                                 ScaffoldMessenger.of(context).showSnackBar(
@@ -2070,14 +2071,14 @@ _sellerListings = [...globalSellerListings];
 
                               // 2. खरीदारी पर 1 यूनिट (या सिलेक्टेड मात्रा) तुरंत स्टॉक से घटाएं
                               setState(() {
-                                int stock = (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 1);
+                                int stock = (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100));
                                 stock = stock - 1; // डिफ़ॉल्ट 1 Crate / 1 Bird माइनस
                                 if (stock < 0) stock = 0;
                                 item['availableQty'] = stock;
                               });
                             },
                             child: Text(
-                              (item['availableQty'] ?? item['crates'] ?? item['pieces'] ?? item['qty'] ?? 1) <= 0
+                              (item['availableQty'] ?? item['qty'] ?? (isEgg ? 50 : 100)) <= 0
                                   ? "सोल्ड आउट"
                                   : "खरीदें",
                               style: const TextStyle(fontSize: 11),
