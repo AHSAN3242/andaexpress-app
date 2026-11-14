@@ -1426,7 +1426,7 @@ product['qty'] = updatedStock;
                   ),
                   if (isOther) ...[
                     const SizedBox(height: 10),
-                    TextField(controller: customNameCtl, decoration: InputDecoration(labelText: isEgg ? "अंडे/नस्ल का नाम लिखें *" : "पक्षी/नस्ल का नाम लिखें *", border: const OutlineInputBorder(), isDense: true)),
+                            TextField(controller: customNameCtl, decoration: InputDecoration(labelText: isEgg ? "अंडे का नाम लिखें *" : "पक्षी की नस्ल का नाम लिखें (जैसे: हैदराबादी चिकन, राजहंस) *", border: const OutlineInputBorder())),
                   ],
                   const SizedBox(height: 12),
                   Container(
@@ -1628,11 +1628,11 @@ product['qty'] = updatedStock;
       };
 
       final newProductItem = {
-        "cat": selectedType == "अंडे" ? "अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
+        "cat": selectedType == "अंडे" ? "अंडे" : (isOther ? "Other" : (selectedItem.contains("बत्तख") || selectedItem.contains("Duck") ? "बत्तख" : (selectedItem.contains("कड़कनाथ") || selectedItem.contains("Kadaknath") ? "कड़कनाथ" : (selectedItem.contains("बॉयलर") || selectedItem.contains("Broiler") ? "बॉयलर चिकन" : (selectedItem.contains("देसी") || selectedItem.contains("असील") || selectedItem.contains("Aseel") ? "देसी चिकन" : (selectedItem.contains("बटेर") || selectedItem.contains("Quail") ? "बटेर" : (selectedItem.contains("ईमू") || selectedItem.contains("Emu") ? "ईमू" : "Other"))))))),
         "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
         "item": finalTitle,
         "unitType": isEgg ? "Crate" : "Bird",
-                "piecesPerCrate": eggCount,
+        "piecesPerCrate": eggCount,
         "availableQty": parsedQty,
         "qty": parsedQty,
         "mfgDate": DateTime.now().toIso8601String(),        
@@ -1646,6 +1646,7 @@ product['qty'] = updatedStock;
         "farmerPhone": widget.phone,
         "dist": "0.0 किमी",
         "grade": isEgg ? "ग्रेड A अंडा • 30 दिन अवधि" : "वजन समूह • टैग",
+        "image": uploadedPhotos.isNotEmpty ? uploadedPhotos.first : "",
         "gallery": uploadedPhotos,
         "gps": liveGpsCoord,
         "allowCod": allowCodByFarmer,
