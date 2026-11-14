@@ -721,10 +721,45 @@ _sellerListings = [...globalSellerListings];
       context: context,
       builder: (dCtx) => StatefulBuilder(
         builder: (context, setDState) {
-          List<String> birdTags = [];
+                    List<String> birdTags = [];
+          int tagOffset = (product['soldTagOffset'] ?? 0) as int;
           if (!isEgg) {
-            for (int k = 1; k <= qty; k++) {
-              birdTags.add("#$prefix-${100 + k}");
+            List<String> allGeneratedPool = [];
+            int totalNeeded = tagOffset + qty;
+            List<String> parts = prefix.replaceAll('#', '').split(',');
+
+            for (int pIdx = 0; pIdx < parts.length; pIdx++) {
+              String part = parts[pIdx].trim();
+              if (part.isEmpty) continue;
+
+              final rangeMatch = RegExp(r'^(.*?)(\d+)\s*(?:\.\.|-|to|से)\s*(\d+)$').firstMatch(part);
+              if (rangeMatch != null) {
+                String textPart = rangeMatch.group(1)!;
+                int startNum = int.parse(rangeMatch.group(2)!);
+                int endNum = int.parse(rangeMatch.group(3)!);
+                for (int n = startNum; n <= endNum && allGeneratedPool.length < totalNeeded; n++) {
+                  allGeneratedPool.add("#$textPart$n");
+                }
+              } else {
+                final singleMatch = RegExp(r'^(.*?)(\d+)$').firstMatch(part);
+                int k = 0;
+                while (allGeneratedPool.length < totalNeeded) {
+                  if (singleMatch != null) {
+                    String textPart = singleMatch.group(1)!;
+                    int startNum = int.parse(singleMatch.group(2)!);
+                    allGeneratedPool.add("#$textPart${startNum + k}");
+                  } else {
+                    String base = part.endsWith('-') ? part.substring(0, part.length - 1) : part;
+                    allGeneratedPool.add("#$base-${101 + k}");
+                  }
+                  k++;
+                  if (pIdx < parts.length - 1) break;
+                }
+              }
+            }
+
+            for (int i = tagOffset; i < totalNeeded && i < allGeneratedPool.length; i++) {
+              birdTags.add(allGeneratedPool[i]);
             }
           }
 
@@ -806,7 +841,8 @@ _sellerListings = [...globalSellerListings];
 if (updatedStock < 0) updatedStock = 0;
 product['availableQty'] = updatedStock;
 product['qty'] = updatedStock;
-            
+  if (!isEgg) product['soldTagOffset'] = tagOffset + qty;
+                    
                   });
                   Navigator.pop(dCtx);
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("$qty $unit कार्ट में जोड़ा गया!"), duration: const Duration(seconds: 1)));
@@ -837,6 +873,7 @@ product['qty'] = updatedStock;
                       if (updatedStock < 0) updatedStock = 0;
                       product['availableQty'] = updatedStock;
                       product['qty'] = updatedStock;
+                    if (!isEgg) product['soldTagOffset'] = tagOffset + qty;
                     
                   });
                   Navigator.pop(dCtx);
@@ -2263,24 +2300,27 @@ product['qty'] = updatedStock;
                                 },
                         ),
                       ),
-                    ] else ...[
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        decoration: BoxDecoration(color: const Color(0xFFECFDF5), borderRadius: BorderRadius.circular(8)),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.check_circle, color: Color(0xFF15803D), size: 18),
-                            const SizedBox(width: 8),
-                            Expanded(child: Text((ord["mode"] == "self" || ord["dispatchMode"] == "farmer_self") ? "⚠️ हिदायत: आपको यह माल समय पर ग्राहक के पते / तय स्टॉप पर खुद डिलीवर करना होगा!" : "पैकिंग पूर्ण! कम्यूटर द्वारा पिकअप किया जा रहा है...", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)))),
+                                  } else ...[
+                Container(
+                  padding: const EdgeInsets.all(8),
+                  decoration: BoxDecoration(color: const Color(0xFFE8F5E9), borderRadius: BorderRadius.circular(8)),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: Color(0xFF1B5E20), size: 18),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          (ord["mode"] == "self" || ord["dispatchMode"] == "farmer_self")
+                              ? "⚠️ हिदायत: आपको यह माल समय पर ग्राहक के पते / तय स्टॉप पर खुद डिलीवर करना होगा!"
+                              : "पैकिंग पूर्ण! कम्यूटर द्वारा पिकअप किया जा रहा है...",
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
                         ),
                       ),
                     ],
-                  ],
+                  ),
                 ),
-              ),
-            );
-          }),
-        ],
+              ],
+                      
         const SizedBox(height: 16),
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
