@@ -1628,7 +1628,7 @@ product['qty'] = updatedStock;
       };
 
       final newProductItem = {
-        "cat": selectedType == "अंडे" ? "अंडे" : (isOther ? "Other" : (selectedItem.contains("बत्तख") || selectedItem.contains("Duck") ? "बत्तख" : (selectedItem.contains("कड़कनाथ") || selectedItem.contains("Kadaknath") ? "कड़कनाथ" : (selectedItem.contains("बॉयलर") || selectedItem.contains("Broiler") ? "बॉयलर चिकन" : (selectedItem.contains("देसी") || selectedItem.contains("असील") || selectedItem.contains("Aseel") ? "देसी चिकन" : (selectedItem.contains("बटेर") || selectedItem.contains("Quail") ? "बटेर" : (selectedItem.contains("ईमू") || selectedItem.contains("Emu") ? "ईमू" : "Other"))))))),
+        "cat": selectedType == "अंडे" ? "अंडे" : (isOther ? "Other" : (selectedItem.contains("बतख") || selectedItem.contains("बत्तख") || selectedItem.contains("Duck") ? "बतख" : (selectedItem.contains("कड़कनाथ") || selectedItem.contains("Kadaknath") ? "कड़कनाथ" : (selectedItem.contains("बॉयलर") || selectedItem.contains("Broiler") ? "बॉयलर चिकन" : (selectedItem.contains("देसी") || selectedItem.contains("असील") || selectedItem.contains("Aseel") ? "देसी चिकन" : (selectedItem.contains("बटेर") || selectedItem.contains("Quail") ? "बटेर" : (selectedItem.contains("ईमू") || selectedItem.contains("Emu") ? "ईमू" : "Other"))))))),
         "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
         "item": finalTitle,
         "unitType": isEgg ? "Crate" : "Bird",
@@ -1784,9 +1784,24 @@ product['qty'] = updatedStock;
       final selCat = _selectedCategory.trim();
       final selSub = _selectedEggSub.trim();
 
-      if (selCat.isNotEmpty && pCat != selCat) {
-        return false;
+            final String itemTitle = (p['item'] ?? '').toString();
+      if (selCat.isNotEmpty) {
+        if (selCat == "बतख") {
+          if (!pCat.contains("बतख") && !pCat.contains("बत्तख") && !itemTitle.contains("बतख") && !itemTitle.contains("बत्तख")) {
+            return false;
+          }
+        } else if (selCat == "देसी चिकन") {
+          if (itemTitle.contains("बतख") || itemTitle.contains("बत्तख") || pCat.contains("बतख") || pCat.contains("बत्तख")) {
+            return false;
+          }
+          if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
+            return false;
+          }
+        } else if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
+          return false;
+        }
       }
+              
       if (selCat == 'अंडे' && selSub != 'सभी' && selSub.isNotEmpty) {
         return pSub.contains(selSub) || selSub.contains(pSub);
       }
