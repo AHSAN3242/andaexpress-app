@@ -2271,8 +2271,7 @@ product['qty'] = updatedStock;
                           children: [
                             const Icon(Icons.check_circle, color: Color(0xFF15803D), size: 18),
                             const SizedBox(width: 8),
-                            Expanded(child: Text(ord["mode"] == "self" ? "पैकिंग पूर्ण! ग्राहक स्वयं फार्म पर आ रहा है..." : "पैकिंग पूर्ण! कम्यूटर द्वारा पिकअप किया जा रहा है...", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF15803D)))),
-                          ],
+                            Expanded(child: Text((ord["mode"] == "self" || ord["dispatchMode"] == "farmer_self") ? "⚠️ हिदायत: आपको यह माल समय पर ग्राहक के पते / तय स्टॉप पर खुद डिलीवर करना होगा!" : "पैकिंग पूर्ण! कम्यूटर द्वारा पिकअप किया जा रहा है...", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)))),
                         ),
                       ),
                     ],
