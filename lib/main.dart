@@ -759,7 +759,7 @@ _sellerListings = [...globalSellerListings];
                     ),
                     IconButton(
                       icon: const Icon(Icons.add_circle_outline, size: 30, color: Color(0xFF15803D)),
-                      onPressed: () => setState(() { if (qty < maxAvailable) qty++; }),
+                      onPressed: () => setDState(() { if (qty < maxAvailable) qty++; }),
                     ),
                   ],
                 ),
