@@ -2325,7 +2325,7 @@ product['qty'] = updatedStock;
                 ),
               );
             }),
-
+],
                     
         const SizedBox(height: 16),
         Row(
