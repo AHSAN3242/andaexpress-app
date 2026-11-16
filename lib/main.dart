@@ -1843,12 +1843,21 @@ product['qty'] = updatedStock;
           if (itemTitle.contains("बतख") || itemTitle.contains("बत्तख") || pCat.contains("बतख") || pCat.contains("बत्तख")) {
             return false;
           }
-          if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
-            return false;
-          }
-        } else if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
+                  if (pCat == "अंडे" || itemTitle.contains("अंडे") || itemTitle.contains("अंडा") || (p['type'] ?? '').toString() == "अंडे") {
           return false;
         }
+        if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
+          return false;
+        }
+      } else {
+        if (pCat == "अंडे" || itemTitle.contains("अंडे") || itemTitle.contains("अंडा") || (p['type'] ?? '').toString() == "अंडे") {
+          return false;
+        }
+        if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
+          return false;
+        }
+        }
+        
       }
               
       if (selCat == 'अंडे' && selSub != 'सभी' && selSub.isNotEmpty) {
@@ -2421,7 +2430,14 @@ product['qty'] = updatedStock;
   }
 
   Widget _buildCommuter() {
-        final liveTrips = AppState.orders.where((o) => (o['status'] == 'packed_ready' || o['status'] == 'in_transit') && o['dispatchMode'] != 'farmer_self').toList();
+            final liveTrips = AppState.orders.where((o) {
+      final isRightStatus = (o['status'] == 'packed_ready' || o['status'] == 'in_transit');
+      final isFarmPickup = (o['mode'] == 'pickup' ||
+          o['dispatchMode'] == 'farm_pickup' ||
+          (o['dropAddress'] ?? '').toString().contains('फार्म पिकअप'));
+      final isFarmerSelf = (o['mode'] == 'self' || o['dispatchMode'] == 'farmer_self');
+      return isRightStatus && !isFarmPickup && !isFarmerSelf;
+    }).toList();
     
     return ListView(
       padding: const EdgeInsets.all(16),
