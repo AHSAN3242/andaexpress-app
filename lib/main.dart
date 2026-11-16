@@ -520,15 +520,15 @@ class _DashScreenState extends State<DashScreen> {
       "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1555861496-0666c8981751?auto=format&fit=crop&w=800&q=80"
     ], "gps": "20.7100° N, 77.0250° E"},
-    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 70.0, "weight": "220g (±30g प्राकृतिक मार्जिन)", "tagPrefix": "Q", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214", "gallery": [
+    {"cat": "बटेर", "sub": "बटेर", "item": "जापानी बटेर लाइव (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 70.0, "weight": "250g (±30g प्राकृतिक मार्जिन)", "tagPrefix": "Q", "farm": "ग्रीन वैली पोल्ट्री", "dist": "4.0 किमी", "farmAddress": "एमआईडीसी गेट क्र. 2", "grade": "Healthy Weight", "farmerPhone": "9876543214", "gallery": [
       "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1598965675045-45c5e72c7d05?auto=format&fit=crop&w=800&q=80"
     ], "gps": "20.6950° N, 77.0040° E"},
-    {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क पक्षी", "unitType": "Bird", "piecesPerCrate": 1, "price": 3800.0, "weight": "35kg (±2kg मार्जिन)", "tagPrefix": "EM", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215", "gallery": [
+    {"cat": "ईमू", "sub": "ईमू", "item": "ईमू लाइव वयस्क पक्षी", "unitType": "Bird", "piecesPerCrate": 1, "price": 3800.0, "weight": "35kg (±300g मार्जिन)", "tagPrefix": "EM", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Pure Breed 35kg+", "farmerPhone": "9876543215", "gallery": [
       "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"
     ], "gps": "20.6800° N, 77.0300° E"},
-    {"cat": "अन्य", "sub": "अन्य", "item": "वनराजा / ग्रामप्रिया लाइव देसी", "unitType": "Bird", "piecesPerCrate": 1, "price": 320.0, "weight": "1.9kg (±200g मार्जिन)", "tagPrefix": "V", "farm": "किसान स्पेशल फार्म", "dist": "5.0 किमी", "farmAddress": "ग्रामीण शेड नंबर 2", "grade": "देसी फ्री-रेंज", "farmerPhone": "9876543216", "gallery": [
+    {"cat": "अन्य", "sub": "अन्य", "item": "वनराजा / ग्रामप्रिया", "unitType": "Bird", "piecesPerCrate": 1, "price": 320.0, "weight": "1.9kg (±200g मार्जिन)", "tagPrefix": "V", "farm": "किसान स्पेशल फार्म", "dist": "5.0 किमी", "farmAddress": "ग्रामीण शेड नंबर 2", "grade": "देसी फ्री-रेंज", "farmerPhone": "9876543216", "gallery": [
       "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"
     ], "gps": "20.7020° N, 77.0110° E"},
@@ -1298,7 +1298,7 @@ product['qty'] = updatedStock;
 
     final Map<String, List<String>> itemOptions = {
       "अंडे": ["देसी पोल्ट्री अंडे", "कड़कनाथ ओरिजिनल अंडे", "व्हाइट टेबल एग्स", "ऑर्गेनिक बतख अंडे", "बटेर औषधीय अंडे", "ईमू जंबो औषधीय अंडे", "अन्य अंडे (Other Eggs)"],
-      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "देसी / फार्म बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी", "अन्य नस्ल (Other Breed)"],
+      "पक्षी/बर्ड्स": ["देसी रंगीन चिकन", "कमर्शियल बॉयलर", "कड़कनाथ ब्लैक लाइव", "लोकल / फार्म बतख", "जापानी बटेर (Quail)", "ईमू वयस्क पक्षी", "अन्य नस्ल (Other Breed)"],
     };
 
     Future<String> fetchCurrentGps() async {
@@ -1857,15 +1857,17 @@ product['qty'] = updatedStock;
               if (pCat != "देसी चिकन" && !itemTitle.contains("देसी")) {
                 return false;
               }
-              if (itemTitle.contains("बतख") ||
-                  itemTitle.contains("बत्तख") ||
-                  itemTitle.contains("कड़कनाथ") ||
-                  itemTitle.contains("बॉयलर") ||
-                  itemTitle.contains("बटेर") ||
-                  itemTitle.contains("ईमू") ||
-                  itemTitle.contains("टर्की")) {
-                return false;
-              }
+               if (itemTitle.contains("बतख") ||
+               itemTitle.contains("बत्तख") ||
+               itemTitle.contains("कड़कनाथ") ||
+               itemTitle.contains("बॉयलर") ||
+               itemTitle.contains("बटेर") ||
+               itemTitle.contains("ईमू") ||
+               itemTitle.contains("टर्की") ||
+               itemTitle.contains("वनराजा") ||
+               itemTitle.contains("ग्रामप्रिया")) {
+             return false;
+                         }
             } else if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
               return false;
             }
@@ -1969,7 +1971,7 @@ product['qty'] = updatedStock;
                                 ),
                                 const SizedBox(width: 6),
                                 GestureDetector(
-                                  onTap: () => launchWhatsApp(fPhone, "नमस्ते! मैं आपके फार्म पर ऑर्डर #${ord['id']} लेने आ रहा हूँ।"),
+                                  onTap: () => launchWhatsApp(fPhone, "Hello! मैं आपके फार्म पर ऑर्डर #${ord['id']} लेने आ रहा हूँ।"),
                                   child: Container(padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), decoration: BoxDecoration(color: const Color(0xFF25D366), borderRadius: BorderRadius.circular(4)), child: const Text("चैट 💬", style: TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold))),
                                 ),
                               ],
@@ -1988,7 +1990,7 @@ product['qty'] = updatedStock;
                                             border: Border.all(color: const Color(0xFFFFB74D)),
                                           ),
                                           child: const Text(
-                                            "⚠️ हिदायत: कृपया बिना कारण ऑर्डर कैंसल न करें और समय पर खुद फार्म से जाकर पिकअप करें।",
+                                            "⚠️ Note: कृपया बिना कारण ऑर्डर कैंसल न करें और समय पर खुद फार्म से जाकर पिकअप करें।",
                                             style: TextStyle(fontSize: 10, fontWeight: FontWeight.bold, color: Color(0xFFE65100)),
                                           ),
                                         ),
@@ -2280,7 +2282,7 @@ product['qty'] = updatedStock;
                                 ord['dispatchMode'] = 'farm_pickup';
                               });
                               final buyerMsg =
-                                  "नमस्ते! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक होकर तैयार है। कृपया ऑर्डर कैंसिल न करें और समय पर सीधे फार्म पर आकर अपना माल पिकअप करें।";
+                                  "Hello! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक होकर तैयार है। कृपया ऑर्डर कैंसिल न करें और समय पर सीधे फार्म पर आकर अपना माल पिकअप करें।";
                               launchWhatsApp(ord['buyerPhone'] as String, buyerMsg);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
@@ -2347,7 +2349,7 @@ product['qty'] = updatedStock;
                                               ord['status'] = 'packed_ready';
                                               ord['dispatchMode'] = selectedMode;
                                             });
-                                            final buyerMsg = "नमस्ते! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक हो गया है।";
+                                            final buyerMsg = "Hello! आपका अंडा एक्सप्रेस ऑर्डर #${ord['id']} पैक हो गया है।";
                                             launchWhatsApp(ord['buyerPhone'] as String, buyerMsg);
                                             ScaffoldMessenger.of(context).showSnackBar(
                                               SnackBar(
@@ -2383,7 +2385,7 @@ product['qty'] = updatedStock;
                                         (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप"))
                                     ? "✅ माल रेडी रखें! ग्राहक किसी भी समय खुद फार्म पर लेने के लिए आ सकता है।"
                                     : (ord["mode"] == "self" || ord["dispatchMode"] == "farmer_self")
-                                        ? "⚠️ हिदायत: आपको यह माल समय पर ग्राहक के पते / तय स्टॉप पर खुद डिलीवर करना होगा!"
+                                        ? "⚠️ Note: आपको यह माल समय पर ग्राहक के पते / तय स्टॉप पर खुद डिलीवर करना होगा!"
                                         : "पैकिंग पूर्ण! कम्यूटर द्वारा पिकअप किया जा रहा है...",
                                 style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF1B5E20)),
                               ),
