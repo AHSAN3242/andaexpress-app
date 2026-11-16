@@ -1833,36 +1833,35 @@ product['qty'] = updatedStock;
       final selCat = _selectedCategory.trim();
       final selSub = _selectedEggSub.trim();
 
-            final String itemTitle = (p['item'] ?? '').toString();
-      if (selCat.isNotEmpty) {
-        if (selCat == "बतख") {
-          if (!pCat.contains("बतख") && !pCat.contains("बत्तख") && !itemTitle.contains("बतख") && !itemTitle.contains("बत्तख")) {
-            return false;
+                    final String itemTitle = (p['item'] ?? '').toString();
+        final String itemType = (p['type'] ?? '').toString();
+        final bool isEggItem = (pCat == "अंडे" ||
+            itemType == "अंडे" ||
+            itemTitle.contains("अंडे") ||
+            itemTitle.contains("अंडा"));
+
+        if (selCat.isNotEmpty) {
+          if (selCat == "अंडे") {
+            if (!isEggItem) return false;
+            if (selSub != "सभी" && selSub.isNotEmpty) {
+              return pSub.contains(selSub) || selSub.contains(pSub) || itemTitle.contains(selSub);
+            }
+            return true;
+          } else {
+            if (isEggItem) return false;
+            if (selCat == "बतख") {
+              if (!pCat.contains("बतख") && !pCat.contains("बत्तख") && !itemTitle.contains("बतख") && !itemTitle.contains("बत्तख")) {
+                return false;
+              }
+            } else if (selCat == "देसी चिकन") {
+              if (itemTitle.contains("बतख") || itemTitle.contains("बत्तख") || pCat.contains("बतख") || pCat.contains("बत्तख") || itemTitle.contains("कड़कनाथ") || itemTitle.contains("बॉयलर")) {
+                return false;
+              }
+            } else if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
+              return false;
+            }
           }
-        } else if (selCat == "देसी चिकन") {
-          if (itemTitle.contains("बतख") || itemTitle.contains("बत्तख") || pCat.contains("बतख") || pCat.contains("बत्तख")) {
-            return false;
-          }
-                  if (pCat == "अंडे" || itemTitle.contains("अंडे") || itemTitle.contains("अंडा") || (p['type'] ?? '').toString() == "अंडे") {
-          return false;
-        }
-        if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
-          return false;
-        }
-      } else {
-        if (pCat == "अंडे" || itemTitle.contains("अंडे") || itemTitle.contains("अंडा") || (p['type'] ?? '').toString() == "अंडे") {
-          return false;
-        }
-        if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
-          return false;
-        }
-        }
-        
-      }
-              
-      if (selCat == 'अंडे' && selSub != 'सभी' && selSub.isNotEmpty) {
-        return pSub.contains(selSub) || selSub.contains(pSub);
-      }
+        }  
       return true;
     }).toList();
 
