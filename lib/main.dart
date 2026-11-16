@@ -1853,8 +1853,17 @@ product['qty'] = updatedStock;
               if (!pCat.contains("बतख") && !pCat.contains("बत्तख") && !itemTitle.contains("बतख") && !itemTitle.contains("बत्तख")) {
                 return false;
               }
-            } else if (selCat == "देसी चिकन") {
-              if (itemTitle.contains("बतख") || itemTitle.contains("बत्तख") || pCat.contains("बतख") || pCat.contains("बत्तख") || itemTitle.contains("कड़कनाथ") || itemTitle.contains("बॉयलर")) {
+                        } else if (selCat == "देसी चिकन") {
+              if (pCat != "देसी चिकन" && !itemTitle.contains("देसी")) {
+                return false;
+              }
+              if (itemTitle.contains("बतख") ||
+                  itemTitle.contains("बत्तख") ||
+                  itemTitle.contains("कड़कनाथ") ||
+                  itemTitle.contains("बॉयलर") ||
+                  itemTitle.contains("बटेर") ||
+                  itemTitle.contains("ईमू") ||
+                  itemTitle.contains("टर्की")) {
                 return false;
               }
             } else if (pCat != selCat && !selCat.contains(pCat) && !pCat.contains(selCat)) {
