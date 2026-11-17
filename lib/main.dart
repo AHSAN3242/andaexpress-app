@@ -2719,8 +2719,8 @@ product['qty'] = updatedStock;
                         child: const Text("पिकअप कन्फर्म करें", style: TextStyle(color: Colors.white)),
                       ),
                     ],
-                  ),
-                ),
+                  );
+                },
               );
             } else {
                                                               
