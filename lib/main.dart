@@ -2716,13 +2716,13 @@ product['qty'] = updatedStock;
                             }
                                                     });
                         },
-                        child: const Text("पिकअप कन्फर्म करें", style: TextStyle(color: Colors.white)),
+                                                child: const Text("पिकअप कन्फर्म करें", style: TextStyle(color: Colors.white)),
                       ),
                     ],
-                  );
-                },
-              );
-            } else {
+                  ),
+                );
+              } else {
+                                                              
                                                               
                         final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
                         final String fName = ord['farmerName'] ?? "सम्मानित किसान";
