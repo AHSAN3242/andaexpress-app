@@ -2663,9 +2663,11 @@ product['qty'] = updatedStock;
 
                               final double totalSharedCost = autoTotal + commuterTotal;
                               final double perBuyerShare = double.parse((totalSharedCost / n).toStringAsFixed(0));
-                              final double perOrderCommuterFee = double.parse((commuterTotal / n).toStringAsFixed(0));
+                                                            final double baseCommuterPart = (commuterTotal / n).floorToDouble();
+                              final double remainderCommuter = commuterTotal - (baseCommuterPart * n);
 
-                              for (var match in matchingOrders) {
+                              for (int i = 0; i < matchingOrders.length; i++) {
+                                var match = matchingOrders[i];
                                 final double singleAuto = 500.0 + (extra10KmSlabs * 200.0);
                                 final double singleCommuter = 200.0 + (extra10KmSlabs * 50.0) + 30.0;
                                 final double defaultSinglePaid = singleAuto + singleCommuter;
@@ -2673,12 +2675,15 @@ product['qty'] = updatedStock;
 
                                 final double buyerRefund = (originalPaid - perBuyerShare) > 0 ? (originalPaid - perBuyerShare) : 0.0;
                                 final double prevRefund = ((match['refundAmt'] ?? 0.0) as num).toDouble();
+                                final double exactOrderFee = (i == matchingOrders.length - 1)
+                                    ? (baseCommuterPart + remainderCommuter)
+                                    : baseCommuterPart;
 
                                 match['paidDelivery'] = originalPaid;
                                 match['isSharedAuto'] = true;
                                 match['sharedCount'] = n;
                                 match['autoFare'] = autoTotal;
-                                match['myFee'] = perOrderCommuterFee;
+                                match['myFee'] = exactOrderFee;
                                 match['commuterGroupTotal'] = commuterTotal;
                                 match['onewayFare'] = buyerRefund;
                                 match['refundAmt'] = buyerRefund;
@@ -2852,8 +2857,11 @@ product['qty'] = updatedStock;
                                     onPressed: () => Navigator.pop(dCtx),
                                     child: const Text("रद्द करें"),
                                   ),
-                                  ElevatedButton(
-                                    style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D)),
+                                     ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: const Color(0xFF15803D),
+                                      foregroundColor: Colors.white,
+                                    ),
                                     onPressed: !isVehicleVerifiedByBuyer
                                         ? null
                                         : () {
@@ -2881,7 +2889,10 @@ product['qty'] = updatedStock;
                                               );
                                             }
                                           },
-                                    child: const Text("डिलीवरी पूर्ण करें"),
+                                    child: const Text(
+                                      "डिलीवरी पूर्ण करें",
+                                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    ),
                                   ),
                                 ],
                               );
