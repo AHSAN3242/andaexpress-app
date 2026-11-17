@@ -2889,7 +2889,12 @@ product['qty'] = updatedStock;
                           ),
                         );
                             }
-                                                
+                                                    },
+                    ),
+                  ),
+                ],
+              ),
+                    
                     if (isInTransit) ...[
                       const SizedBox(height: 8),
                       // विकल्प A: ग्राहक अनुपस्थित (0% प्लेटफ़ॉर्म फ़ीस • दोनों तरफ का भाड़ा कम्यूटर को)
