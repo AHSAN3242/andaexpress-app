@@ -2714,15 +2714,16 @@ product['qty'] = updatedStock;
                                 SnackBar(content: Text("✅ वाहन $vNum दर्ज! ऑटो: ₹${singleAuto.toStringAsFixed(0)} | कम्यूटर: ₹${singleCommuter.toStringAsFixed(0)}")),
                               );
                             }
-                          });
-                                          
-                                        child: const Text("पिकअप कन्फ़र्म करें", style: TextStyle(color: Colors.white)),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              } 
-                                                } else {
+                                                    });
+                        },
+                        child: const Text("पिकअप कन्फर्म करें", style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            } else {
+                                                              
                         final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
                         final String fName = ord['farmerName'] ?? "सम्मानित किसान";
                         final double amt = (ord['farmerPayAmount'] ?? ord['codToFarmer'] ?? 0.0).toDouble();
