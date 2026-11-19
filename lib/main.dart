@@ -6,6 +6,43 @@ import 'package:geolocator/geolocator.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+class AppRates {
+  // 1. प्लेटफॉर्म फीस स्लैब (प्रति बर्ड्स और प्रति कैरेट्स)
+  static double getPlatformUnitFee(int qty) {
+    if (qty <= 5) return 15.0;
+    if (qty <= 10) return 10.0;
+    if (qty <= 15) return 7.0;
+    if (qty <= 20) return 6.0;
+    if (qty <= 50) return 4.0;
+    if (qty <= 100) return 3.0;
+    if (qty <= 200) return 2.5;
+    if (qty <= 1000) return 1.0;
+    return 0.50; // 1000 से ऊपर 50 पैसे
+  }
+
+  static double calculatePlatformFee(int qty) {
+    return qty * getPlatformUnitFee(qty);
+  }
+
+  // 2. कम्यूटर फीस स्लैब (साधारण ऑर्डर 1-20 बर्ड्स/कैरेट्स — एकतरफा भाड़ा)
+  static double getCommuterUnitFee(int qty) {
+    if (qty <= 7) return 50.0;
+    if (qty <= 12) return 45.0;
+    return 40.0; // 13 से 20 तक
+  }
+
+  static double calculateCommuterOneWay(int qty, {bool isHomeDelivery = false}) {
+    double base = qty * getCommuterUnitFee(qty);
+    if (isHomeDelivery) base += 30.0;
+    return base;
+  }
+
+  // 3. मिनी बल्क ऑर्डर (21+ बर्ड्स/कैरेट्स)
+  static double singleMiniBulkAutoBase = 500.0;
+  static double singleMiniBulkCommuterBase = 230.0; // ₹200 + ₹30 वापसी
+  static double singleMiniBulkOneWay = 730.0;
+}
+
 class AppState {
   static dynamic orders = [];
   static double sellerWallet = 500.0;
@@ -826,7 +863,22 @@ _sellerListings = [...globalSellerListings];
                   ),
                 ],
                 const SizedBox(height: 12),
-                Text("माल की कीमत: ₹${(price * qty).toStringAsFixed(0)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Color(0xFF9F2089))),
+                                      Builder(
+                        builder: (_) {
+                          final double goodsAmt = price * qty;
+                          final double pFee = AppRates.calculatePlatformFee(qty);
+                          final double grandAmt = goodsAmt + pFee;
+                          return Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text("किसान माल कीमत: ₹${goodsAmt.toStringAsFixed(0)}", style: const TextStyle(fontSize: 13, color: Colors.black87)),
+                              Text("प्लेटफ़ॉर्म फ़ीस (₹${AppRates.getPlatformUnitFee(qty)}/इकाई): +₹${pFee.toStringAsFixed(pFee % 1 == 0 ? 0 : 1)}", style: const TextStyle(fontSize: 13, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
+                              const SizedBox(height: 4),
+                              Text("कुल माल + फ़ीस: ₹${grandAmt.toStringAsFixed(grandAmt % 1 == 0 ? 0 : 1)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                            ],
+                          );
+                        },
+                      ),
               ],
             ),
             actions: [
@@ -936,66 +988,26 @@ product['qty'] = updatedStock;
       builder: (ctx) => StatefulBuilder(
         builder: (context, setMState) {
           // 1. प्लेटफ़ॉर्म सेवा शुल्क गणना
-          double platformFee = 0.0;
-          if (_selectedDeliveryMode == "self") {
-            if (totalUnits <= 5) platformFee = totalUnits * 5.0;
-            else if (totalUnits <= 10) platformFee = totalUnits * 2.0;
-            else if (totalUnits <= 100) platformFee = totalUnits * 1.0;
-            else if (totalUnits <= 500) platformFee = totalUnits * 0.50;
-            else platformFee = totalUnits * 0.25;
-          } else if (isMiniBulk) {
-            // मिनी-बल्क फ़्लैट डिस्काउंट स्लैब
-            if (totalUnits <= 30) platformFee = 100.0;
-            else if (totalUnits <= 50) platformFee = 150.0;
-            else platformFee = 200.0;
-          } else {
-            // 1-20 यूनिट सामान्य स्लैब
-            if (hasEggs) {
-              if (totalUnits <= 5) platformFee = totalUnits * 20.0;
-              else if (totalUnits <= 10) platformFee = totalUnits * 15.0;
-              else platformFee = totalUnits * 10.0;
-            } else if (hasQuail) {
-              if (totalUnits <= 10) platformFee = totalUnits * 10.0;
-              else platformFee = totalUnits * 5.0;
-            } else {
-              if (totalUnits <= 4) platformFee = totalUnits * 20.0;
-              else if (totalUnits <= 7) platformFee = totalUnits * 15.0;
-              else if (totalUnits <= 10) platformFee = totalUnits * 10.0;
-              else if (totalUnits <= 20) platformFee = totalUnits * 7.0;
-              else platformFee = totalUnits * 5.0;
-            }
-          }
+                    double platformFee = AppRates.calculatePlatformFee(totalUnits);
 
-          // 2. कम्यूटर व ऑटो भाड़ा गणना
+          // 2. कम्यूटर व ऑटो भाड़ा गणना (1-20 साधारण बनाम 21+ मिनी-बल्क)
           double baseOneWayFare = 0.0;
           double extraDistanceFare = 0.0;
 
           if (_selectedDeliveryMode != "self") {
             if (isMiniBulk) {
-              // मिनी-बल्क ऑटो ₹500 + कम्यूटर मेहनताना ₹230 = ₹730
-              baseOneWayFare = 730.0;
+              baseOneWayFare = AppRates.singleMiniBulkOneWay; // ₹500 ऑटो + ₹230 कम्यूटर = ₹730
               if (maxDistanceKm > 30.0) {
-                double extraKm = maxDistanceKm - 30.0;
-                int chunks = (extraKm / 10.0).ceil();
-                extraDistanceFare = chunks * 100.0; // प्रति 10km पर ₹100 अतिरिक्त
+                int chunks = ((maxDistanceKm - 30.0) / 10.0).ceil();
+                extraDistanceFare = chunks * 250.0; // ₹200 ऑटो + ₹50 कम्यूटर प्रति 10km
               }
             } else {
-              if (hasEggs) {
-                if (totalUnits <= 10) baseOneWayFare = totalUnits * 30.0;
-                else if (totalUnits <= 15) baseOneWayFare = totalUnits * 25.0;
-                else baseOneWayFare = totalUnits * 20.0;
-              } else {
-                if (totalUnits <= 5) baseOneWayFare = totalUnits * 50.0;
-                else if (totalUnits <= 10) baseOneWayFare = totalUnits * 40.0;
-                else if (totalUnits <= 15) baseOneWayFare = totalUnits * 35.0;
-                else baseOneWayFare = totalUnits * 30.0;
-              }
-              if (_selectedDeliveryMode == "home") {
-                baseOneWayFare += 30.0;
-              }
+              baseOneWayFare = AppRates.calculateCommuterOneWay(
+                totalUnits,
+                isHomeDelivery: _selectedDeliveryMode == "home",
+              );
               if (maxDistanceKm > 30.0) {
-                double extraKm = maxDistanceKm - 30.0;
-                int chunks = (extraKm / 10.0).ceil();
+                int chunks = ((maxDistanceKm - 30.0) / 10.0).ceil();
                 extraDistanceFare = chunks * (totalUnits * 10.0);
               }
             }
@@ -1006,7 +1018,7 @@ product['qty'] = updatedStock;
           double advancePayNow = _selectedDeliveryMode == "self" ? platformFee : (twoWayFare + platformFee);
           double totalOrderBill = goodsTotal + twoWayFare + platformFee;
           double codPayToFarmer = goodsTotal;
-
+          
           return Padding(
             padding: EdgeInsets.only(top: 20, left: 20, right: 20, bottom: MediaQuery.of(context).viewInsets.bottom + 20),
             child: SingleChildScrollView(
@@ -1248,7 +1260,11 @@ product['qty'] = updatedStock;
         "goodsTotal": goodsTotal,
         "onewayFare": twoWayFare / 2,
         "twowayFare": twoWayFare,
-        "platformFee": platformFee,
+                           "paidDelivery": twoWayFare,
+                    "refundAmt": _selectedDeliveryMode == "self" ? 0.0 : finalOneWayFare,
+                    "myFee": _selectedDeliveryMode == "self" ? 0.0 : finalOneWayFare,
+                    "pieces": totalUnits,
+                      "platformFee": platformFee,
         "advancePaid": advancePayNow,
         "codToFarmer": codPayToFarmer,
         "isMiniBulk": isMiniBulk,
@@ -1907,7 +1923,7 @@ product['qty'] = updatedStock;
                   final isSelf = (ord["mode"] == "self" || ord["mode"] == "pickup" || (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप"));
                   final fPhone = ord["farmerPhone"] ?? "9876543210";
                   final codAmt = ord["codToFarmer"] ?? ord["goodsTotal"];
-                  final refundAmt = ord["oneWayFare"] ?? 0.0;
+                  final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
 
                   String stText = "किसान द्वारा तैयारी जारी";
                   if (st == "packed_ready") {
@@ -2482,8 +2498,8 @@ product['qty'] = updatedStock;
           ...liveTrips.map((ord) {
             final isInTransit = ord["status"] == "in_transit";
             final codAmt = ord["codToFarmer"] ?? ord["goodsTotal"];
-            final myFee = ord["oneWayFare"] ?? 40.0;
-            final refundAmt = ord["oneWayFare"] ?? 0.0;
+            final myFee = ord["myFee"] ?? ord["onewayFare"] ?? 50.0;
+final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
 
             return Card(
               elevation: 3,
