@@ -87,6 +87,7 @@ class _AndaRootState extends State<AndaRoot> {
       "4. 🔢 4-अंकों का डिलीवरी कोड: यह कोड बैंक OTP नहीं है। माल की भौतिक जांच और ऑनलाइन भुगतान पूरा होने के बाद ही कम्यूटर को बताएं।",
       "5. ⏱️ 10 मिनट डिलीवरी नियम व माल जांच: लोकेशन पर 10 मिनट में न आने पर या बिना वैध कारण माल लौटाने पर 2-तरफा भाड़ा ग्राहक भरेगा।",
       "6. ⚖️ कानूनी जिम्मेदारी: किसान व कम्यूटर के साथ किसी भी प्रकार का दुर्व्यवहार या धोखाधड़ी करने पर ग्राहक स्वयं पूर्ण जिम्मेदार होगा।"
+          "7. ⚖️ शेयरिंग ऑटो समान बंटवारा नियम: मिनी-बल्क ऑर्डर में वाहन शेयर होने पर कुल साझा भाड़े को सभी ग्राहकों में बराबर (पूर्ण ₹ में राउंड-अप कर) बांटा जाता है, और बचा हुआ रिफंड सभी ग्राहकों के वॉलेट में एक समान वापस जमा होता है।",
     ];
 
         if (_role == "seller") {
@@ -102,6 +103,7 @@ class _AndaRootState extends State<AndaRoot> {
         "8. 🤝 विश्वसनीय COD: कम्यूटर पूर्णतः परिचित और भरोसेमंद होने पर ही Cash on Delivery (COD) की अनुमति दें।",
         "9. ⚠️ पैसे पाने के लिए पिन न डालें: पैसे खाते में आने के लिए कभी UPI PIN नहीं लगता। 'पैसे पाने हेतु पिन डालें' वाली कॉल 100% फ्रॉड है।",
         "10. 🤝 ग्राहक व कम्यूटर सम्मान: ग्राहक और कम्यूटर आपकी नियमित कमाई का मुख्य स्रोत हैं; इनके साथ किसी भी प्रकार की धोखाधड़ी या फसवणूक न करें और पूरी ईमानदारी बनाए रखें।"
+           "11. 🏷️ पक्षी टैग अनिवार्यता: प्रत्येक पक्षी को स्पष्ट टैग लगाना अनिवार्य है ताकि ग्राहक गलत पक्षी भेजे जाने की तकरार न कर सके और रिटर्न की स्थिति में कम्यूटर या ग्राहक कोई दूसरा पक्षी बदलकर धोखा न दे पाएं—इससे आप और ग्राहक दोनों धोखाधड़ी से सुरक्षित रहेंगे।",
       ];
     } else if (_role == "commuter") {
       roleRespTitle = "कम्यूटर सुरक्षा व फ्रॉड से बचाव (Verified Wage Rules):";
@@ -2670,27 +2672,40 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
 
                             final int n = matchingOrders.length;
                             if (n >= 2) {
-                              // 1. ऑटो भाड़ा: ₹500 (1st) + ₹150 (केवल 2nd पर) + ₹100*(n-2) (3rd से) + ₹200 प्रति 10km (30km के बाद)
-                              final double autoExtraOrders = 150.0 + (n > 2 ? (n - 2) * 100.0 : 0.0);
+                                                            // पर्ची के अनुसार नया मिनी-बल्क शेयरिंग रेट-कार्ड:
+                              // Auto: n==2 -> 500 + 250 = 750 | n>=3 -> 500 + 200 + 150 + (n - 3)*100
+                              final double autoExtraOrders = (n == 2)
+                                  ? 250.0
+                                  : (200.0 + 150.0 + ((n - 3) * 100.0));
                               final double autoTotal = 500.0 + autoExtraOrders + (extra10KmSlabs * 200.0);
 
-                              // 2. कम्यूटर मेहनताना: ₹200 (1st) + ₹100*(n-1) + ₹50 प्रति 10km (30km के बाद) + ₹30 रिटर्न
-                              final double commuterTotal = 200.0 + ((n - 1) * 100.0) + (extra10KmSlabs * 50.0) + 30.0;
+                              // Commuter: 200 (1st) + 150 (2nd) + 100*(n - 2) (3rd से) + 30 Extra
+                              final double commuterExtraOrders = 150.0 + ((n - 2) * 100.0);
+                              final double commuterTotal = 200.0 + commuterExtraOrders + (extra10KmSlabs * 50.0) + 30.0;
 
                               final double totalSharedCost = autoTotal + commuterTotal;
-                              final double perBuyerShare = double.parse((totalSharedCost / n).toStringAsFixed(0));
-                                                            final double baseCommuterPart = (commuterTotal / n).floorToDouble();
+
+                              // हर ग्राहक को 100% बराबर रिफंड देने के लिए प्रति ग्राहक हिस्सा पूर्ण ₹ में राउंड-अप (.ceilToDouble())
+                              final double equalBuyerShare = (totalSharedCost / n).ceilToDouble();
+                              final double roundingFeeToApp = (equalBuyerShare * n) - totalSharedCost;
+
+                              // कम्यूटर का कुल मेहनताना (जैसे 380, 480, 580, 680) वॉलेट में सटीक जुड़ने के लिए
+                              final double baseCommuterPart = (commuterTotal / n).floorToDouble();
                               final double remainderCommuter = commuterTotal - (baseCommuterPart * n);
 
                               for (int i = 0; i < matchingOrders.length; i++) {
                                 var match = matchingOrders[i];
                                 final double singleAuto = 500.0 + (extra10KmSlabs * 200.0);
                                 final double singleCommuter = 200.0 + (extra10KmSlabs * 50.0) + 30.0;
-                                final double defaultSinglePaid = singleAuto + singleCommuter;
-                                final double originalPaid = ((match['paidDelivery'] ?? match['onewayFare'] ?? defaultSinglePaid) as num).toDouble();
+                                final double defaultSinglePaid = (singleAuto + singleCommuter) * 2;
+                                final double originalPaid = ((match['paidDelivery'] ?? match['twowayFare'] ?? defaultSinglePaid) as num).toDouble();
 
-                                final double buyerRefund = (originalPaid - perBuyerShare) > 0 ? (originalPaid - perBuyerShare) : 0.0;
+                                // सभी ग्राहकों को 100% एक बराबर रिफंड राशि
+                                final double buyerRefund = (originalPaid - equalBuyerShare) > 0
+                                    ? (originalPaid - equalBuyerShare)
+                                    : 0.0;
                                 final double prevRefund = ((match['refundAmt'] ?? 0.0) as num).toDouble();
+
                                 final double exactOrderFee = (i == matchingOrders.length - 1)
                                     ? (baseCommuterPart + remainderCommuter)
                                     : baseCommuterPart;
@@ -2701,6 +2716,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                 match['autoFare'] = autoTotal;
                                 match['myFee'] = exactOrderFee;
                                 match['commuterGroupTotal'] = commuterTotal;
+                                match['appRoundingFee'] = roundingFeeToApp;
                                 match['onewayFare'] = buyerRefund;
                                 match['refundAmt'] = buyerRefund;
 
