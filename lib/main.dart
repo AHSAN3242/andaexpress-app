@@ -865,18 +865,56 @@ _sellerListings = [...globalSellerListings];
                   ),
                 ],
                 const SizedBox(height: 12),
-                                      Builder(
+                                                            Builder(
                         builder: (_) {
                           final double goodsAmt = price * qty;
                           final double pFee = AppRates.calculatePlatformFee(qty);
-                          final double grandAmt = goodsAmt + pFee;
+
+                          // दूरी और मात्रा के अनुसार अनुमानित भाड़े की गणना
+                          final String dStr = (product["dist"] ?? "5").toString().replaceAll(RegExp(r'[^0-9.]'), '');
+                          final double distKm = double.tryParse(dStr) ?? 5.0;
+                          final bool isMini = qty >= 21;
+
+                          double oneWayFare = 0.0;
+                          if (isMini) {
+                            oneWayFare = AppRates.singleMiniBulkOneWay;
+                            if (distKm > 30.0) {
+                              oneWayFare += (((distKm - 30.0) / 10.0).ceil()) * 250.0;
+                            }
+                          } else {
+                            oneWayFare = AppRates.calculateCommuterOneWay(qty);
+                            if (distKm > 30.0) {
+                              oneWayFare += (((distKm - 30.0) / 10.0).ceil()) * (qty * 10.0);
+                            }
+                          }
+
+                          final double twoWayFare = oneWayFare * 2;
+                          final double grandTotal = goodsAmt + pFee + twoWayFare;
+
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text("किसान माल कीमत: ₹${goodsAmt.toStringAsFixed(0)}", style: const TextStyle(fontSize: 13, color: Colors.black87)),
-                              Text("प्लेटफ़ॉर्म फ़ीस (₹${AppRates.getPlatformUnitFee(qty)}/इकाई): +₹${pFee.toStringAsFixed(pFee % 1 == 0 ? 0 : 1)}", style: const TextStyle(fontSize: 13, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
-                              const SizedBox(height: 4),
-                              Text("कुल माल + फ़ीस: ₹${grandAmt.toStringAsFixed(grandAmt % 1 == 0 ? 0 : 1)}", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                              Text(
+                                "किसान माल कीमत: ₹${goodsAmt.toStringAsFixed(0)}",
+                                style: const TextStyle(fontSize: 13, color: Colors.black87),
+                              ),
+                              Text(
+                                "प्लेटफ़ॉर्म फ़ीस (₹${AppRates.getPlatformUnitFee(qty)}/इकाई): +₹${pFee.toStringAsFixed(pFee % 1 == 0 ? 0 : 1)}",
+                                style: const TextStyle(fontSize: 13, color: Color(0xFF15803D), fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                "डिलीवरी भाड़ा (1-तरफ़ा ₹${oneWayFare.toStringAsFixed(0)} • सुरक्षित 2X): +₹${twoWayFare.toStringAsFixed(0)}",
+                                style: const TextStyle(fontSize: 12.5, color: Colors.deepOrange, fontWeight: FontWeight.w600),
+                              ),
+                              Text(
+                                "(सफल डिलीवरी पर ₹${oneWayFare.toStringAsFixed(0)} वॉलेट में वापस)",
+                                style: const TextStyle(fontSize: 11, color: Colors.grey),
+                              ),
+                              const Divider(height: 12),
+                              Text(
+                                "कुल अमाउंट (Total): ₹${grandTotal.toStringAsFixed(grandTotal % 1 == 0 ? 0 : 1)}",
+                                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                              ),
                             ],
                           );
                         },
