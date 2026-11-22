@@ -2012,6 +2012,49 @@ product['qty'] = updatedStock;
                           ],
                           const SizedBox(height: 3),
                           Text("स्थिति: $stText", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: (st == "returned_bus" || st == "rejected_by_buyer") ? Colors.red : const Color(0xFF15803D))),
+                                                if (!isSelf && (ord['vehicleNo'] ?? '').toString().trim().isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          decoration: BoxDecoration(
+                            color: (ord['buyerConfirmedVehicle'] == true)
+                                ? const Color(0xFFDCFCE7)
+                                : const Color(0xFFEFF6FF),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(
+                              color: (ord['buyerConfirmedVehicle'] == true)
+                                  ? const Color(0xFF16A34A)
+                                  : const Color(0xFF93C5FD),
+                            ),
+                          ),
+                          child: CheckboxListTile(
+                            dense: true,
+                            contentPadding: EdgeInsets.zero,
+                            activeColor: const Color(0xFF15803D),
+                            value: ord['buyerConfirmedVehicle'] == true,
+                            onChanged: (st == "delivered")
+                                ? null
+                                : (val) {
+                                    setState(() {
+                                      ord['buyerConfirmedVehicle'] = val ?? false;
+                                    });
+                                  },
+                            title: Text(
+                              (ord['buyerConfirmedVehicle'] == true)
+                                  ? "✅ वाहन नं: ${ord['vehicleNo']} — आपने वाहन की पुष्टि कर दी है (अब कम्यूटर OTP डाल सकता है)"
+                                  : "🚚 वाहन नं: ${ord['vehicleNo']} — इस वाहन से आपका ऑर्डर आ रहा है। वाहन आने के बाद इस बॉक्स पर टिक कर पुष्टि कर दें, इसमें आपका ही फ़ायदा है!",
+                              style: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: (ord['buyerConfirmedVehicle'] == true)
+                                    ? const Color(0xFF15803D)
+                                    : const Color(0xFF1D4ED8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                           Text("📍 फार्म: ${ord['farm']} • ${ord['farmAddress']}", style: const TextStyle(fontSize: 10, color: Colors.blueGrey)),
                           if (isSelf) ...[
                             const SizedBox(height: 3),
@@ -2807,6 +2850,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                         final bool isShared = ord['isSharedAuto'] == true;
                         final double buyerRefund = ((ord['refundAmt'] ?? 0.0) as num).toDouble();
                         final cCtrl = TextEditingController();
+                        final bool hasBuyerTickedVehicle = ord['buyerConfirmedVehicle'] == true;
                         bool isVehicleVerifiedByBuyer = ord['isVehicleVerified'] == true;
 
                         showDialog(
@@ -2848,23 +2892,30 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                                 textAlign: TextAlign.center,
                                               ),
                                             ],
-                                            CheckboxListTile(
-                                              dense: true,
-                                              contentPadding: EdgeInsets.zero,
-                                              activeColor: const Color(0xFF15803D),
-                                              value: isVehicleVerifiedByBuyer,
-                                              onChanged: (val) {
+                                                                                  CheckboxListTile(
+                                        dense: true,
+                                        contentPadding: EdgeInsets.zero,
+                                        activeColor: const Color(0xFF15803D),
+                                        value: hasBuyerTickedVehicle ? isVehicleVerifiedByBuyer : false,
+                                        onChanged: hasBuyerTickedVehicle
+                                            ? (val) {
                                                 setDState(() {
                                                   isVehicleVerifiedByBuyer = val ?? false;
                                                 });
-                                              },
-                                              title: Text(
-                                                "ग्राहक ने सामने खड़े वाहन का नंबर ($recordedVeh) जाँच कर सत्यापित कर दिया है",
-                                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                                              ),
-                                            ),
-                                          ],
+                                              }
+                                            : null,
+                                        title: Text(
+                                          hasBuyerTickedVehicle
+                                              ? "✅ ग्राहक ने अपने ऐप से वाहन ($recordedVeh) की पुष्टि कर दी है — अब यहाँ टिक करें"
+                                              : "🔒 लॉक: पहले ग्राहक को उनके ऐप में वाहन नंबर ($recordedVeh) पर टिक करने दें, तभी यह बॉक्स खुलेगा",
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                            color: hasBuyerTickedVehicle ? Colors.black87 : Colors.red.shade700,
+                                          ),
                                         ),
+                                      ),
+                                    ),
                                       ),
                                       const SizedBox(height: 10),
                                       Container(
