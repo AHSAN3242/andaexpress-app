@@ -1108,7 +1108,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                                   label: Text("${d.day}/${d.month} (${idx == 0 ? 'कल' : '${idx + 1} दिन'})", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isSel ? Colors.white : Colors.black87)),
                                   selected: isSel,
                                   selectedColor: const Color(0xFF15803D),
-                                  onSelected: (_) => setState(() => selectedDateIdx = idx),
+                                  onSelected: (_) => setMState(() => selectedDateIdx = idx),
                                 ),
                               );
                             }),
@@ -2097,7 +2097,23 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                             Text("🏷️ पक्षी टैग: ${ord['tags']}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue)),
                           ],
                           const SizedBox(height: 3),
-                                               // लाइव 4-स्टेप ट्रैकिंग व डिलीवरी तारीख बॉक्स
+                                                                   if (!isSelf && (ord['commuterPickupLoc'] ?? '').toString().trim().isNotEmpty) ...[
+                        const SizedBox(height: 6),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF3E8FF),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: const Color(0xFFC084FC)),
+                          ),
+                          child: Text(
+                            "📍 पिकअप लोकेशन: ${ord['commuterPickupLoc']} — आपकी डिलीवरी इसी लोकेशन पर आएगी। कृपया समय पर यहाँ उपस्थित रहें।",
+                            style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF6B21A8)),
+                          ),
+                        ),
+                      ],
+                          // लाइव 4-स्टेप ट्रैकिंग व डिलीवरी तारीख बॉक्स
                       Builder(
                         builder: (_) {
                           final int step = (st == "delivered")
@@ -2810,7 +2826,8 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                     style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
                   ),
                   onPressed: () {
-                    final warnMsg = "⚠️ हैलो! कम्यूटर 15 मिनट में डिलीवरी पॉइंट पहुँच रहा है। किसान को देय राशि ₹${codAmt.toStringAsFixed(0)} तैयार रखें।";
+                                                     final String savedLoc = (ord['commuterPickupLoc'] ?? ord['dropAddress'] ?? '').toString();
+                                  final warnMsg = "⚠️ *हाई-वॉल्यूम अलर्ट:* कम्यूटर 15 मिनट में डिलीवरी पॉइंट पर पहुँच रहा है।\n📍 *डिलीवरी / पिकअप लोकेशन:* $savedLoc\nकृपया ठीक इसी जगह पर डिलीवरी के लिए हाजिर रहें और किसान को देय राशि ₹${codAmt.toStringAsFixed(0)} UPI तैयार रखें।";
                     launchWhatsApp(ord['buyerPhone'] as String, warnMsg);
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("ग्राहक को 15-मिनट WhatsApp चेतावनी भेज दी गई!")));
                   },
@@ -2841,15 +2858,69 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                                         (ord['type'] == 'bulk') || 
                                                         ((ord['pieces'] ?? 0) >= 300);
 
-                                if (!isMiniBulk) {
-                                  setState(() {
-                                    ord['status'] = 'in_transit';
-                                  });
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text("✅ आर्डर पिकअप हुआ। माल लेकर रवाना!")),
-                                  );
-                                  return;
-                                }
+                                                                  if (!isMiniBulk) {
+                                    final locCtl = TextEditingController();
+                                    showDialog(
+                                      context: context,
+                                      barrierDismissible: false,
+                                      builder: (lCtx) => StatefulBuilder(
+                                        builder: (context, setLState) {
+                                          final bool canBook = locCtl.text.trim().isNotEmpty;
+                                          return AlertDialog(
+                                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                                            title: const Row(
+                                              children: [
+                                                Icon(Icons.location_on, color: Color(0xFF6B21A8)),
+                                                SizedBox(width: 8),
+                                                Expanded(child: Text("पिकअप लोकेशन दर्ज करें", style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold))),
+                                              ],
+                                            ),
+                                            content: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              crossAxisAlignment: CrossAxisAlignment.start,
+                                              children: [
+                                                const Text("जिस बस स्टैंड / पॉइंट पर ग्राहक को माल लेने आना है, वह सटीक पता लिखें:", style: TextStyle(fontSize: 12, color: Colors.black87)),
+                                                const SizedBox(height: 10),
+                                                TextField(
+                                                  controller: locCtl,
+                                                  onChanged: (_) => setLState(() {}),
+                                                  decoration: const InputDecoration(
+                                                    labelText: "पिकअप लोकेशन / बस स्टैंड *",
+                                                    hintText: "उदा. अकोला मेन बस स्टैंड, गेट नं. 2",
+                                                    border: OutlineInputBorder(),
+                                                    prefixIcon: Icon(Icons.place),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            actions: [
+                                              TextButton(onPressed: () => Navigator.pop(lCtx), child: const Text("रद्द करें", style: TextStyle(color: Colors.grey))),
+                                              ElevatedButton(
+                                                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF6B21A8), foregroundColor: Colors.white),
+                                                onPressed: canBook
+                                                    ? () {
+                                                        final String pLoc = locCtl.text.trim();
+                                                        Navigator.pop(lCtx);
+                                                        setState(() {
+                                                          ord['status'] = 'in_transit';
+                                                          ord['commuterPickupLoc'] = pLoc;
+                                                        });
+                                                        final String bMsg = "📍 *Anda Express पिकअप सूचना:*\nआपका ऑर्डर (${ord['product']}) निकल चुका है और आपकी डिलीवरी इस लोकेशन पर आएगी:\n*$pLoc*\nकृपया समय पर इस स्थान से पिकअप करें।";
+                                                        launchWhatsApp((ord['buyerPhone'] ?? '').toString(), bMsg);
+                                                        ScaffoldMessenger.of(context).showSnackBar(
+                                                          const SnackBar(content: Text("✅ पिकअप लोकेशन ग्राहक को भेज दी गई है!")),
+                                                        );
+                                                      }
+                                                    : null,
+                                                child: const Text("ऑर्डर बुक करें"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    );
+                                    return;
+                                                                  }
 
                                 final vehCtl = TextEditingController();
                                 showDialog(
@@ -3017,20 +3088,20 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                     ],
                   ),
                 );
-              } else {
-                                                              
+              } else {                                 
                                                               
                         final String fUpi = ord['farmerUpi'] ?? "${ord['farmerPhone']}@upi";
                         final String fName = ord['farmerName'] ?? "सम्मानित किसान";
                         final double amt = (ord['farmerPayAmount'] ?? ord['codToFarmer'] ?? 0.0).toDouble();
                         final String vcode = (ord['deliveryCode'] ?? ord['otp'] ?? "").toString();
-                        final String recordedVeh = (ord['vehicleNo'] ?? "दर्ज नहीं").toString();
+                        final String recordedVeh = (ord['vehicleNo'] ?? "").toString().trim();
+                        final bool hasVehBox = recordedVeh.isNotEmpty;
                         final bool isShared = ord['isSharedAuto'] == true;
                         final double buyerRefund = ((ord['refundAmt'] ?? 0.0) as num).toDouble();
                         final cCtrl = TextEditingController();
                         final bool hasBuyerTickedVehicle = ord['buyerConfirmedVehicle'] == true;
-                        bool isVehicleVerifiedByBuyer = ord['isVehicleVerified'] == true;
-
+                        bool isVehicleVerifiedByBuyer = !hasVehBox || (ord['isVehicleVerified'] == true);
+                                                              
                         showDialog(
                           context: context,
                           barrierDismissible: false,
@@ -3048,6 +3119,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                 content: SingleChildScrollView(
                                   child: Column(
                                     mainAxisSize: MainAxisSize.min,
+                                  if (hasVehBox) ...[
                                     children: [
                                       Container(
                                         padding: const EdgeInsets.all(10),
@@ -3096,7 +3168,8 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                   ],
                                 ),
                               ),
-                                      const SizedBox(height: 10),
+                                 ],
+                                    const SizedBox(height: 10),
                                       Container(
                                         padding: const EdgeInsets.all(8),
                                         decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(8)),
@@ -3173,6 +3246,11 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                                 final double earned = ((ord['myFee'] ?? 230.0) as num).toDouble();
                                                 AppState.commuterWallet += earned;
                                               });
+                                                                                   final String farmerAlertMsg = "🔔 *ANDA EXPRESS — डिलीवरी पूर्ण अलर्ट!*\n"
+                                          "ऑर्डर नं: ${ord['id']} (${ord['product']}) की डिलीवरी सफलतापूर्वक पूर्ण हो चुकी है।\n"
+                                          "देय शुद्ध राशि: ₹${amt.toStringAsFixed(0)}\n"
+                                          "कृपया अपना UPI ऐप (GPay/PhonePe/Paytm) तुरंत चेक कर पेमेंट सत्यापित करें।";
+                                      launchWhatsApp((ord['farmerPhone'] ?? '').toString(), farmerAlertMsg);
                                               ScaffoldMessenger.of(context).showSnackBar(
                                                 SnackBar(
                                                   backgroundColor: const Color(0xFF15803D),
