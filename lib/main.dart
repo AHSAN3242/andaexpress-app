@@ -3118,11 +3118,10 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                 ),
                                 content: SingleChildScrollView(
                                   child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                  if (hasVehBox) ...[
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
+  mainAxisSize: MainAxisSize.min,
+  children: [
+    if (hasVehBox) ...[
+    Container(
                                         decoration: BoxDecoration(
                                           color: const Color(0xFFFFF8E1),
                                           borderRadius: BorderRadius.circular(8),
