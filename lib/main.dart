@@ -1002,6 +1002,8 @@ product['qty'] = updatedStock;
     double maxDistanceKm = 0.0;
   bool isCodAllowed = true;
   String selectedPayOption = "upi"; // डिफ़ॉल्ट हमेशा Pay After Delivery via UPI
+    final List<DateTime> availDates = List.generate(7, (idx) => DateTime.now().add(Duration(days: idx + 1)));
+int selectedDateIdx = 1;
     
     for (var itm in _cartItems) {
       goodsTotal += (itm["total"] as double);
@@ -1020,7 +1022,12 @@ product['qty'] = updatedStock;
     }
 
     bool isMiniBulk = (totalUnits >= 21 && totalUnits <= 100);
-
+final bool farmerAllowsHome = _cartItems.every((e) => e["allowHomeDelivery"] == true);
+final bool isHomeDeliveryEligible = isMiniBulk || (totalUnits >= 6 && totalUnits <= 20 && farmerAllowsHome);
+if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
+  _selectedDeliveryMode = "bus_stop";
+}
+    
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1086,7 +1093,43 @@ product['qty'] = updatedStock;
               )),
               const SizedBox(height: 6),
               Text("📍 स्रोत फार्म: ${_cartItems.first['farm']} (${maxDistanceKm.toStringAsFixed(1)} किमी)", style: const TextStyle(fontSize: 11, color: Colors.blueGrey)),
-              const SizedBox(height: 10),
+                                     const Text("📅 पसंदीदा डिलीवरी तारीख चुनें (जिस दिन आपको माल चाहिए):", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5)),
+                        const SizedBox(height: 6),
+                        SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: List.generate(availDates.length, (idx) {
+                              final d = availDates[idx];
+                              final bool isSel = selectedDateIdx == idx;
+                              return Padding(
+                                padding: const EdgeInsets.only(right: 6),
+                                child: ChoiceChip(
+                                  label: Text("${d.day}/${d.month} (${idx == 0 ? 'कल' : '${idx + 1} दिन'})", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isSel ? Colors.white : Colors.black87)),
+                                  selected: isSel,
+                                  selectedColor: const Color(0xFF15803D),
+                                  onSelected: (_) => setState(() => selectedDateIdx = idx),
+                                ),
+                              );
+                            }),
+                          ),
+                        ),
+                        if (!isMiniBulk) ...[
+                          const SizedBox(height: 6),
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFFFFBEB),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: const Color(0xFFFCD34D)),
+                            ),
+                            child: const Text(
+                              "🚌 मुख्य पॉइंट पिकअप नियम: छोटे ऑर्डर गांव से आने वाली बस/टैक्सी/कम्यूटर द्वारा तय तारीख पर भेजे जाते हैं। आपको बस स्टैंड या वाहन की बताई गई लोकेशन से माल पिकअप करना होगा, अन्यथा ऑर्डर कैंसिल हो सकता है।",
+                              style: TextStyle(fontSize: 10.5, color: Color(0xFF92400E), fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                        ],
+                        const SizedBox(height: 10),
+                  const SizedBox(height: 10),
               const Text("डिलीवरी मोड चुनें:", style: TextStyle(fontWeight: FontWeight.bold)),
               RadioListTile<String>(
                 dense: true,
@@ -1104,14 +1147,32 @@ product['qty'] = updatedStock;
                 groupValue: _selectedDeliveryMode,
                 onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
               ),
-              RadioListTile<String>(
-                dense: true,
-                title: Text(isMiniBulk ? "मिनी-बल्क घर तक (ऑटो ड्राइवर UPI Pay After Delivery)" : "घर / दुकान डिलीवरी (कम्यूटर UPI Pay After Delivery)"),
-                subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ भाड़ा: ₹${baseOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(0)}"),
-                value: "home",
-                groupValue: _selectedDeliveryMode,
-                onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
-              ),
+                                      if (isHomeDeliveryEligible)
+                          RadioListTile<String>(
+                            dense: true,
+                            title: Text(isMiniBulk ? "मिनी-बल्क घर तक (ऑटो UPI Pay After Delivery)" : "घर / दुकान डिलीवरी (किसान द्वारा स्वीकृत)"),
+                            subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ़ा) • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ़ा भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(1)}"),
+                            value: "home",
+                            groupValue: _selectedDeliveryMode,
+                            onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
+                          )
+                        else
+                          Container(
+                            margin: const EdgeInsets.symmetric(vertical: 4),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Text(
+                              totalUnits <= 5
+                                  ? "🔒 1 से 5 यूनिट पर होम डिलीवरी उपलब्ध नहीं है — कृपया ऊपर 'बस स्टॉप / मुख्य पॉइंट' चुनें।"
+                                  : "🔒 इस बैच पर किसान द्वारा 6–20 यूनिट की होम डिलीवरी बंद है — कृपया 'बस स्टॉप / मुख्य पॉइंट' चुनें।",
+                              style: TextStyle(fontSize: 11, color: Colors.grey.shade700, fontWeight: FontWeight.w600),
+                            ),
+                          ),
+                  
               if (_selectedDeliveryMode != "self") ...[
                 const SizedBox(height: 6),
                 TextField(
@@ -1310,7 +1371,8 @@ product['qty'] = updatedStock;
         "isMiniBulk": isMiniBulk,
         "autoArranger": "farmer",
         "status": "pending_seller",
-        "returnBus": null,
+       "preferredDate": "${availDates[selectedDateIdx].day}/${availDates[selectedDateIdx].month}/${availDates[selectedDateIdx].year}",
+         "returnBus": null,
       });
       _cartItems.clear();
       _buyerAddressCtl.clear();
@@ -1339,6 +1401,7 @@ product['qty'] = updatedStock;
     String liveGpsCoord = "20.7002° N, 77.0082° E";
     bool isProcessingGps = false;
     bool allowCodByFarmer = false;
+    bool allowHomeByFarmer = false;
     final customNameCtl = TextEditingController();
     final tagPrefixCtl = TextEditingController();
     final qtyCtl = TextEditingController();
@@ -1660,6 +1723,26 @@ product['qty'] = updatedStock;
                         style: TextStyle(fontSize: 10, color: Color(0xFF6B21A8), fontWeight: FontWeight.w600),
                       ),
                     ),
+                                        const Divider(height: 12),
+                      Row(
+                        children: [
+                          Checkbox(
+                            value: allowHomeByFarmer,
+                            activeColor: const Color(0xFF15803D),
+                            onChanged: (val) {
+                              setState(() {
+                                allowHomeByFarmer = val ?? false;
+                              });
+                            },
+                          ),
+                          const Expanded(
+                            child: Text(
+                              "🏠 होम डिलीवरी अनुमति (6 से 20 यूनिट ऑर्डर हेतु — किसान स्वयं या अपने व्यक्ति से घर पहुँचाएगा)",
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5, color: Colors.black87),
+                            ),
+                          ),
+                        ],
+                      ),
                   ],
                 ),
               ),
@@ -1730,6 +1813,7 @@ product['qty'] = updatedStock;
         "gallery": uploadedPhotos,
         "gps": liveGpsCoord,
         "allowCod": allowCodByFarmer,
+      "allowHomeDelivery": allowHomeByFarmer,
       };
 
       final newProductItem = {
@@ -1755,7 +1839,8 @@ product['qty'] = updatedStock;
         "gallery": uploadedPhotos,
         "gps": liveGpsCoord,
         "allowCod": allowCodByFarmer,
-      };
+     "allowHomeDelivery": allowHomeByFarmer,
+        };
 
             setState(() {
         _sellerListings.insert(0, newSellerItem);
@@ -2011,6 +2096,91 @@ product['qty'] = updatedStock;
                             Text("🏷️ पक्षी टैग: ${ord['tags']}", style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Colors.blue)),
                           ],
                           const SizedBox(height: 3),
+                                               // लाइव 4-स्टेप ट्रैकिंग व डिलीवरी तारीख बॉक्स
+                      Builder(
+                        builder: (_) {
+                          final int step = (st == "delivered")
+                              ? 4
+                              : (st == "in_transit")
+                                  ? 3
+                                  : (st == "packed_ready")
+                                      ? 2
+                                      : 1;
+                          final String prefDate = (ord['preferredDate'] ?? 'चुनी गई तारीख पर').toString();
+                          final bool isMiniOrder = (ord['isMiniBulk'] == true) || ((ord['pieces'] ?? 0) >= 21);
+                          final bool isHomeOrder = ord['mode'] == 'home';
+
+                          return Container(
+                            margin: const EdgeInsets.only(top: 6, bottom: 4),
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey.shade300),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      "📅 पसंदीदा डिलीवरी: $prefDate",
+                                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF0F172A)),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: isMiniOrder ? const Color(0xFFDCFCE7) : const Color(0xFFEFF6FF),
+                                        borderRadius: BorderRadius.circular(4),
+                                      ),
+                                      child: Text(
+                                        isMiniOrder
+                                            ? "मिनी-बल्क: तय तारीख"
+                                            : (isHomeOrder ? "किसान होम डिलीवरी" : "बस स्टैंड/मुख्य पॉइंट"),
+                                        style: TextStyle(
+                                          fontSize: 9.5,
+                                          fontWeight: FontWeight.bold,
+                                          color: isMiniOrder ? const Color(0xFF15803D) : const Color(0xFF1D4ED8),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(height: 6),
+                                Row(
+                                  children: [
+                                    Expanded(child: Container(height: 4, color: step >= 1 ? const Color(0xFF16A34A) : Colors.grey.shade300)),
+                                    const SizedBox(width: 3),
+                                    Expanded(child: Container(height: 4, color: step >= 2 ? const Color(0xFF16A34A) : Colors.grey.shade300)),
+                                    const SizedBox(width: 3),
+                                    Expanded(child: Container(height: 4, color: step >= 3 ? const Color(0xFF16A34A) : Colors.grey.shade300)),
+                                    const SizedBox(width: 3),
+                                    Expanded(child: Container(height: 4, color: step >= 4 ? const Color(0xFF16A34A) : Colors.grey.shade300)),
+                                  ],
+                                ),
+                                const SizedBox(height: 4),
+                                const Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text("1. बुक", style: TextStyle(fontSize: 9.5, color: Colors.black54)),
+                                    Text("2. पैक", style: TextStyle(fontSize: 9.5, color: Colors.black54)),
+                                    Text("3. रास्ते में", style: TextStyle(fontSize: 9.5, color: Colors.black54)),
+                                    Text("4. डिलीवर", style: TextStyle(fontSize: 9.5, color: Colors.black54)),
+                                  ],
+                                ),
+                                if (!isMiniOrder && !isHomeOrder && !isSelf && st != "delivered" && st != "cancelled") ...[
+                                  const SizedBox(height: 5),
+                                  const Text(
+                                    "🚌 मुख्य पॉइंट पिकअप नियम: तय तारीख पर किसान द्वारा भेजे गए बस स्टैंड / वाहन लोकेशन से माल पिकअप करना अनिवार्य है, अन्यथा ऑर्डर कैंसिल हो सकता है।",
+                                    style: TextStyle(fontSize: 10, color: Color(0xFFB45309), fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                           Text("स्थिति: $stText", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: (st == "returned_bus" || st == "rejected_by_buyer") ? Colors.red : const Color(0xFF15803D))),
                                                 if (!isSelf && (ord['vehicleNo'] ?? '').toString().trim().isNotEmpty) ...[
                         const SizedBox(height: 6),
@@ -2815,10 +2985,13 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                 ),
                               );
                             } else {
-                              final double singleAuto = 500.0 + (extra10KmSlabs * 200.0);
+                                                            final double singleAuto = 500.0 + (extra10KmSlabs * 200.0);
                               final double singleCommuter = 200.0 + (extra10KmSlabs * 50.0) + 30.0;
-                              final double defaultSinglePaid = singleAuto + singleCommuter;
-                              final double originalPaid = ((ord['paidDelivery'] ?? ord['onewayFare'] ?? defaultSinglePaid) as num).toDouble();
+                              final double singleOneWay = singleAuto + singleCommuter;
+                              final double defaultSinglePaid = singleOneWay * 2;
+                              final double originalPaid = ((ord['paidDelivery'] ?? ord['twowayFare'] ?? defaultSinglePaid) as num).toDouble();
+                              final double buyerRefund = (originalPaid - singleOneWay) > 0 ? (originalPaid - singleOneWay) : singleOneWay;
+                              final double prevRefund = ((ord['refundAmt'] ?? 0.0) as num).toDouble();
 
                               ord['paidDelivery'] = originalPaid;
                               ord['isSharedAuto'] = false;
@@ -2826,8 +2999,12 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                               ord['autoFare'] = singleAuto;
                               ord['myFee'] = singleCommuter;
                               ord['commuterGroupTotal'] = singleCommuter;
-                              ord['refundAmt'] = 0.0;
+                              ord['onewayFare'] = buyerRefund;
+                              ord['refundAmt'] = buyerRefund;
 
+                              if (buyerRefund > prevRefund) {
+                                AppState.buyerWallet += (buyerRefund - prevRefund);
+                              }
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text("✅ वाहन $vNum दर्ज! ऑटो: ₹${singleAuto.toStringAsFixed(0)} | कम्यूटर: ₹${singleCommuter.toStringAsFixed(0)}")),
                               );
