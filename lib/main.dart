@@ -1160,7 +1160,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                             subtitle: Text(isMiniBulk ? "ऑटो ₹500 + कम्यूटर ₹230 = ₹730 (1-तरफ़ा) • फ़ीस: ₹${platformFee.toStringAsFixed(1)}" : "1-तरफ़ा भाड़ा: ₹${finalOneWayFare.toStringAsFixed(0)} • फ़ीस: ₹${platformFee.toStringAsFixed(1)}"),
                             value: "home",
                             groupValue: _selectedDeliveryMode,
-                            onChanged: (v) => setState(() => _selectedDeliveryMode = v!),
+                            onChanged: (v) => setMState(() => _selectedDeliveryMode = v!),
                           )
                         else
                           Container(
@@ -2078,11 +2078,21 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Expanded(child: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12))),
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                                decoration: BoxDecoration(color: const Color(0xFFFEF3C7), borderRadius: BorderRadius.circular(6), border: Border.all(color: const Color(0xFFF59E0B))),
-                                child: Text("OTP: ${ord['otp']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: Color(0xFFB45309))),
-                              ),
+                                                    Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: (isSelf || ord['farmerPaymentVerified'] == true) ? const Color(0xFFDCFCE7) : const Color(0xFFFEF3C7),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Text(
+                          (isSelf || ord['farmerPaymentVerified'] == true) ? "OTP: ${ord['otp']}" : "OTP: 🔒 पेमेंट पुष्टि बाकी",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 11.5,
+                            color: (isSelf || ord['farmerPaymentVerified'] == true) ? const Color(0xFF15803D) : const Color(0xFFB45309),
+                          ),
+                        ),
+                      ),
                             ],
                           ),
                           const SizedBox(height: 4),
@@ -2495,7 +2505,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     );
   }
     Widget _buildSeller() {
-    final pendingOrders = AppState.orders.where((o) => o["status"] == "pending_seller" || o["status"] == "packed_ready" || (o["status"] == "delivered" && o["farmerPaymentVerified"] != true)).toList();
+    final pendingOrders = AppState.orders.where((o) => o["status"] == "pending_seller" || o["status"] == "packed_ready" || o["status"] == "in_transit" || (o["status"] == "delivered" && o["farmerPaymentVerified"] != true)).toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -2687,7 +2697,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                         ),
                       ),
                     ],
-                                          if (ord['status'] == 'delivered' && ord['farmerPaymentVerified'] != true) ...[
+                                          if ((ord['status'] == 'in_transit' || ord['status'] == 'delivered') && ord['farmerPaymentVerified'] != true) ...[
                         const SizedBox(height: 8),
                         SizedBox(
                           width: double.infinity,
@@ -3256,21 +3266,19 @@ SizedBox(
     const SizedBox(height: 12),
                                       const Divider(),
                                       Text(
-  !isVehicleVerifiedByBuyer
-      ? "🔒 पहले ऊपर वाहन नंबर सत्यापन पर टिक करें"
-      : (!isFarmerPaymentNotified
-          ? "🔒 पहले ऊपर हरा WhatsApp बटन दबाकर किसान को पेमेंट अलर्ट भेजें, तभी OTP बॉक्स खुलेगा"
-          : "✅ सत्यापित! अब ग्राहक से 4-अंकों का OTP कोड लें:"),
+  !isFarmerPaymentNotified
+      ? "🔒 पहले ऊपर हरा WhatsApp बटन दबाकर किसान को पेमेंट अलर्ट भेजें, तभी OTP बॉक्स खुलेगा"
+      : "✅ पेमेंट अलर्ट भेजा गया! अब ग्राहक से 4-अंकों का OTP कोड लें:",
   style: TextStyle(
     fontSize: 11,
     fontWeight: FontWeight.bold,
-    color: (isVehicleVerifiedByBuyer && isFarmerPaymentNotified) ? const Color(0xFF15803D) : Colors.red,
+    color: isFarmerPaymentNotified ? const Color(0xFF15803D) : Colors.red,
   ),
 ),
                                       const SizedBox(height: 6),
                                       TextField(
                                         controller: cCtrl,
-                                        enabled: isVehicleVerifiedByBuyer && isFarmerPaymentNotified,
+                                        enabled: isFarmerPaymentNotified,
                                         keyboardType: TextInputType.number,
                                         maxLength: 4,
                                         textAlign: TextAlign.center,
@@ -3294,7 +3302,7 @@ SizedBox(
                                       backgroundColor: const Color(0xFF15803D),
                                       foregroundColor: Colors.white,
                                     ),
-                                    onPressed: (isVehicleVerifiedByBuyer && isFarmerPaymentNotified)
+                                    onPressed: isFarmerPaymentNotified
                                         ? null
                                         : () {
                                             if (cCtrl.text.trim() == vcode) {
