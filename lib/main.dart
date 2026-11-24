@@ -1003,8 +1003,10 @@ product['qty'] = updatedStock;
     double maxDistanceKm = 0.0;
   bool isCodAllowed = true;
   String selectedPayOption = "upi"; // डिफ़ॉल्ट हमेशा Pay After Delivery via UPI
-    final List<DateTime> availDates = List.generate(7, (idx) => DateTime.now().add(Duration(days: idx + 1)));
-int selectedDateIdx = 1;
+    final DateTime nowLocal = DateTime.now();
+final DateTime todayOnly = DateTime(nowLocal.year, nowLocal.month, nowLocal.day);
+final List<DateTime> availDates = List.generate(7, (idx) => todayOnly.add(Duration(days: idx)));
+int selectedDateIdx = 0;
     
     for (var itm in _cartItems) {
       goodsTotal += (itm["total"] as double);
@@ -1105,7 +1107,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                               return Padding(
                                 padding: const EdgeInsets.only(right: 6),
                                 child: ChoiceChip(
-                                  label: Text("${d.day}/${d.month} (${idx == 0 ? 'कल' : '${idx + 1} दिन'})", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isSel ? Colors.white : Colors.black87)),
+                            label: Text("${d.day}/${d.month} (${idx == 0 ? 'आज' : (idx == 1 ? 'कल' : '$idx दिन बाद')})", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: isSel ? Colors.white : Colors.black87)),
                                   selected: isSel,
                                   selectedColor: const Color(0xFF15803D),
                                   onSelected: (_) => setMState(() => selectedDateIdx = idx),
@@ -1731,7 +1733,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                             value: allowHomeByFarmer,
                             activeColor: const Color(0xFF15803D),
                             onChanged: (val) {
-                              setState(() {
+                              setMState(() {
                                 allowHomeByFarmer = val ?? false;
                               });
                             },
@@ -2056,7 +2058,9 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                     stText = isSelf ? "माल पैक है • फार्म पर जाकर स्वयं पिकअप करें" : "किसान द्वारा पैक • कम्यूटर निकल रहा है 🚚";
                   }
                   if (st == "in_transit") stText = "कम्यूटर रास्ते में है 🚚";
-                  if (st == "delivered") stText = "डिलीवर पूर्ण ✅ (₹$refundAmt वॉलेट में रिफंड हो गया)";
+                  if (st == "delivered") stText = (ord['farmerPaymentVerified'] == true)
+    ? "डिलीवर पूर्ण व किसान पेमेंट सत्यापित ✅ (₹$refundAmt वॉलेट में रिफंड)"
+    : "OTP सत्यापित • किसान पेमेंट पुष्टि की प्रतीक्षा ⏳ (₹$refundAmt रिफंड)";
                   if (st == "returned_bus") stText = "अनुपस्थिति: माल वापस गाँव रवाना • 0% फ़ीस कटी (₹20 वापस) 🚌";
                   if (st == "rejected_by_buyer") stText = "गलत माल रिजेक्ट: आपको 100% रिफंड मिलेगा ⚠️";
 
@@ -2488,7 +2492,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     );
   }
     Widget _buildSeller() {
-    final pendingOrders = AppState.orders.where((o) => o["status"] == "pending_seller" || o["status"] == "packed_ready").toList();
+    final pendingOrders = AppState.orders.where((o) => o["status"] == "pending_seller" || o["status"] == "packed_ready" || (o["status"] == "delivered" && o["farmerPaymentVerified"] != true)).toList();
 
     return ListView(
       padding: const EdgeInsets.all(16),
@@ -2680,7 +2684,28 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                         ),
                       ),
                     ],
-                    ],
+                                          if (ord['status'] == 'delivered' && ord['farmerPaymentVerified'] != true) ...[
+                        const SizedBox(height: 8),
+                        SizedBox(
+                          width: double.infinity,
+                          child: ElevatedButton.icon(
+                            style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                            icon: const Icon(Icons.verified, size: 18),
+                            label: const Text("✅ पेमेंट मिल गया — डिलीवरी पूर्ण कन्फ़र्म करें"),
+                            onPressed: () {
+                              setState(() {
+                                ord['farmerPaymentVerified'] = true;
+                              });
+                              final String cDoneMsg = "✅ *किसान पेमेंट कन्फ़र्मेशन (Anda Express):*\nऑर्डर नं: ${ord['id']} का पूरा पेमेंट किसान को मिल चुका है और तीनों इकाइयों की डिलीवरी सफलतापूर्वक पूरी हो गई है। धन्यवाद!";
+                              launchWhatsApp((ord['commuterPhone'] ?? ord['buyerPhone'] ?? '').toString(), cDoneMsg);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text("✅ पेमेंट सत्यापित! कम्यूटर को कन्फ़र्मेशन भेज दिया गया है।")),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                  ],
                   ),
                 ),
               );
@@ -2912,7 +2937,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                                         );
                                                       }
                                                     : null,
-                                                child: const Text("ऑर्डर बुक करें"),
+                                                child: const Text("पिकअप कन्फ़र्म करें"),
                                               ),
                                             ],
                                           );
@@ -3101,6 +3126,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                         final cCtrl = TextEditingController();
                         final bool hasBuyerTickedVehicle = ord['buyerConfirmedVehicle'] == true;
                         bool isVehicleVerifiedByBuyer = !hasVehBox || (ord['isVehicleVerified'] == true);
+                          bool isFarmerPaymentNotified = ord['farmerPaymentNotified'] == true;
                                                               
                         showDialog(
                           context: context,
@@ -3195,22 +3221,53 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                           ],
                                         ),
                                       ),
-                                      const SizedBox(height: 12),
+                                     const SizedBox(height: 10),
+SizedBox(
+  width: double.infinity,
+  child: ElevatedButton.icon(
+    style: ElevatedButton.styleFrom(
+      backgroundColor: isFarmerPaymentNotified ? const Color(0xFF15803D) : const Color(0xFF25D366),
+      foregroundColor: Colors.white,
+      padding: const EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    ),
+    icon: Icon(isFarmerPaymentNotified ? Icons.check_circle : Icons.notifications_active, size: 18),
+    label: Text(
+      isFarmerPaymentNotified
+          ? "✅ किसान को पेमेंट पुष्टि मैसेज भेजा जा चुका है"
+          : "📲 किसान को WhatsApp पर पेमेंट अलर्ट भेजें (अनिवाय *)",
+      style: const TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold),
+    ),
+    onPressed: () {
+      setDState(() {
+        isFarmerPaymentNotified = true;
+        ord['farmerPaymentNotified'] = true;
+      });
+      final String fPayMsg = "🔔 *ANDA EXPRESS — हाई-वॉल्यूम पेमेंट पुष्टि अलर्ट!*\n"
+          "ग्राहक ने ऑर्डर नं: ${ord['id']} (${ord['product']}) के लिए ₹${amt.toStringAsFixed(0)} का भुगतान कर दिया है।\n"
+          "कृपया तुरंत अपना UPI ऐप चेक कर पेमेंट कन्फ़र्म करें ताकि कम्यूटर OTP डालकर डिलीवरी पूरी कर सके।";
+      launchWhatsApp((ord['farmerPhone'] ?? '').toString(), fPayMsg);
+    },
+  ),
+),
+    const SizedBox(height: 12),
                                       const Divider(),
                                       Text(
-                                        isVehicleVerifiedByBuyer
-                                            ? "✅ वाहन सत्यापित! अब ग्राहक से 4-अंकों का OTP कोड लें:"
-                                            : "🔒 पहले ऊपर वाहन नंबर सत्यापन पर टिक करें, तभी OTP बॉक्स खुलेगा",
-                                        style: TextStyle(
-                                          fontSize: 11,
-                                          fontWeight: FontWeight.bold,
-                                          color: isVehicleVerifiedByBuyer ? const Color(0xFF15803D) : Colors.red,
-                                        ),
-                                      ),
+  !isVehicleVerifiedByBuyer
+      ? "🔒 पहले ऊपर वाहन नंबर सत्यापन पर टिक करें"
+      : (!isFarmerPaymentNotified
+          ? "🔒 पहले ऊपर हरा WhatsApp बटन दबाकर किसान को पेमेंट अलर्ट भेजें, तभी OTP बॉक्स खुलेगा"
+          : "✅ सत्यापित! अब ग्राहक से 4-अंकों का OTP कोड लें:"),
+  style: TextStyle(
+    fontSize: 11,
+    fontWeight: FontWeight.bold,
+    color: (isVehicleVerifiedByBuyer && isFarmerPaymentNotified) ? const Color(0xFF15803D) : Colors.red,
+  ),
+),
                                       const SizedBox(height: 6),
                                       TextField(
                                         controller: cCtrl,
-                                        enabled: isVehicleVerifiedByBuyer,
+                                        enabled: isVehicleVerifiedByBuyer && isFarmerPaymentNotified,
                                         keyboardType: TextInputType.number,
                                         maxLength: 4,
                                         textAlign: TextAlign.center,
@@ -3234,7 +3291,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                                       backgroundColor: const Color(0xFF15803D),
                                       foregroundColor: Colors.white,
                                     ),
-                                    onPressed: !isVehicleVerifiedByBuyer
+                                    onPressed: (isVehicleVerifiedByBuyer && isFarmerPaymentNotified)
                                         ? null
                                         : () {
                                             if (cCtrl.text.trim() == vcode) {
