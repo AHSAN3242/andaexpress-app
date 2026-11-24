@@ -2543,7 +2543,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
           ),
           const SizedBox(height: 8),
           ...pendingOrders.map((ord) {
-            final isPacked = ord["status"] == "packed_ready";
+            final isPacked = ord["status"] != "pending_seller";
             final codAmt = ord["codToFarmer"] ?? ord["goodsTotal"];
 
             return Card(
@@ -3302,7 +3302,7 @@ SizedBox(
                                       backgroundColor: const Color(0xFF15803D),
                                       foregroundColor: Colors.white,
                                     ),
-                                    onPressed: isFarmerPaymentNotified
+                                    onPressed: !isFarmerPaymentNotified
                                         ? null
                                         : () {
                                             if (cCtrl.text.trim() == vcode) {
