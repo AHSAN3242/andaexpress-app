@@ -1387,7 +1387,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
         "isMiniBulk": isMiniBulk,
         "autoArranger": "farmer",
         "status": "pending_seller",
-       "preferredDate": "${availDates[selectedDateIdx].day}/${availDates[selectedDateIdx].month}/${availDates[selectedDateIdx].year}",
+       "preferredDate": "${availDates[selectedDateIdx!].day}/${availDates[selectedDateIdx!].month}/${availDates[selectedDateIdx!].year}",
          "returnBus": null,
       });
       _cartItems.clear();
