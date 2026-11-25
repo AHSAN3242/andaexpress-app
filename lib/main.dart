@@ -2015,7 +2015,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     );
   }
 
-  Widget _buildEcommerceHomeBody({List>? customList, bool hideTopRoleBar = false}) {
+  Widget _buildEcommerceHomeBody({List? customList, bool hideTopRoleBar = false}) {
     final liveAds = globalAllProducts.where((p) => ((p['availableQty'] as int?) ?? 1) > 0).toList();
     final gridItems = customList ?? liveAds;
 
@@ -2082,7 +2082,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                 final isEgg = ad["unitType"] == "Crate" || (ad["item"] as String).contains("अंडे");
                 final price = (ad["price"] as double?) ?? 0.0;
                 final stock = ad["availableQty"] ?? ad["qty"] ?? (isEgg ? 50 : 100);
-                final gallery = (ad["gallery"] as List<String>?) ?? [ad["image"] ?? ""];
+                final List gallery = (ad["gallery"] is List) ? ad["gallery"] : [ad["image"] ?? ""];
                 return GestureDetector(
                   onTap: () => _showProductDetails(ad),
                   child: Container(
@@ -2143,7 +2143,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
             final isEgg = item["unitType"] == "Crate" || (item["item"] as String).contains("अंडे");
             final price = (item["price"] as double?) ?? 0.0;
             final stock = item["availableQty"] ?? item["qty"] ?? (isEgg ? 50 : 100);
-            final gallery = (item["gallery"] as List<String>?) ?? [item["image"] ?? ""];
+            final List gallery = (item["gallery"] is List) ? item["gallery"] : [item["image"] ?? ""];
             return GestureDetector(
               onTap: () => _showProductDetails(item),
               child: Container(
