@@ -376,9 +376,7 @@ class _DashScreenState extends State<DashScreen> {
     {"name": "अन्य", "icon": "✨"},
   ];
 
-  final List<String> _eggSubCategories = [
-    "सभी", "देसी अंडे", "कड़कनाथ अंडे", "टेबल एग्स", "बतख के अंडे", "बटेर अंडे", "ईमू अंडे"
-  ];
+  final List<String> _eggSubCategories = ["सभी", "देसी अंडे", "कड़कनाथ अंडे", "टेबल एग्स", "बतख के अंडे", "बटेर अंडे", "ईमू अंडे", "अदर"];
 
   static Widget getItemIcon(String name, {double size = 24}) {
     final n = name.toLowerCase();
@@ -1935,23 +1933,399 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     );
   }
     @override
+    int _bottomTabIdx = 0;
+
+  void _openMarketplacePage() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (mCtx) {
+          String mpSearch = "";
+          String mpCat = "सभी";
+          return StatefulBuilder(
+            builder: (ctx, setMpState) {
+              final mpItems = globalAllProducts.where((p) {
+                final qty = (p['availableQty'] as int?) ?? 1;
+                if (qty <= 0) return false;
+                final title = (p['item'] ?? '').toString().toLowerCase();
+                final cat = (p['cat'] ?? '').toString();
+                final matchSearch = mpSearch.trim().isEmpty || title.contains(mpSearch.trim().toLowerCase()) || cat.toLowerCase().contains(mpSearch.trim().toLowerCase());
+                final matchCat = mpCat == "सभी" || cat == mpCat || title.contains(mpCat);
+                return matchSearch && matchCat;
+              }).toList();
+
+              return Scaffold(
+                backgroundColor: const Color(0xFFF4F6F5),
+                appBar: AppBar(
+                  backgroundColor: const Color(0xFF15803D),
+                  foregroundColor: Colors.white,
+                  titleSpacing: 0,
+                  title: Container(
+                    height: 38,
+                    margin: const EdgeInsets.only(right: 12),
+                    decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(10)),
+                    child: TextField(
+                      onChanged: (v) => setMpState(() => mpSearch = v),
+                      decoration: const InputDecoration(
+                        hintText: "मार्केटप्लेस में अंडे, चिकन, बर्ड्स खोजें...",
+                        hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+                        prefixIcon: Icon(Icons.search, size: 19, color: Color(0xFF15803D)),
+                        border: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 9),
+                      ),
+                    ),
+                  ),
+                  actions: [
+                    IconButton(
+                      icon: Badge(label: Text("${_cartItems.length}"), isLabelVisible: _cartItems.isNotEmpty, child: const Icon(Icons.shopping_cart)),
+                      onPressed: _showCheckout,
+                    ),
+                  ],
+                ),
+                body: ListView(
+                  padding: const EdgeInsets.all(12),
+                  children: [
+                    SizedBox(
+                      height: 36,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: ["सभी", "अंडे", "देसी चिकन", "बॉयलर चिकन", "कड़कनाथ", "बतख", "बटेर", "ईमू", "अदर"].map((c) {
+                          final sel = mpCat == c;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8),
+                            child: ChoiceChip(
+                              label: Text(c, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: sel ? Colors.white : Colors.black87)),
+                              selected: sel,
+                              selectedColor: const Color(0xFF15803D),
+                              onSelected: (_) => setMpState(() => mpCat = c),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    _buildEcommerceHomeBody(customList: mpItems, hideTopRoleBar: true),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  Widget _buildEcommerceHomeBody({List>? customList, bool hideTopRoleBar = false}) {
+    final liveAds = globalAllProducts.where((p) => ((p['availableQty'] as int?) ?? 1) > 0).toList();
+    final gridItems = customList ?? liveAds;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (!hideTopRoleBar) ...[
+          Container(
+            padding: const EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              gradient: const LinearGradient(colors: [Color(0xFF15803D), Color(0xFF166534)]),
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text("🥚 अंडा एक्सप्रेस — सीधा फार्म से ताज़ा बाज़ार", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13.5)),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: const Color(0xFF15803D), padding: const EdgeInsets.symmetric(vertical: 8)),
+                        icon: const Icon(Icons.storefront, size: 16),
+                        label: const Text("कैटलॉग बाज़ार", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        onPressed: () => setState(() => _bottomTabIdx = 6),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFEF3C7), foregroundColor: const Color(0xFF92400E), padding: const EdgeInsets.symmetric(vertical: 8)),
+                        icon: const Icon(Icons.agriculture, size: 16),
+                        label: const Text("किसान डैशबोर्ड", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        onPressed: () => setState(() => _bottomTabIdx = 7),
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Expanded(
+                      child: ElevatedButton.icon(
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEDE9FE), foregroundColor: const Color(0xFF5B21B6), padding: const EdgeInsets.symmetric(vertical: 8)),
+                        icon: const Icon(Icons.delivery_dining, size: 16),
+                        label: const Text("कम्यूटर डिलीवरी", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+                        onPressed: () => setState(() => _bottomTabIdx = 8),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 12),
+        ],
+        if (liveAds.isNotEmpty) ...[
+          const Text("🔥 लेटेस्ट लाइव विज्ञापन (सीधे फार्म से)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF14532D))),
+          const SizedBox(height: 8),
+          SizedBox(
+            height: 145,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: liveAds.length > 6 ? 6 : liveAds.length,
+              itemBuilder: (ctx, i) {
+                final ad = liveAds[liveAds.length - 1 - i];
+                final isEgg = ad["unitType"] == "Crate" || (ad["item"] as String).contains("अंडे");
+                final price = (ad["price"] as double?) ?? 0.0;
+                final stock = ad["availableQty"] ?? ad["qty"] ?? (isEgg ? 50 : 100);
+                final gallery = (ad["gallery"] as List<String>?) ?? [ad["image"] ?? ""];
+                return GestureDetector(
+                  onTap: () => _showProductDetails(ad),
+                  child: Container(
+                    width: 265,
+                    margin: const EdgeInsets.only(right: 10),
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: const Color(0xFFBBF7D0), width: 1.3),
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
+                    ),
+                    child: Row(
+                      children: [
+                        buildProductThumbnail(ad["item"].toString(), imagePath: gallery.isNotEmpty ? gallery.first : "", gpsStamp: ad["gps"]?.toString(), width: 92, height: 118),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(6)),
+                                child: const Text("LIVE विज्ञापन", style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(ad["item"].toString(), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                              const SizedBox(height: 3),
+                              Text("₹${price.toStringAsFixed(0)} / ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFB45309))),
+                              Text("स्टॉक: $stock ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontSize: 10.5, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 14),
+        ],
+        const Text("🛒 सभी उपलब्ध उत्पाद (टैप कर सीधे खरीदें)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
+        const SizedBox(height: 8),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: gridItems.length,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            mainAxisSpacing: 10,
+            crossAxisSpacing: 10,
+            childAspectRatio: 0.72,
+          ),
+          itemBuilder: (ctx, i) {
+            final item = gridItems[i];
+            final isEgg = item["unitType"] == "Crate" || (item["item"] as String).contains("अंडे");
+            final price = (item["price"] as double?) ?? 0.0;
+            final stock = item["availableQty"] ?? item["qty"] ?? (isEgg ? 50 : 100);
+            final gallery = (item["gallery"] as List<String>?) ?? [item["image"] ?? ""];
+            return GestureDetector(
+              onTap: () => _showProductDetails(item),
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(14),
+                  border: Border.all(color: Colors.grey.shade200),
+                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 4)],
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Center(
+                      child: buildProductThumbnail(item["item"].toString(), imagePath: gallery.isNotEmpty ? gallery.first : "", gpsStamp: item["gps"]?.toString(), width: 135, height: 95),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(item["item"].toString(), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                    const SizedBox(height: 2),
+                    Text("₹${price.toStringAsFixed(0)} / ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFB45309))),
+                    Text("स्टॉक: $stock ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontSize: 10.5, color: Color(0xFF15803D), fontWeight: FontWeight.bold)),
+                    const Spacer(),
+                    SizedBox(
+                      width: double.infinity,
+                      height: 30,
+                      child: ElevatedButton(
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9333EA), foregroundColor: Colors.white, padding: EdgeInsets.zero),
+                        onPressed: () => _addToCartWithQty(item),
+                        child: const Text("खरीदें", style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  Widget _buildWalletTab() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Container(
+          padding: const EdgeInsets.all(18),
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(colors: [Color(0xFF15803D), Color(0xFF166534)]),
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text("💰 ऐप वॉलेट रिफंड बैलेंस", style: TextStyle(color: Colors.white70, fontSize: 13)),
+              const SizedBox(height: 6),
+              Text("₹${AppState.buyerWallet.toStringAsFixed(2)}", style: const TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+              const SizedBox(height: 6),
+              const Text("शेयरिंग ऑटो व समय पर पिकअप से हुई आपकी सीधा बचत", style: TextStyle(color: Colors.white70, fontSize: 11.5)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPolicyTab() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: const [
+        Text("📜 अंडा एक्सप्रेस — आवर पॉलिसी व नियम", style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+        SizedBox(height: 12),
+        Card(child: ListTile(leading: Icon(Icons.verified_user, color: Color(0xFF15803D)), title: Text("100% Cash-Free UPI सुरक्षा"), subtitle: Text("डिलीवरी के समय माल देखने के बाद सीधे किसान के बैंक QR पर UPI भुगतान करें।"))),
+        Card(child: ListTile(leading: Icon(Icons.groups, color: Color(0xFF15803D)), title: Text("शेयरिंग ऑटो भाड़ा बचत नीति"), subtitle: Text("एक ही वाहन में 2 या अधिक ऑर्डर जुड़ने पर 1-तरफ़ा व शेयरिंग बचत स्वतः ग्राहक वॉलेट में रिफंड होती है।"))),
+        Card(child: ListTile(leading: Icon(Icons.location_on, color: Color(0xFF15803D)), title: Text("मुख्य पॉइंट पिकअप व OTP नियम"), subtitle: Text("तय तारीख व पॉइंट पर माल प्राप्त करें। किसान द्वारा पेमेंट पुष्टि के बाद 4-अंकों का OTP अनलॉक होगा।"))),
+      ],
+    );
+  }
+
+  Widget _buildProfileTab() {
+    return ListView(
+      padding: const EdgeInsets.all(16),
+      children: [
+        Card(
+          child: ListTile(
+            leading: const CircleAvatar(backgroundColor: Color(0xFF15803D), child: Icon(Icons.person, color: Colors.white)),
+            title: const Text("अंडा एक्सप्रेस यूज़र", style: TextStyle(fontWeight: FontWeight.bold)),
+            subtitle: Text("मोबाइल: ${widget.phone}"),
+          ),
+        ),
+        const SizedBox(height: 10),
+        ListTile(
+          tileColor: Colors.white,
+          leading: const Icon(Icons.agriculture, color: Color(0xFF15803D)),
+          title: const Text("किसान डैशबोर्ड खोलें"),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          onTap: () => setState(() => _bottomTabIdx = 7),
+        ),
+        const SizedBox(height: 6),
+        ListTile(
+          tileColor: Colors.white,
+          leading: const Icon(Icons.delivery_dining, color: Color(0xFF6B21A8)),
+          title: const Text("कम्यूटर डिलीवरी पैनल खोलें"),
+          trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+          onTap: () => setState(() => _bottomTabIdx = 8),
+        ),
+      ],
+    );
+  }
+
   Widget build(BuildContext context) {
-    String heading = widget.role == "seller" ? "किसान डैशबोर्ड" : (widget.role == "commuter" ? "कम्यूटर डिलीवरी" : "ग्राहक बाज़ार (Anda Express)");
+    if (widget.role == "seller" && _bottomTabIdx == 0) _bottomTabIdx = 7;
+    if (widget.role == "commuter" && _bottomTabIdx == 0) _bottomTabIdx = 8;
+
+    String heading = "अंडा एक्सप्रेस (Anda Express)";
+    if (_bottomTabIdx == 2) heading = "📦 माय ऑर्डर व लाइव ट्रैकिंग";
+    if (_bottomTabIdx == 3) heading = "💰 ऐप वॉलेट";
+    if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
+    if (_bottomTabIdx == 5) heading = "👤 माय प्रोफाइल";
+    if (_bottomTabIdx == 6) heading = "ग्राहक बाज़ार (कैटलॉग)";
+    if (_bottomTabIdx == 7) heading = "किसान डैशबोर्ड";
+    if (_bottomTabIdx == 8) heading = "कम्यूटर डिलीवरी";
+
+    Widget activeBody;
+    if (_bottomTabIdx == 3) {
+      activeBody = _buildWalletTab();
+    } else if (_bottomTabIdx == 4) {
+      activeBody = _buildPolicyTab();
+    } else if (_bottomTabIdx == 5) {
+      activeBody = _buildProfileTab();
+    } else if (_bottomTabIdx == 2 || _bottomTabIdx == 6) {
+      activeBody = _buildBuyer();
+    } else if (_bottomTabIdx == 7) {
+      activeBody = _buildSeller();
+    } else if (_bottomTabIdx == 8) {
+      activeBody = _buildCommuter();
+    } else {
+      activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildEcommerceHomeBody()]);
+    }
+
     return PopScope(
       canPop: true,
       child: Scaffold(
+        backgroundColor: const Color(0xFFF4F6F5),
         appBar: AppBar(
           leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
-          title: Text(heading),
+          title: Text(heading, style: const TextStyle(fontSize: 16)),
           backgroundColor: const Color(0xFF15803D),
           foregroundColor: Colors.white,
           actions: [
-            if (widget.role == "buyer")
-              IconButton(icon: Badge(label: Text("${_cartItems.length}"), isLabelVisible: _cartItems.isNotEmpty, child: const Icon(Icons.shopping_cart)), onPressed: _showCheckout),
+            IconButton(
+              icon: Badge(label: Text("${_cartItems.length}"), isLabelVisible: _cartItems.isNotEmpty, child: const Icon(Icons.shopping_cart)),
+              onPressed: _showCheckout,
+            ),
             const SizedBox(width: 8),
           ],
         ),
-        body: widget.role == "seller" ? _buildSeller() : (widget.role == "commuter" ? _buildCommuter() : _buildBuyer()),
+        body: activeBody,
+        bottomNavigationBar: BottomNavigationBar(
+          type: BottomNavigationBarType.fixed,
+          currentIndex: _bottomTabIdx > 5 ? 0 : _bottomTabIdx,
+          selectedItemColor: const Color(0xFF15803D),
+          unselectedItemColor: Colors.grey.shade700,
+          selectedFontSize: 9.5,
+          unselectedFontSize: 9.5,
+          iconSize: 20,
+          onTap: (idx) {
+            if (idx == 1) {
+              _openMarketplacePage();
+            } else {
+              setState(() => _bottomTabIdx = idx);
+            }
+          },
+          items: const [
+            BottomNavigationBarItem(icon: Icon(Icons.home), label: "होम"),
+            BottomNavigationBarItem(icon: Icon(Icons.store), label: "मार्केटप्लेस"),
+            BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: "माय ऑर्डर"),
+            BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "ऐप वॉलेट"),
+            BottomNavigationBarItem(icon: Icon(Icons.policy), label: "आवर पॉलिसी"),
+            BottomNavigationBarItem(icon: Icon(Icons.person), label: "माय प्रोफाइल"),
+          ],
+        ),
       ),
     );
   }
@@ -1991,8 +2365,12 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
           if (selCat == "अंडे") {
             if (!isEggItem) return false;
             if (selSub != "सभी" && selSub.isNotEmpty) {
-              return pSub.contains(selSub) || selSub.contains(pSub) || itemTitle.contains(selSub);
-            }
+  if (selSub == "अदर") {
+    final known = ["देसी", "कड़कनाथ", "टेबल", "बतख", "बटेर", "ईमू"];
+    return !known.any((k) => pSub.contains(k) || itemTitle.contains(k));
+  }
+  return pSub.contains(selSub) || selSub.contains(pSub) || itemTitle.contains(selSub);
+}
             return true;
           } else {
             if (isEggItem) return false;
