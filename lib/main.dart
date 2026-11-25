@@ -544,7 +544,10 @@ class _DashScreenState extends State<DashScreen> {
     {"cat": "अंडे", "sub": "ईमू अंडे", "item": "ईमू जंबो औषधीय अंडे", "unitType": "Piece", "piecesPerCrate": 1, "price": 450.0, "weight": "550-600g/अंडा (±50g मार्जिन)", "prodDate": "29-Oct-2026", "bestBefore": "उत्पादन से 45 दिन", "farm": "महावीर ईमू फार्म", "dist": "12.0 किमी", "farmAddress": "महावीर नगर, वाशिम रोड", "grade": "Dark Green Shell", "farmerPhone": "9876543215", "gallery": [
       "https://images.unsplash.com/photo-1563245372-f21724e3856d?auto=format&fit=crop&w=800&q=80"
     ], "gps": "20.6800° N, 77.0300° E"},
-    {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.8kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "D", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": [
+    {"cat": "अंडे", "sub": "अदर", "item": "टर्की / गिनी फाउल अंडे (ताज़ा फार्म)", "unitType": "Crate", "piecesPerCrate": 20, "price": 360.0, "gallery": [
+  "https://images.unsplash.com/photo-1582722872445-44dc5f7e3c8f?auto=format&fit=crop&w=800&q=80",
+], "gps": "20.7120° N, 77.0190° E"},
+      {"cat": "देसी चिकन", "sub": "देसी", "item": "देसी रंगीन चिकन (नर ♂️)", "unitType": "Bird", "piecesPerCrate": 1, "price": 310.0, "weight": "1.8kg (±200g प्राकृतिक मार्जिन)", "tagPrefix": "D", "farm": "बालाजी फार्म", "farmAddress": "बालाजी मंदिर के सामने, ग्रामीण मार्ग", "dist": "6.0 किमी", "grade": "Natural Organic", "farmerPhone": "9876543216", "gallery": [
       "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1612170153139-6f881ff067e0?auto=format&fit=crop&w=800&q=80",
       "https://images.unsplash.com/photo-1548550023-2bdb3c5beed7?auto=format&fit=crop&w=800&q=80"
@@ -1007,7 +1010,7 @@ product['qty'] = updatedStock;
     final DateTime nowLocal = DateTime.now();
 final DateTime todayOnly = DateTime(nowLocal.year, nowLocal.month, nowLocal.day);
 final List<DateTime> availDates = List.generate(7, (idx) => todayOnly.add(Duration(days: idx)));
-int selectedDateIdx = 0;
+int? selectedDateIdx;
     
     for (var itm in _cartItems) {
       goodsTotal += (itm["total"] as double);
@@ -1318,6 +1321,15 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: const EdgeInsets.symmetric(vertical: 12)),
                     onPressed: () {
+                                           if (selectedDateIdx == null) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text("⚠️ कृपया पहले पसंदीदा डिलीवरी तारीख चुनें!"),
+                            backgroundColor: Colors.red,
+                          ),
+                        );
+                        return;
+                                           }
                       if (_selectedDeliveryMode != "self" && _buyerAddressCtl.text.trim().isEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                           content: Text("⚠️ डिलीवरी के लिए बस स्टॉप लैंडमार्क या पता दर्ज करना अनिवार्य है!"),
@@ -1445,7 +1457,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
       builder: (_) => StatefulBuilder(
         builder: (ctx, setBState) {
           final isEgg = selectedType == "अंडे";
-          final isOther = selectedItem.contains("अन्य");
+          final isOther = selectedItem.contains("अदर") || selectedItem.contains("अन्य");
           final unitLabel = isEgg ? "Crate (ट्रे)" : "Birds (नग)";
           final rateLabel = isEgg ? "रेट प्रति Crate (₹) *" : "रेट प्रति Bird (₹) *";
 
@@ -1821,8 +1833,8 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
       };
 
       final newProductItem = {
-        "cat": selectedType == "अंडे" ? "अंडे" : (isOther ? "Other" : (selectedItem.contains("बतख") || selectedItem.contains("बत्तख") || selectedItem.contains("Duck") ? "बतख" : (selectedItem.contains("कड़कनाथ") || selectedItem.contains("Kadaknath") ? "कड़कनाथ" : (selectedItem.contains("बॉयलर") || selectedItem.contains("Broiler") ? "बॉयलर चिकन" : (selectedItem.contains("देसी") || selectedItem.contains("असील") || selectedItem.contains("Aseel") ? "देसी चिकन" : (selectedItem.contains("बटेर") || selectedItem.contains("Quail") ? "बटेर" : (selectedItem.contains("ईमू") || selectedItem.contains("Emu") ? "ईमू" : "Other"))))))),
-        "sub": isEgg ? "देसी अंडे" : (selectedItem.contains("बत्तख") ? "बत्तख" : selectedItem.split(" ").first),
+"cat": selectedType == "अंडे" ? "अंडे" : (isOther ? "अदर" : (selectedItem.contains("बतख") || selectedItem.contains("Duck") ? "बतख" : (selectedItem.contains("कड़कनाथ") ? "कड़कनाथ" : (selectedItem.contains("ब्रॉयलर") ? "ब्रॉयलर चिकन" : "देसी चिकन")))),
+"sub": isOther ? "अदर" : (isEgg ? (selectedItem.contains("कड़कनाथ") ? "कड़कनाथ अंडे" : (selectedItem.contains("टेबल") ? "टेबल एग्स" : (selectedItem.contains("बतख") ? "बतख के अंडे" : (selectedItem.contains("बटेर") ? "बटेर अंडे" : (selectedItem.contains("ईमू") ? "ईमू अंडे" : "देसी अंडे"))))) : (selectedItem.contains("बतख") ? "बतख" : selectedItem.split(" ").first)),
         "item": finalTitle,
         "unitType": isEgg ? "Crate" : "Bird",
         "piecesPerCrate": eggCount,
@@ -2170,7 +2182,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                       width: double.infinity,
                       height: 30,
                       child: ElevatedButton(
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9333EA), foregroundColor: Colors.white, padding: EdgeInsets.zero),
+                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF9F2089), foregroundColor: Colors.white, padding: EdgeInsets.zero),
                         onPressed: () => _addToCartWithQty(item),
                         child: const Text("खरीदें", style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold)),
                       ),
@@ -2259,22 +2271,22 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     if (widget.role == "commuter" && _bottomTabIdx == 0) _bottomTabIdx = 8;
 
     String heading = "अंडा एक्सप्रेस (Anda Express)";
-    if (_bottomTabIdx == 2) heading = "📦 माय ऑर्डर व लाइव ट्रैकिंग";
-    if (_bottomTabIdx == 3) heading = "💰 ऐप वॉलेट";
-    if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
-    if (_bottomTabIdx == 5) heading = "👤 माय प्रोफाइल";
+    if (_bottomTabIdx == 1) heading = "👤 माय प्रोफाइल";
+if (_bottomTabIdx == 2) heading = "📦 माय ऑर्डर व लाइव ट्रैकिंग";
+if (_bottomTabIdx == 3) heading = "💰 ऐप वॉलेट";
+if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
     if (_bottomTabIdx == 6) heading = "ग्राहक बाज़ार (कैटलॉग)";
     if (_bottomTabIdx == 7) heading = "किसान डैशबोर्ड";
     if (_bottomTabIdx == 8) heading = "कम्यूटर डिलीवरी";
 
     Widget activeBody;
-    if (_bottomTabIdx == 3) {
-      activeBody = _buildWalletTab();
-    } else if (_bottomTabIdx == 4) {
-      activeBody = _buildPolicyTab();
-    } else if (_bottomTabIdx == 5) {
-      activeBody = _buildProfileTab();
-    } else if (_bottomTabIdx == 2 || _bottomTabIdx == 6) {
+    if (_bottomTabIdx == 1) {
+  activeBody = _buildProfileTab();
+} else if (_bottomTabIdx == 3) {
+  activeBody = _buildWalletTab();
+} else if (_bottomTabIdx == 4) {
+  activeBody = _buildPolicyTab();
+} else if (_bottomTabIdx == 2 || _bottomTabIdx == 6) {
       activeBody = _buildBuyer();
     } else if (_bottomTabIdx == 7) {
       activeBody = _buildSeller();
@@ -2311,20 +2323,20 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
           unselectedFontSize: 9.5,
           iconSize: 20,
           onTap: (idx) {
-            if (idx == 1) {
-              _openMarketplacePage();
-            } else {
-              setState(() => _bottomTabIdx = idx);
-            }
-          },
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: "होम"),
-            BottomNavigationBarItem(icon: Icon(Icons.store), label: "मार्केटप्लेस"),
-            BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: "माय ऑर्डर"),
-            BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "ऐप वॉलेट"),
-            BottomNavigationBarItem(icon: Icon(Icons.policy), label: "आवर पॉलिसी"),
-            BottomNavigationBarItem(icon: Icon(Icons.person), label: "माय प्रोफाइल"),
-          ],
+  if (idx == 5) {
+    _openMarketplacePage();
+  } else {
+    setState(() => _bottomTabIdx = idx);
+  }
+},
+items: const [
+  BottomNavigationBarItem(icon: Icon(Icons.home), label: "होम"),
+  BottomNavigationBarItem(icon: Icon(Icons.person), label: "माय प्रोफाइल"),
+  BottomNavigationBarItem(icon: Icon(Icons.receipt_long), label: "माय ऑर्डर"),
+  BottomNavigationBarItem(icon: Icon(Icons.account_balance_wallet), label: "ऐप वॉलेट"),
+  BottomNavigationBarItem(icon: Icon(Icons.policy), label: "आवर पॉलिसी"),
+  BottomNavigationBarItem(icon: Icon(Icons.store), label: "मार्केटप्लेस"),
+],
         ),
       ),
     );
