@@ -49,6 +49,7 @@ class AppState {
   static double buyerWallet = 0.0;
   static double commuterWallet = 0.0;
   static double escrowHold = 0.0;
+static String lang = "hi";
 }
 
 void main() {
@@ -2085,57 +2086,77 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
           const Text("🔥 लेटेस्ट लाइव विज्ञापन (सीधे फार्म से)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF14532D))),
           const SizedBox(height: 8),
           SizedBox(
-            height: 145,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: liveAds.length > 6 ? 6 : liveAds.length,
-              itemBuilder: (ctx, i) {
-                final ad = liveAds[liveAds.length - 1 - i];
-                final isEgg = ad["unitType"] == "Crate" || (ad["item"] as String).contains("अंडे");
-                final price = (ad["price"] as double?) ?? 0.0;
-                final stock = ad["availableQty"] ?? ad["qty"] ?? (isEgg ? 50 : 100);
-                final List gallery = (ad["gallery"] is List) ? ad["gallery"] : [ad["image"] ?? ""];
-                return GestureDetector(
-                  onTap: () => _showProductDetails(ad),
-                  child: Container(
-                    width: 265,
-                    margin: const EdgeInsets.only(right: 10),
-                    padding: const EdgeInsets.all(10),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(color: const Color(0xFFBBF7D0), width: 1.3),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
-                    ),
-                    child: Row(
-                      children: [
-                        buildProductThumbnail(ad["item"].toString(), imagePath: gallery.isNotEmpty ? gallery.first : "", gpsStamp: ad["gps"]?.toString(), width: 92, height: 118),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                                decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(6)),
-                                child: const Text("LIVE विज्ञापन", style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-                              ),
-                              const SizedBox(height: 4),
-                              Text(ad["item"].toString(), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
-                              const SizedBox(height: 3),
-                              Text("₹${price.toStringAsFixed(0)} / ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFB45309))),
-                              Text("स्टॉक: $stock ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontSize: 10.5, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
-                            ],
-                          ),
-                        ),
-                      ],
+  height: 195,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    itemCount: liveAds.length > 6 ? 6 : liveAds.length,
+    itemBuilder: (ctx, i) {
+      final ad = liveAds[liveAds.length - 1 - i];
+      final isEgg = ad["unitType"] == "Crate" || (ad["item"] as String).contains("अंडे");
+      final price = (ad["price"] as double?) ?? 0.0;
+      final stock = ad['availableQty'] ?? ad['qty'] ?? (isEgg ? 50 : 100);
+      final List gallery = (ad["gallery"] is List) ? ad["gallery"] : [ad["image"] ?? ""];
+      return GestureDetector(
+        onTap: () => _showProductDetails(ad),
+        child: Container(
+          width: 170,
+          margin: const EdgeInsets.only(right: 10),
+          padding: const EdgeInsets.all(7),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: const Color(0xFFFFB700), width: 1.3),
+            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 112,
+                      child: FittedBox(
+                        fit: BoxFit.cover,
+                        child: buildProductThumbnail(ad["item"].toString(), imagePath: gallery.isNotEmpty ? gallery.first : ""),
+                      ),
                     ),
                   ),
-                );
-              },
-            ),
+                  Positioned(
+                    top: 5,
+                    left: 5,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                      decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(5)),
+                      child: const Text("LIVE विज्ञापन", style: TextStyle(fontSize: 8.5, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 5),
+              Text(
+                ad["item"].toString(),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+              ),
+              const SizedBox(height: 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("₹${price.toStringAsFixed(0)}/${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(color: Color(0xFF15803D), fontWeight: FontWeight.bold, fontSize: 11)),
+                  Text("स्टॉक: $stock", style: TextStyle(fontSize: 10, color: Colors.grey.shade700, fontWeight: FontWeight.w600)),
+                ],
+              ),
+            ],
           ),
+        ),
+      );
+    },
+  ),
+),
           const SizedBox(height: 14),
         ],
         const Text("🛒 सभी उपलब्ध उत्पाद (टैप कर सीधे खरीदें)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
@@ -2286,12 +2307,37 @@ if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
   activeBody = _buildWalletTab();
 } else if (_bottomTabIdx == 4) {
   activeBody = _buildPolicyTab();
-} else if (_bottomTabIdx == 2 || _bottomTabIdx == 6) {
-      activeBody = _buildBuyer();
-    } else if (_bottomTabIdx == 7) {
-      activeBody = _buildSeller();
-    } else if (_bottomTabIdx == 8) {
-      activeBody = _buildCommuter();
+} else if (_bottomTabIdx == 2) {
+  if (widget.role == "seller") {
+    activeBody = _buildSeller();
+  } else if (widget.role == "commuter") {
+    activeBody = _buildCommuter();
+  } else {
+    final myOrders = AppState.orders.where((o) => o["buyerPhone"] == widget.phone).toList();
+    activeBody = myOrders.isEmpty
+        ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
+        : ListView(
+            padding: const EdgeInsets.all(14),
+            children: myOrders.map((ord) {
+              final st = ord["status"].toString();
+              return Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                child: ListTile(
+                  leading: const Icon(Icons.receipt_long, color: Color(0xFF15803D)),
+                  title: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold)),
+                  subtitle: Text("ऑर्डर #${ord['id']} • स्थिति: $st\nपता: ${ord['dropAddress'] ?? ''}"),
+                  trailing: Text("₹${((ord['goodsTotal'] ?? 0) as num).toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
+                ),
+              );
+            }).toList(),
+          );
+  }
+} else if (_bottomTabIdx == 6) {
+  activeBody = _buildBuyer();
+} else if (_bottomTabIdx == 7) {
+  activeBody = _buildSeller();
+} else if (_bottomTabIdx == 8) {
+  activeBody = _buildCommuter();
     } else {
       activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildEcommerceHomeBody()]);
     }
@@ -2306,12 +2352,40 @@ if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
           backgroundColor: const Color(0xFF15803D),
           foregroundColor: Colors.white,
           actions: [
-            IconButton(
-              icon: Badge(label: Text("${_cartItems.length}"), isLabelVisible: _cartItems.isNotEmpty, child: const Icon(Icons.shopping_cart)),
-              onPressed: _showCheckout,
+  for (final lg in [
+    {"code": "en", "label": "EN"},
+    {"code": "hi", "label": "हिं"},
+    {"code": "mr", "label": "मर"},
+  ])
+    Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 12),
+      child: GestureDetector(
+        onTap: () => setState(() => AppState.lang = lg["code"]!),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+          decoration: BoxDecoration(
+            color: AppState.lang == lg["code"] ? Colors.white : Colors.white24,
+            borderRadius: BorderRadius.circular(6),
+          ),
+          child: Center(
+            child: Text(
+              lg["label"]!,
+              style: TextStyle(
+                fontSize: 11,
+                fontWeight: FontWeight.bold,
+                color: AppState.lang == lg["code"] ? const Color(0xFF15803D) : Colors.white,
+              ),
             ),
-            const SizedBox(width: 8),
-          ],
+          ),
+        ),
+      ),
+    ),
+  IconButton(
+    icon: Badge(label: Text("${_cartItems.length}"), isLabelVisible: _cartItems.isNotEmpty, child: const Icon(Icons.shopping_cart)),
+    onPressed: _showCheckout,
+  ),
+  const SizedBox(width: 4),
+],
         ),
         body: activeBody,
         bottomNavigationBar: BottomNavigationBar(
@@ -3529,7 +3603,7 @@ final refundAmt = ord["refundAmt"] ?? ord["onewayFare"] ?? 0.0;
                         final cCtrl = TextEditingController();
                         final bool hasBuyerTickedVehicle = ord['buyerConfirmedVehicle'] == true;
                         bool isVehicleVerifiedByBuyer = !hasVehBox || (ord['isVehicleVerified'] == true);
-                          bool isFarmerPaymentNotified = ord['farmerPaymentNotified'] == true;
+                          bool isFarmerPaymentNotified = (ord['farmerPaymentNotified'] == true) || (ord['farmerPaymentVerified'] == true);
                                                               
                         showDialog(
                           context: context,
