@@ -3149,7 +3149,7 @@ items: const [
                       ),
                     ],
                                           if ((ord['status'] == 'in_transit' || ord['status'] == 'delivered') && ord['farmerPaymentVerified'] != true) ...[
-                        const if ((ord['status'] == 'in_transit' || ord['status'] == 'delivered') && ord['farmerPaymentVerified'] != true) ...[
+                      if ((ord['status'] == 'in_transit' || ord['status'] == 'delivered') && ord['farmerPaymentVerified'] != true) ...[
   const SizedBox(height: 8),
   Builder(
     builder: (_) {
