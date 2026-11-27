@@ -2086,7 +2086,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
           const Text("🔥 लेटेस्ट लाइव विज्ञापन (सीधे फार्म से)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF14532D))),
           const SizedBox(height: 8),
           SizedBox(
-  height: 150,
+  height: 148,
   child: ListView.builder(
     scrollDirection: Axis.horizontal,
     itemCount: liveAds.length > 6 ? 6 : liveAds.length,
@@ -2094,30 +2094,28 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
       final ad = liveAds[liveAds.length - 1 - i];
       final isEgg = ad["unitType"] == "Crate" || (ad["item"] as String).contains("अंडे");
       final price = (ad["price"] as double?) ?? 0.0;
-      final stock = ad['availableQty'] ?? ad['qty'] ?? (isEgg ? 50 : 100);
+      final stock = ad["availableQty"] ?? ad["qty"] ?? (isEgg ? 50 : 100);
       final List gallery = (ad["gallery"] is List) ? ad["gallery"] : [ad["image"] ?? ""];
       return GestureDetector(
         onTap: () => _showProductDetails(ad),
         child: Container(
-          width: 280,
+          width: 278,
           margin: const EdgeInsets.only(right: 10),
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(14),
-            border: Border.all(color: const Color(0xFFFFB700), width: 1.3),
+            border: Border.all(color: const Color(0xFFBBF7D0), width: 1.3),
             boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 5)],
           ),
           child: Row(
             children: [
-              SizedBox(
-                width: 135,
-                height: 132,
-                child: buildProductThumbnail(
-                  ad["item"].toString(),
-                  imagePath: gallery.isNotEmpty ? gallery.first : "",
-                  gpsStamp: ad["gps"]?.toString(),
-                ),
+              buildProductThumbnail(
+                ad["item"].toString(),
+                imagePath: gallery.isNotEmpty ? gallery.first : "",
+                gpsStamp: ad["gps"]?.toString(),
+                width: 122,
+                height: 128,
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -2127,19 +2125,14 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                      decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(5)),
+                      decoration: BoxDecoration(color: const Color(0xFFDCFCE7), borderRadius: BorderRadius.circular(6)),
                       child: const Text("LIVE विज्ञापन", style: TextStyle(fontSize: 9, fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
                     ),
-                    const SizedBox(height: 5),
-                    Text(
-                      ad["item"].toString(),
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12.5),
-                    ),
                     const SizedBox(height: 4),
-                    Text("₹${price.toStringAsFixed(0)} / ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(color: Color(0xFF15803D), fontWeight: FontWeight.bold, fontSize: 12)),
-                    Text("स्टॉक: $stock ${isEgg ? 'Crate' : 'Bird'}", style: TextStyle(fontSize: 10.5, color: Colors.grey.shade700)),
+                    Text(ad["item"].toString(), maxLines: 2, overflow: TextOverflow.ellipsis, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+                    const SizedBox(height: 3),
+                    Text("₹${price.toStringAsFixed(0)} / ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: Color(0xFFB45309))),
+                    Text("स्टॉक: $stock ${isEgg ? 'Crate' : 'Bird'}", style: const TextStyle(fontSize: 10.5, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
                   ],
                 ),
               ),
@@ -2149,7 +2142,8 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
       );
     },
   ),
-),        
+),
+                      
           const SizedBox(height: 14),
         ],
         const Text("🛒 सभी उपलब्ध उत्पाद (टैप कर सीधे खरीदें)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Colors.black87)),
