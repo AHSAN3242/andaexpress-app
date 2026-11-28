@@ -2029,59 +2029,169 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
   }
 
   Widget _buildEcommerceHomeBody({List? customList, bool hideTopRoleBar = false}) {
-    final liveAds = globalAllProducts.where((p) => ((p['availableQty'] as int?) ?? 1) > 0).toList();
-    final gridItems = customList ?? liveAds;
+  final liveAds = globalAllProducts.where((p) => ((p['availableQty'] as int?) ?? 1) > 0).toList();
+  final baseItems = customList ?? liveAds;
+  final gridItems = baseItems.where((p) {
+    final title = (p['item'] ?? '').toString().toLowerCase();
+    final cat = (p['cat'] ?? '').toString();
+    final matchSearch = _homeSearchQuery.trim().isEmpty || title.contains(_homeSearchQuery.trim().toLowerCase()) || cat.toLowerCase().contains(_homeSearchQuery.trim().toLowerCase());
+    final matchCat = _homeCatFilter == "सभी" || cat == _homeCatFilter || title.contains(_homeCatFilter);
+    return matchSearch && matchCat;
+  }).toList();
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (!hideTopRoleBar) ...[
-          Container(
-            padding: const EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(colors: [Color(0xFF15803D), Color(0xFF166534)]),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Text("🥚 अंडा एक्सप्रेस — सीधा फार्म से ताज़ा बाज़ार", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13.5)),
-                const SizedBox(height: 8),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(backgroundColor: Colors.white, foregroundColor: const Color(0xFF15803D), padding: const EdgeInsets.symmetric(vertical: 8)),
-                        icon: const Icon(Icons.storefront, size: 16),
-                        label: const Text("कैटलॉग बाज़ार", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        onPressed: () => setState(() => _bottomTabIdx = 6),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFFEF3C7), foregroundColor: const Color(0xFF92400E), padding: const EdgeInsets.symmetric(vertical: 8)),
-                        icon: const Icon(Icons.agriculture, size: 16),
-                        label: const Text("किसान डैशबोर्ड", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        onPressed: () => setState(() => _bottomTabIdx = 7),
-                      ),
-                    ),
-                    const SizedBox(width: 6),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFFEDE9FE), foregroundColor: const Color(0xFF5B21B6), padding: const EdgeInsets.symmetric(vertical: 8)),
-                        icon: const Icon(Icons.delivery_dining, size: 16),
-                        label: const Text("कम्यूटर डिलीवरी", style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                        onPressed: () => setState(() => _bottomTabIdx = 8),
-                      ),
-                    ),
-                  ],
+  final cats = [
+    {"label": "सभी", "icon": Icons.grid_view_rounded},
+    {"label": "अंडे", "icon": Icons.egg_alt},
+    {"label": "देसी चिकन", "icon": Icons.pets},
+    {"label": "बॉयलर चिकन", "icon": Icons.kebab_dining},
+    {"label": "कड़कनाथ", "icon": Icons.cruelty_free},
+    {"label": "बतख", "icon": Icons.water},
+    {"label": "बटेर", "icon": Icons.flutter_dash},
+    {"label": "ईमू", "icon": Icons.park},
+  ];
+
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      if (!hideTopRoleBar) ...[
+        // Flipkart स्टाइल 3 टॉप प्रोफ़ाइल/रोल बटन
+        Row(
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  _selectedRoleMode = "buyer";
+                  _bottomTabIdx = 0;
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: _selectedRoleMode == "buyer" ? const Color(0xFFFACC15) : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.shopping_bag, size: 15, color: Color(0xFF1E3A8A)),
+                      SizedBox(width: 4),
+                      Flexible(child: Text("ग्राहक", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.black87))),
+                    ],
+                  ),
                 ),
-              ],
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  _selectedRoleMode = "seller";
+                  _bottomTabIdx = 7;
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: _selectedRoleMode == "seller" ? const Color(0xFFFEF3C7) : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.agriculture, size: 15, color: Color(0xFFB45309)),
+                      SizedBox(width: 4),
+                      Flexible(child: Text("किसान", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.black87))),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: GestureDetector(
+                onTap: () => setState(() {
+                  _selectedRoleMode = "commuter";
+                  _bottomTabIdx = 8;
+                }),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                  decoration: BoxDecoration(
+                    color: _selectedRoleMode == "commuter" ? const Color(0xFFEDE9FE) : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.grey.shade300),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.delivery_dining, size: 15, color: Color(0xFF6B21A8)),
+                      SizedBox(width: 4),
+                      Flexible(child: Text("कम्यूटर", overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 11.5, fontWeight: FontWeight.bold, color: Colors.black87))),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 8),
+        // Flipkart स्टाइल सर्च बार
+        Container(
+          height: 40,
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFF15803D), width: 1.2),
+          ),
+          child: TextField(
+            onChanged: (v) => setState(() => _homeSearchQuery = v),
+            decoration: const InputDecoration(
+              hintText: "अंडे, देसी चिकन, कड़कनाथ, बर्ड्स खोजें...",
+              hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+              prefixIcon: Icon(Icons.search, size: 19, color: Color(0xFF15803D)),
+              border: InputBorder.none,
+              contentPadding: EdgeInsets.symmetric(vertical: 10),
             ),
           ),
-          const SizedBox(height: 12),
-        ],
+        ),
+        const SizedBox(height: 8),
+        // Flipkart स्टाइल छोटे कैटेगरी आइकन + '...' वाला टेक्स्ट
+        SizedBox(
+          height: 54,
+          child: ListView.builder(
+            scrollDirection: Axis.horizontal,
+            itemCount: cats.length,
+            itemBuilder: (ctx, i) {
+              final c = cats[i];
+              final label = c["label"] as String;
+              final sel = _homeCatFilter == label;
+              return GestureDetector(
+                onTap: () => setState(() => _homeCatFilter = label),
+                child: Container(
+                  width: 60,
+                  margin: const EdgeInsets.only(right: 6),
+                  decoration: BoxDecoration(
+                    border: Border(bottom: BorderSide(color: sel ? const Color(0xFF15803D) : Colors.transparent, width: 2.5)),
+                  ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(c["icon"] as IconData, size: 22, color: sel ? const Color(0xFF15803D) : Colors.black87),
+                      const SizedBox(height: 3),
+                      Text(
+                        label,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(fontSize: 10, fontWeight: sel ? FontWeight.bold : FontWeight.w500, color: sel ? const Color(0xFF15803D) : Colors.black87),
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+        const SizedBox(height: 8),
+      ],
         if (liveAds.isNotEmpty) ...[
           const Text("🔥 लेटेस्ट लाइव विज्ञापन (सीधे फार्म से)", style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold, color: Color(0xFF14532D))),
           const SizedBox(height: 8),
@@ -2274,93 +2384,132 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     );
   }
 
-  Widget build(BuildContext context) {
-    if (widget.role == "seller" && _bottomTabIdx == 0) _bottomTabIdx = 7;
-    if (widget.role == "commuter" && _bottomTabIdx == 0) _bottomTabIdx = 8;
+  String _selectedRoleMode = "buyer";
+String _homeSearchQuery = "";
+String _homeCatFilter = "सभी";
 
-    String heading = "अंडा एक्सप्रेस (Anda Express)";
-    if (_bottomTabIdx == 1) heading = "👤 माय प्रोफाइल";
-if (_bottomTabIdx == 2) heading = "📦 माय ऑर्डर व लाइव ट्रैकिंग";
-if (_bottomTabIdx == 3) heading = "💰 ऐप वॉलेट";
-if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
-    if (_bottomTabIdx == 6) heading = "ग्राहक बाज़ार (कैटलॉग)";
-    if (_bottomTabIdx == 7) heading = "किसान डैशबोर्ड";
-    if (_bottomTabIdx == 8) heading = "कम्यूटर डिलीवरी";
+@override
+Widget build(BuildContext context) {
+  if (widget.role == "seller" && _bottomTabIdx == 0 && _selectedRoleMode == "buyer") {
+    _selectedRoleMode = "seller";
+    _bottomTabIdx = 7;
+  }
+  if (widget.role == "commuter" && _bottomTabIdx == 0 && _selectedRoleMode == "buyer") {
+    _selectedRoleMode = "commuter";
+    _bottomTabIdx = 8;
+  }
 
-    Widget activeBody;
-    if (_bottomTabIdx == 1) {
-  activeBody = _buildProfileTab();
-} else if (_bottomTabIdx == 3) {
-  activeBody = _buildWalletTab();
-} else if (_bottomTabIdx == 4) {
-  activeBody = _buildPolicyTab();
-} else if (_bottomTabIdx == 2) {
-  if (widget.role == "seller") {
-    activeBody = _buildSeller();
-  } else if (widget.role == "commuter") {
+  String heading = "अंडा एक्सप्रेस (Anda Express)";
+  if (_bottomTabIdx == 1) heading = "👤 माय प्रोफाइल";
+  if (_bottomTabIdx == 2) heading = _selectedRoleMode == "seller" ? "📦 किसान के ऑर्डर" : (_selectedRoleMode == "commuter" ? "🛵 कम्यूटर ट्रिप्स" : "📦 माय ऑर्डर");
+  if (_bottomTabIdx == 3) heading = "💰 ऐप वॉलेट";
+  if (_bottomTabIdx == 4) heading = "📜 आवर पॉलिसी";
+  if (_bottomTabIdx == 7) heading = "किसान डैशबोर्ड";
+  if (_bottomTabIdx == 8) heading = "कम्यूटर डिलीवरी";
+
+  Widget activeBody;
+  if (_bottomTabIdx == 1) {
+    activeBody = _buildProfileTab();
+  } else if (_bottomTabIdx == 3) {
+    activeBody = _buildWalletTab();
+  } else if (_bottomTabIdx == 4) {
+    activeBody = _buildPolicyTab();
+  } else if (_bottomTabIdx == 2) {
+    if (_selectedRoleMode == "seller") {
+      activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildSeller()]);
+    } else if (_selectedRoleMode == "commuter") {
+      activeBody = _buildCommuter();
+    } else {
+      final myOrders = AppState.orders.toList();
+      activeBody = myOrders.isEmpty
+          ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
+          : ListView(
+              padding: const EdgeInsets.all(14),
+              children: myOrders.reversed.map((ord) {
+                final st = ord["status"].toString();
+                final isSelf = (ord["node"] == "pickup" || ord["dispatchMode"] == "farm_pickup" || (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप") || ord["node"] == "self" || ord["dispatchMode"] == "farmer_self");
+                final otpUnlocked = st == "delivered" || ord["farmerPaymentVerified"] == true;
+                return Card(
+                  margin: const EdgeInsets.only(bottom: 10),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(child: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14))),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              decoration: BoxDecoration(
+                                color: otpUnlocked ? const Color(0xFFDCFCE7) : const Color(0xFFFEF3C7),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                otpUnlocked ? "OTP: ${ord['deliveryCode'] ?? ord['otp']}" : "🔒 पेमेंट पुष्टि बाकी",
+                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.5, color: otpUnlocked ? const Color(0xFF15803D) : const Color(0xFFB45309)),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Text("ऑर्डर #${ord['id']} • स्थिति: ${st == 'delivered' ? '✅ डिलीवर पूर्ण' : (st == 'in_transit' ? '🚚 रास्ते में' : '📦 पैक/तैयार')}", style: const TextStyle(fontSize: 12, color: Colors.black87)),
+                        Text("पता: ${ord['dropAddress'] ?? ''} • देय राशि: ₹${((ord['codToFarmer'] ?? ord['goodsTotal'] ?? 0) as num).toStringAsFixed(0)}", style: TextStyle(fontSize: 11.5, color: Colors.grey.shade700)),
+                        if (isSelf && st != 'delivered')
+                          const Padding(
+                            padding: EdgeInsets.only(top: 4),
+                            child: Text("ℹ️ डायरेक्ट ऑर्डर: किसान को पेमेंट करने पर OTP अनलॉक होगा।", style: TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
+                          ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            );
+    }
+  } else if (_bottomTabIdx == 7) {
+    activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildSeller()]);
+  } else if (_bottomTabIdx == 8) {
     activeBody = _buildCommuter();
   } else {
-    final myOrders = AppState.orders.where((o) => o["buyerPhone"] == widget.phone).toList();
-    activeBody = myOrders.isEmpty
-        ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
-        : ListView(
-            padding: const EdgeInsets.all(14),
-            children: myOrders.map((ord) {
-              final st = ord["status"].toString();
-              return Card(
-                margin: const EdgeInsets.only(bottom: 10),
-                child: ListTile(
-                  leading: const Icon(Icons.receipt_long, color: Color(0xFF15803D)),
-                  title: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold)),
-                  subtitle: Text("ऑर्डर #${ord['id']} • स्थिति: $st\nपता: ${ord['dropAddress'] ?? ''}"),
-                  trailing: Text("₹${((ord['goodsTotal'] ?? 0) as num).toStringAsFixed(0)}", style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF15803D))),
-                ),
-              );
-            }).toList(),
-          );
+    activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildEcommerceHomeBody()]);
   }
-} else if (_bottomTabIdx == 6) {
-  activeBody = _buildBuyer();
-} else if (_bottomTabIdx == 7) {
-  activeBody = _buildSeller();
-} else if (_bottomTabIdx == 8) {
-  activeBody = _buildCommuter();
-    } else {
-      activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildEcommerceHomeBody()]);
-    }
 
-    return PopScope(
-      canPop: true,
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF4F6F5),
-        appBar: AppBar(
-          leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
-          title: Text(heading, style: const TextStyle(fontSize: 16)),
-          backgroundColor: const Color(0xFF15803D),
-          foregroundColor: Colors.white,
-          actions: [
-  PopupMenuButton<String>(
-    onSelected: (val) => setState(() => AppState.lang = val),
-    color: Colors.white,
-    itemBuilder: (_) => const [
-      PopupMenuItem(value: "en", child: Text("English (EN)", style: TextStyle(fontWeight: FontWeight.bold))),
-      PopupMenuItem(value: "hi", child: Text("हिंदी (हिं)", style: TextStyle(fontWeight: FontWeight.bold))),
-      PopupMenuItem(value: "mr", child: Text("मराठी (मर)", style: TextStyle(fontWeight: FontWeight.bold))),
-    ],
-    child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 14),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Text(
-            AppState.lang == "en" ? "EN" : (AppState.lang == "mr" ? "मर" : "हिं"),
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+  return PopScope(
+    canPop: true,
+    child: Scaffold(
+      backgroundColor: const Color(0xFFF4F6F5),
+      appBar: AppBar(
+        leading: IconButton(icon: const Icon(Icons.arrow_back), onPressed: () => Navigator.pop(context)),
+        title: Text(heading, style: const TextStyle(fontSize: 15)),
+        backgroundColor: const Color(0xFF15803D),
+        foregroundColor: Colors.white,
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (val) => setState(() => AppState.lang = val),
+            color: Colors.white,
+            padding: EdgeInsets.zero,
+            itemBuilder: (_) => const [
+              PopupMenuItem(value: "en", child: Text("English (EN)", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(value: "hi", child: Text("हिंदी (हिं)", style: TextStyle(fontSize: 12))),
+              PopupMenuItem(value: "mr", child: Text("मराठी (मर)", style: TextStyle(fontSize: 12))),
+            ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 16),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    AppState.lang == "en" ? "EN" : (AppState.lang == "mr" ? "मर" : "हिं"),
+                    style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 11),
+                  ),
+                  const Icon(Icons.arrow_drop_down, color: Colors.white, size: 16),
+                ],
+              ),
+            ),
           ),
-          const Icon(Icons.arrow_drop_down, color: Colors.white, size: 20),
-        ],
-      ),
-    ),
-  ),
   IconButton(
     icon: Badge(label: Text("${_cartItems.length}"), isLabelVisible: _cartItems.isNotEmpty, child: const Icon(Icons.shopping_cart)),
     onPressed: _showCheckout,
@@ -3141,47 +3290,132 @@ items: const [
                           ],
                         ),
                       ),
-                    ],
+                    ],  
                       
-                      if ((ord['status'] == 'in_transit' || ord['status'] == 'delivered') && ord['farmerPaymentVerified'] != true) ...[
-  const SizedBox(height: 8),
-  Builder(
-    builder: (_) {
-      final bool commuterAlerted = ord['farmerPaymentNotified'] == true;
-      return SizedBox(
-        width: double.infinity,
-        child: ElevatedButton.icon(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: commuterAlerted ? const Color(0xFF15803D) : Colors.grey.shade400,
-            foregroundColor: Colors.white,
+          Builder(
+  builder: (_) {
+    final bool isDirectOrder = (ord["node"] == "pickup" ||
+        ord["dispatchMode"] == "farm_pickup" ||
+        (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप") ||
+        ord["node"] == "self" ||
+        ord["dispatchMode"] == "farmer_self");
+
+    // केस A: बिना कम्यूटर वाले ऑर्डर (फार्म पिकअप या किसान स्वयं डिलीवरी)
+    if (isDirectOrder && ord['status'] != 'delivered') {
+      if (ord['farmerPaymentVerified'] != true) {
+        return Padding(
+          padding: const EdgeInsets.only(top: 8),
+          child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+              icon: const Icon(Icons.verified, size: 18),
+              label: const Text("✅ पेमेंट मिल गया (ग्राहक का OTP अनलॉक करें)", style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              onPressed: () {
+                setState(() {
+                  ord['farmerPaymentVerified'] = true;
+                });
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("✅ पेमेंट सत्यापित! ग्राहक को OTP मिल गया है, अब OTP डालकर ऑर्डर पूरा करें।")),
+                );
+              },
+            ),
           ),
-          icon: Icon(commuterAlerted ? Icons.verified : Icons.lock_clock, size: 18),
-          label: Text(
-            commuterAlerted
-                ? "✅ पेमेंट मिल गया - ऑर्डर कन्फर्म करें"
-                : "⏳ कम्यूटर के पेमेंट अलर्ट का इंतज़ार है",
+        );
+      } else {
+        final otpCtrl = TextEditingController();
+        final vcode = (ord['deliveryCode'] ?? ord['otp'] ?? '').toString();
+        return Container(
+          margin: const EdgeInsets.only(top: 8),
+          padding: const EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF0FDF4),
+            borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: const Color(0xFF16A34A)),
           ),
-          onPressed: !commuterAlerted
-              ? () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("⚠️ पहले कम्यूटर द्वारा WhatsApp पेमेंट अलर्ट भेजा जाना अनिवार्य है।")),
-                  );
-                }
-              : () {
-                  setState(() {
-                    ord['farmerPaymentVerified'] = true;
-                  });
-                  final String cDoneMsg = "✅ *किसान पेमेंट कन्फर्मेशन (Anda Express):*\nऑर्डर नं: #${ord['id']} का पूरा पेमेंट किसान के खाते में प्राप्त हो गया है। ग्राहक को OTP बताकर डिलीवरी पूरी करें।";
-                  launchWhatsApp((ord['commuterPhone'] ?? ord['buyerPhone'] ?? '').toString(), cDoneMsg);
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text("✅ पेमेंट सत्यापित! कम्यूटर को कन्फर्मेशन भेज दिया गया है।")),
-                  );
+          child: Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: otpCtrl,
+                  keyboardType: TextInputType.number,
+                  maxLength: 4,
+                  decoration: const InputDecoration(
+                    hintText: "ग्राहक का 4-अंक OTP डालें",
+                    counterText: "",
+                    isDense: true,
+                    border: OutlineInputBorder(),
+                    fillColor: Colors.white,
+                    filled: true,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF15803D), foregroundColor: Colors.white),
+                onPressed: () {
+                  if (otpCtrl.text.trim() == vcode) {
+                    setState(() {
+                      ord['status'] = 'delivered';
+                    });
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("🎉 OTP सत्यापित! ऑर्डर सफलतापूर्वक डिलीवर व पूर्ण हो गया।")),
+                    );
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("❌ गलत OTP! कृपया ग्राहक की स्क्रीन पर दिख रहा OTP डालें।")),
+                    );
+                  }
                 },
+                child: const Text("पूर्ण करें", style: TextStyle(fontWeight: FontWeight.bold)),
+              ),
+            ],
+          ),
+        );
+      }
+    }
+
+    // केस B: कम्यूटर डिलीवरी वाले ऑर्डर (कम्यूटर अलर्ट -> किसान कन्फर्म)
+    if ((ord['status'] == 'in_transit' || ord['status'] == 'delivered') && ord['farmerPaymentVerified'] != true) {
+      final bool commuterAlerted = ord['farmerPaymentNotified'] == true;
+      return Padding(
+        padding: const EdgeInsets.only(top: 8),
+        child: SizedBox(
+          width: double.infinity,
+          child: ElevatedButton.icon(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: commuterAlerted ? const Color(0xFF15803D) : Colors.grey.shade400,
+              foregroundColor: Colors.white,
+            ),
+            icon: Icon(commuterAlerted ? Icons.verified : Icons.lock_clock, size: 18),
+            label: Text(
+              commuterAlerted
+                  ? "✅ पेमेंट मिल गया - ऑर्डर कन्फर्म करें"
+                  : "⏳ कम्यूटर के पेमेंट अलर्ट का इंतज़ार है",
+            ),
+            onPressed: !commuterAlerted
+                ? () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("⚠️ पहले कम्यूटर द्वारा WhatsApp पेमेंट अलर्ट भेजा जाना अनिवार्य है।")),
+                    );
+                  }
+                : () {
+                    setState(() {
+                      ord['farmerPaymentVerified'] = true;
+                    });
+                    final String cDoneMsg = "✅ *किसान पेमेंट कन्फर्मेशन (Anda Express):*\nऑर्डर नं: #${ord['id']} का पूरा पेमेंट किसान के खाते में प्राप्त हो गया है। ग्राहक को OTP बताकर डिलीवरी पूरी करें।";
+                    launchWhatsApp((ord['commuterPhone'] ?? ord['buyerPhone'] ?? '').toString(), cDoneMsg);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("✅ पेमेंट सत्यापित! कम्यूटर को कन्फर्मेशन भेज दिया गया है।")),
+                    );
+                  },
+          ),
         ),
       );
-    },
-  ),
-],
+    }
+    return const SizedBox.shrink();
+  },
+),
                   ],
                   ),
                 ),
