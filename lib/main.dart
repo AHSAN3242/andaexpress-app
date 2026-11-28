@@ -2028,27 +2028,22 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
     );
   }
 
-  Widget _buildEcommerceHomeBody({List? customList, bool hideTopRoleBar = false}) {
+  String _homeEggSub = "सभी";
+
+Widget _buildEcommerceHomeBody({List? customList, bool hideTopRoleBar = false}) {
   final liveAds = globalAllProducts.where((p) => ((p['availableQty'] as int?) ?? 1) > 0).toList();
   final baseItems = customList ?? liveAds;
   final gridItems = baseItems.where((p) {
     final title = (p['item'] ?? '').toString().toLowerCase();
     final cat = (p['cat'] ?? '').toString();
+    final sub = (p['sub'] ?? '').toString();
     final matchSearch = _homeSearchQuery.trim().isEmpty || title.contains(_homeSearchQuery.trim().toLowerCase()) || cat.toLowerCase().contains(_homeSearchQuery.trim().toLowerCase());
-    final matchCat = _homeCatFilter == "सभी" || cat == _homeCatFilter || title.contains(_homeCatFilter);
+    bool matchCat = _homeCatFilter == "सभी" || cat == _homeCatFilter || title.contains(_homeCatFilter);
+    if (matchCat && _homeCatFilter == "अंडे" && _homeEggSub != "सभी") {
+      matchCat = sub.contains(_homeEggSub) || title.contains(_homeEggSub);
+    }
     return matchSearch && matchCat;
   }).toList();
-
-  final cats = [
-    {"label": "सभी", "icon": Icons.grid_view_rounded},
-    {"label": "अंडे", "icon": Icons.egg_alt},
-    {"label": "देसी चिकन", "icon": Icons.pets},
-    {"label": "बॉयलर चिकन", "icon": Icons.kebab_dining},
-    {"label": "कड़कनाथ", "icon": Icons.cruelty_free},
-    {"label": "बतख", "icon": Icons.water},
-    {"label": "बटेर", "icon": Icons.flutter_dash},
-    {"label": "ईमू", "icon": Icons.park},
-  ];
 
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -2064,7 +2059,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                   _bottomTabIdx = 0;
                 }),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                  padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 6),
                   decoration: BoxDecoration(
                     color: _selectedRoleMode == "buyer" ? const Color(0xFFFACC15) : Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -2089,7 +2084,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                   _bottomTabIdx = 7;
                 }),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                  padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 6),
                   decoration: BoxDecoration(
                     color: _selectedRoleMode == "seller" ? const Color(0xFFFEF3C7) : Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -2114,7 +2109,7 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
                   _bottomTabIdx = 8;
                 }),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 6),
+                  padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 6),
                   decoration: BoxDecoration(
                     color: _selectedRoleMode == "commuter" ? const Color(0xFFEDE9FE) : Colors.white,
                     borderRadius: BorderRadius.circular(10),
@@ -2133,10 +2128,10 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
             ),
           ],
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 7),
         // Flipkart स्टाइल सर्च बार
         Container(
-          height: 40,
+          height: 38,
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(10),
@@ -2146,50 +2141,111 @@ if (!isHomeDeliveryEligible && _selectedDeliveryMode == "home") {
             onChanged: (v) => setState(() => _homeSearchQuery = v),
             decoration: const InputDecoration(
               hintText: "अंडे, देसी चिकन, कड़कनाथ, बर्ड्स खोजें...",
-              hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
-              prefixIcon: Icon(Icons.search, size: 19, color: Color(0xFF15803D)),
+              hintStyle: TextStyle(fontSize: 11.5, color: Colors.grey),
+              prefixIcon: Icon(Icons.search, size: 18, color: Color(0xFF15803D)),
               border: InputBorder.none,
-              contentPadding: EdgeInsets.symmetric(vertical: 10),
+              contentPadding: EdgeInsets.symmetric(vertical: 9),
             ),
           ),
         ),
-        const SizedBox(height: 8),
-        // Flipkart स्टाइल छोटे कैटेगरी आइकन + '...' वाला टेक्स्ट
+        const SizedBox(height: 6),
+        // ओरिजिनल रंगीन गोल कैटेगरी आइकन (छोटे कॉम्पैक्ट साइज़ + '...' टेक्स्ट में)
         SizedBox(
-          height: 54,
-          child: ListView.builder(
+          height: 62,
+          child: ListView(
             scrollDirection: Axis.horizontal,
-            itemCount: cats.length,
-            itemBuilder: (ctx, i) {
-              final c = cats[i];
-              final label = c["label"] as String;
-              final sel = _homeCatFilter == label;
-              return GestureDetector(
-                onTap: () => setState(() => _homeCatFilter = label),
+            children: [
+              GestureDetector(
+                onTap: () => setState(() {
+                  _homeCatFilter = "सभी";
+                  _homeEggSub = "सभी";
+                }),
                 child: Container(
-                  width: 60,
+                  width: 56,
                   margin: const EdgeInsets.only(right: 6),
-                  decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: sel ? const Color(0xFF15803D) : Colors.transparent, width: 2.5)),
-                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(c["icon"] as IconData, size: 22, color: sel ? const Color(0xFF15803D) : Colors.black87),
-                      const SizedBox(height: 3),
-                      Text(
-                        label,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 10, fontWeight: sel ? FontWeight.bold : FontWeight.w500, color: sel ? const Color(0xFF15803D) : Colors.black87),
+                      Container(
+                        width: 36,
+                        height: 36,
+                        decoration: BoxDecoration(
+                          color: _homeCatFilter == "सभी" ? const Color(0xFF15803D) : Colors.white,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: _homeCatFilter == "सभी" ? const Color(0xFF15803D) : Colors.grey.shade300),
+                        ),
+                        child: Icon(Icons.apps, size: 18, color: _homeCatFilter == "सभी" ? Colors.white : const Color(0xFF15803D)),
                       ),
+                      const SizedBox(height: 3),
+                      Text("सभी", maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 10, fontWeight: _homeCatFilter == "सभी" ? FontWeight.bold : FontWeight.w500)),
                     ],
                   ),
                 ),
-              );
-            },
+              ),
+              ..._mainCategories.map((cat) {
+                final name = cat["name"].toString();
+                final isSel = _homeCatFilter == name;
+                return GestureDetector(
+                  onTap: () => setState(() {
+                    _homeCatFilter = name;
+                    _homeEggSub = "सभी";
+                  }),
+                  child: Container(
+                    width: 58,
+                    margin: const EdgeInsets.only(right: 6),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: 36,
+                          height: 36,
+                          decoration: BoxDecoration(
+                            color: isSel ? const Color(0xFF15803D) : Colors.white,
+                            shape: BoxShape.circle,
+                            border: Border.all(color: isSel ? const Color(0xFF15803D) : Colors.grey.shade300),
+                          ),
+                          child: Center(
+                            child: Transform.scale(
+                              scale: 0.72,
+                              child: getItemIcon(name == "कड़कनाथ" ? "कड़कनाथ ब्लैक लाइव" : name),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 3),
+                        Text(name, maxLines: 1, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 10, fontWeight: isSel ? FontWeight.bold : FontWeight.w500)),
+                      ],
+                    ),
+                  ),
+                );
+              }),
+            ],
           ),
         ),
+        if (_homeCatFilter == "अंडे") ...[
+          const SizedBox(height: 4),
+          SizedBox(
+            height: 30,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: _eggSubCategories.map((sub) {
+                final isSubSel = _homeEggSub == sub;
+                return GestureDetector(
+                  onTap: () => setState(() => _homeEggSub = sub),
+                  child: Container(
+                    margin: const EdgeInsets.only(right: 6),
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: isSubSel ? const Color(0xFFFEF3C7) : Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(color: isSubSel ? const Color(0xFFF59E0B) : Colors.grey.shade300),
+                    ),
+                    child: Text(sub, style: TextStyle(fontSize: 10.5, fontWeight: isSubSel ? FontWeight.bold : FontWeight.w500)),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ],
         const SizedBox(height: 8),
       ],
         if (liveAds.isNotEmpty) ...[
@@ -2414,65 +2470,66 @@ Widget build(BuildContext context) {
     activeBody = _buildWalletTab();
   } else if (_bottomTabIdx == 4) {
     activeBody = _buildPolicyTab();
-  } else if (_bottomTabIdx == 2) {
-    if (_selectedRoleMode == "seller") {
-      activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildSeller()]);
-    } else if (_selectedRoleMode == "commuter") {
-      activeBody = _buildCommuter();
-    } else {
-      final myOrders = AppState.orders.toList();
-      activeBody = myOrders.isEmpty
-          ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
-          : ListView(
-              padding: const EdgeInsets.all(14),
-              children: myOrders.reversed.map((ord) {
-                final st = ord["status"].toString();
-                final isSelf = (ord["node"] == "pickup" || ord["dispatchMode"] == "farm_pickup" || (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप") || ord["node"] == "self" || ord["dispatchMode"] == "farmer_self");
-                final otpUnlocked = st == "delivered" || ord["farmerPaymentVerified"] == true;
-                return Card(
-                  margin: const EdgeInsets.only(bottom: 10),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(child: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14))),
-                            Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                              decoration: BoxDecoration(
-                                color: otpUnlocked ? const Color(0xFFDCFCE7) : const Color(0xFFFEF3C7),
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Text(
-                                otpUnlocked ? "OTP: ${ord['deliveryCode'] ?? ord['otp']}" : "🔒 पेमेंट पुष्टि बाकी",
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.5, color: otpUnlocked ? const Color(0xFF15803D) : const Color(0xFFB45309)),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5),
-                        Text("ऑर्डर #${ord['id']} • स्थिति: ${st == 'delivered' ? '✅ डिलीवर पूर्ण' : (st == 'in_transit' ? '🚚 रास्ते में' : '📦 पैक/तैयार')}", style: const TextStyle(fontSize: 12, color: Colors.black87)),
-                        Text("पता: ${ord['dropAddress'] ?? ''} • देय राशि: ₹${((ord['codToFarmer'] ?? ord['goodsTotal'] ?? 0) as num).toStringAsFixed(0)}", style: TextStyle(fontSize: 11.5, color: Colors.grey.shade700)),
-                        if (isSelf && st != 'delivered')
-                          const Padding(
-                            padding: EdgeInsets.only(top: 4),
-                            child: Text("ℹ️ डायरेक्ट ऑर्डर: किसान को पेमेंट करने पर OTP अनलॉक होगा।", style: TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
-                          ),
-                      ],
-                    ),
-                  ),
-                );
-              }).toList(),
-            );
-    }
-  } else if (_bottomTabIdx == 7) {
-    activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildSeller()]);
-  } else if (_bottomTabIdx == 8) {
+} else if (_bottomTabIdx == 2) {
+  if (_selectedRoleMode == "seller") {
+    activeBody = _buildSeller();
+  } else if (_selectedRoleMode == "commuter") {
     activeBody = _buildCommuter();
+  } else {
+    final myOrders = AppState.orders.toList();
+    activeBody = myOrders.isEmpty
+        ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
+        : ListView(
+            padding: const EdgeInsets.all(14),
+            children: myOrders.reversed.map((ord) {
+              final st = ord["status"].toString();
+              final isSelf = (ord["node"] == "pickup" || ord["dispatchMode"] == "farm_pickup" || (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप") || ord["node"] == "self" || ord["dispatchMode"] == "farmer_self");
+              final otpUnlocked = st == "delivered" || ord["farmerPaymentVerified"] == true;
+              return Card(
+                margin: const EdgeInsets.only(bottom: 10),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(child: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14))),
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: otpUnlocked ? const Color(0xFFDCFCE7) : const Color(0xFFFEF3C7),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              otpUnlocked ? "OTP: ${ord['deliveryCode'] ?? ord['otp']}" : "🔒 पेमेंट पुष्टि बाकी",
+                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.5, color: otpUnlocked ? const Color(0xFF15803D) : const Color(0xFFB45309)),
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 5),
+                      Text("ऑर्डर #${ord['id']} • स्थिति: ${st == 'delivered' ? '✅ डिलीवर पूर्ण' : (st == 'in_transit' ? '🚚 रास्ते में' : '📦 पैक/तैयार')}", style: const TextStyle(fontSize: 12, color: Colors.black87)),
+                      Text("पता: ${ord['dropAddress'] ?? ''} • देय राशि: ₹${((ord['codToFarmer'] ?? ord['goodsTotal'] ?? 0) as num).toStringAsFixed(0)}", style: TextStyle(fontSize: 11.5, color: Colors.grey.shade700)),
+                      if (isSelf && st != 'delivered')
+                        const Padding(
+                          padding: EdgeInsets.only(top: 4),
+                          child: Text("ℹ️ डायरेक्ट ऑर्डर: किसान को पेमेंट करने पर OTP अनलॉक होगा।", style: TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
+                        ),
+                    ],
+                  ),
+                ),
+              );
+            }).toList(),
+          );
+  }
+} else if (_bottomTabIdx == 7) {
+  activeBody = _buildSeller();
+} else if (_bottomTabIdx == 8) {
+  activeBody = _buildCommuter();
+                        
   } else {
     activeBody = ListView(padding: const EdgeInsets.all(12), children: [_buildEcommerceHomeBody()]);
   }
