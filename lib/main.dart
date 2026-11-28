@@ -2470,61 +2470,136 @@ Widget build(BuildContext context) {
     activeBody = _buildWalletTab();
   } else if (_bottomTabIdx == 4) {
     activeBody = _buildPolicyTab();
-} else if (_bottomTabIdx == 2) {
-  if (_selectedRoleMode == "seller") {
-    activeBody = _buildSeller();
-  } else if (_selectedRoleMode == "commuter") {
-    activeBody = _buildCommuter();
-  } else {
-    final myOrders = AppState.orders.toList();
-    activeBody = myOrders.isEmpty
-        ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
-        : ListView(
-            padding: const EdgeInsets.all(14),
-            children: myOrders.reversed.map((ord) {
-              final st = ord["status"].toString();
-              final isSelf = (ord["node"] == "pickup" || ord["dispatchMode"] == "farm_pickup" || (ord["dropAddress"] ?? "").toString().contains("फार्म पिकअप") || ord["node"] == "self" || ord["dispatchMode"] == "farmer_self");
-              final otpUnlocked = st == "delivered" || ord["farmerPaymentVerified"] == true;
-              return Card(
-                margin: const EdgeInsets.only(bottom: 10),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    } else if (_bottomTabIdx == 2) {
+      if (_selectedRoleMode == "seller") {
+        activeBody = _buildSeller();
+      } else if (_selectedRoleMode == "commuter") {
+        activeBody = _buildCommuter();
+      } else {
+        final myOrders = AppState.orders.toList();
+        activeBody = myOrders.isEmpty
+            ? const Center(child: Text("आपके अभी कोई ऑर्डर नहीं हैं", style: TextStyle(color: Colors.grey, fontSize: 15)))
+            : ListView.builder(
+                padding: const EdgeInsets.all(14),
+                itemCount: myOrders.length,
+                itemBuilder: (ctx, index) {
+                  final ord = myOrders[myOrders.length - 1 - index];
+                  final String st = (ord["status"] ?? "booked").toString();
+                  final String mode = (ord["mode"] ?? "").toString();
+                  final String dMode = (ord["dispatchMode"] ?? "").toString();
+                  final String dropAddr = (ord["dropAddress"] ?? "").toString();
+                  final bool isSelf = (mode == "pickup" ||
+                      mode == "self" ||
+                      dMode == "farm_pickup" ||
+                      dMode == "farmer_self" ||
+                      dropAddr.contains("फार्म पिकअप"));
+                  final bool otpUnlocked = st == "delivered" || ord["farmerPaymentVerified"] == true;
+                  final String otpCode = (ord["deliveryCode"] ?? ord["otp"] ?? "----").toString();
+                  final String prodName = (ord["product"] ?? ord["item"] ?? "अंडा एक्सप्रेस ऑर्डर").toString();
+                  final String ordId = (ord["id"] ?? "").toString();
+                  final num amt = (ord["codToFarmer"] is num)
+                      ? ord["codToFarmer"]
+                      : ((ord["goodsTotal"] is num) ? ord["goodsTotal"] : 0);
+                  final String vehNo = (ord["vehicleNo"] ?? "").toString().trim();
+                  final String fPhone = (ord["farmerPhone"] ?? "9876543210").toString();
+
+                  return Card(
+                    margin: const EdgeInsets.only(bottom: 12),
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Expanded(child: Text("${ord['product']}", style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14))),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                            decoration: BoxDecoration(
-                              color: otpUnlocked ? const Color(0xFFDCFCE7) : const Color(0xFFFEF3C7),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              otpUnlocked ? "OTP: ${ord['deliveryCode'] ?? ord['otp']}" : "🔒 पेमेंट पुष्टि बाकी",
-                              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 11.5, color: otpUnlocked ? const Color(0xFF15803D) : const Color(0xFFB45309)),
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Expanded(
+                                child: Text(prodName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: otpUnlocked ? const Color(0xFFDCFCE7) : const Color(0xFFFEF3C7),
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                child: Text(
+                                  otpUnlocked ? "OTP: $otpCode" : "🔒 पेमेंट पुष्टि बाकी",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 11.5,
+                                    color: otpUnlocked ? const Color(0xFF15803D) : const Color(0xFFB45309),
+                                  ),
+                                ),
+                              ),
+                            ],
                           ),
+                          const SizedBox(height: 6),
+                          Text(
+                            "ऑर्डर #$ordId • स्थिति: ${st == 'delivered' ? '✅ डिलीवर पूर्ण' : (st == 'in_transit' ? '🚚 रास्ते में' : '📦 पैक/तैयार')}",
+                            style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600, color: Colors.black87),
+                          ),
+                          const SizedBox(height: 3),
+                          Text(
+                            "पता: $dropAddr • किसान को देय: ₹${amt.toStringAsFixed(0)}",
+                            style: TextStyle(fontSize: 11.5, color: Colors.grey.shade700),
+                          ),
+                          if (!isSelf && vehNo.isNotEmpty && st != 'delivered') ...[
+                            const SizedBox(height: 8),
+                            Container(
+                              decoration: BoxDecoration(
+                                color: ord['buyerConfirmedVehicle'] == true ? const Color(0xFFDCFCE7) : const Color(0xFFEFF6FF),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(
+                                  color: ord['buyerConfirmedVehicle'] == true ? const Color(0xFF16A34A) : const Color(0xFF93C5FD),
+                                ),
+                              ),
+                              child: CheckboxListTile(
+                                dense: true,
+                                contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                                activeColor: const Color(0xFF15803D),
+                                value: ord['buyerConfirmedVehicle'] == true,
+                                onChanged: (val) {
+                                  setState(() {
+                                    ord['buyerConfirmedVehicle'] = val ?? false;
+                                  });
+                                },
+                                title: Text(
+                                  ord['buyerConfirmedVehicle'] == true
+                                      ? "✅ वाहन नं $vehNo की पुष्टि कर दी है"
+                                      : "🚚 वाहन नं $vehNo की पुष्टि करें (तभी कम्यूटर OTP डाल सकेगा)",
+                                  style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ),
+                          ],
+                          if (isSelf && st != 'delivered') ...[
+                            const SizedBox(height: 6),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    "ℹ️ किसान को UPI/कैश पेमेंट करने पर OTP अनलॉक होगा।",
+                                    style: TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w600),
+                                  ),
+                                ),
+                                TextButton.icon(
+                                  onPressed: () => makePhoneCall(fPhone),
+                                  icon: const Icon(Icons.phone, size: 15, color: Color(0xFF15803D)),
+                                  label: const Text("किसान कॉल", style: TextStyle(fontSize: 11.5, color: Color(0xFF15803D))),
+                                ),
+                              ],
+                            ),
+                          ],
                         ],
                       ),
-                      const SizedBox(height: 5),
-                      Text("ऑर्डर #${ord['id']} • स्थिति: ${st == 'delivered' ? '✅ डिलीवर पूर्ण' : (st == 'in_transit' ? '🚚 रास्ते में' : '📦 पैक/तैयार')}", style: const TextStyle(fontSize: 12, color: Colors.black87)),
-                      Text("पता: ${ord['dropAddress'] ?? ''} • देय राशि: ₹${((ord['codToFarmer'] ?? ord['goodsTotal'] ?? 0) as num).toStringAsFixed(0)}", style: TextStyle(fontSize: 11.5, color: Colors.grey.shade700)),
-                      if (isSelf && st != 'delivered')
-                        const Padding(
-                          padding: EdgeInsets.only(top: 4),
-                          child: Text("ℹ️ डायरेक्ट ऑर्डर: किसान को पेमेंट करने पर OTP अनलॉक होगा।", style: TextStyle(fontSize: 11, color: Color(0xFF15803D), fontWeight: FontWeight.w600)),
-                        ),
-                    ],
-                  ),
-                ),
+                    ),
+                  );
+                },
               );
-            }).toList(),
-          );
-  }
+      }
 } else if (_bottomTabIdx == 7) {
   activeBody = _buildSeller();
 } else if (_bottomTabIdx == 8) {
